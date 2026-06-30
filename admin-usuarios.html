@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usuarios — Estrategium Admin</title>
+  <link rel="stylesheet" href="css/admin.css?v=2" />
+  <script src="js/admin-embed.js"></script>
+</head>
+<body class="admin">
+  <div class="admin-shell">
+
+    <aside class="admin-sidebar">
+      <div class="admin-brand">
+        <div class="b-main">ESTRATEGIUM</div>
+        <div class="b-sub">ADMIN</div>
+      </div>
+      <nav class="admin-nav">
+        <a href="panel-admin.html"><span class="ico">⌂</span> Inicio</a>
+        <a href="admin-subir-archivo.html"><span class="ico">↑</span> Gestionar cursos</a>
+        <a href="admin-usuarios.html" class="active"><span class="ico">◎</span> Estudiantes</a>
+        <a href="admin-cursos.html"><span class="ico">▦</span> Cursos</a>
+        <a href="admin-ventas.html"><span class="ico">▤</span> Ventas</a>
+        <a href="admin-notificaciones.html"><span class="ico">✉</span> Notificaciones</a>
+        <a href="admin-configuracion.html"><span class="ico">⚙</span> Configuración</a>
+      </nav>
+      <div class="admin-side-foot">Admin: Cristyan</div>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <div class="tb-title">
+          <h1>Estudiantes registrados</h1>
+          <p>Gestiona los estudiantes, su curso y permisos.</p>
+        </div>
+        <div class="admin-search"><span>⌕</span><input type="text" id="uBuscarTop" placeholder="Buscar estudiante por nombre, email o curso..." /></div>
+        <div class="admin-avatar">D</div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="card stat"><div class="s-label">Estudiantes totales</div><div class="s-num" id="stTotal">0</div><div class="s-delta green">registrados</div></div>
+        <div class="card stat"><div class="s-label">Activos</div><div class="s-num" id="stActivos">0</div><div class="s-delta" id="stPct">0%</div></div>
+        <div class="card stat"><div class="s-label">Estudiantes</div><div class="s-num" id="stUsuarios">0</div><div class="s-delta">rol estudiante</div></div>
+        <div class="card stat"><div class="s-label">Admins</div><div class="s-num" id="stAdmins">0</div><div class="s-delta">OK</div></div>
+      </div>
+
+      <div class="card table-wrap" style="margin-top:26px;">
+        <div class="table-head">
+          <h3>Listado de estudiantes</h3>
+          <button class="btn-gold" id="uNuevo">+ Nuevo</button>
+        </div>
+        <table class="adm">
+          <thead><tr><th>Nombre</th><th>Email</th><th>Curso</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="uTbody"></tbody>
+        </table>
+        <p style="color:var(--a-muted);font-size:.85rem;margin-top:18px;">Usa ✏️ para editar o 🗑️ para eliminar. “+ Nuevo” agrega un usuario.</p>
+      </div>
+
+      <a href="panel-admin.html" class="back-link">← Inicio</a>
+    </main>
+  </div>
+
+  <!-- Modal agregar / editar usuario -->
+  <div class="modal-overlay" id="uModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="umTitle">Nuevo usuario</h3>
+        <button class="modal-close" title="Cerrar">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="field"><label>Nombre</label><input id="umNombre" type="text" placeholder="Nombre y apellido" /></div>
+        <div class="field"><label>Email</label><input id="umEmail" type="email" placeholder="correo@ejemplo.com" /></div>
+        <div class="field"><label>Contraseña (para que el estudiante ingrese)</label><input id="umClave" type="text" placeholder="Clave de acceso" /></div>
+        <div class="field"><label>Cursos (marca uno o ambos)</label><div id="umCursos" style="display:flex;flex-wrap:wrap;gap:14px;padding-top:4px;"></div></div>
+        <div class="row-2">
+          <div class="field"><label>Rol</label><select id="umRol"><option>Estudiante</option></select></div>
+          <div class="field"><label>Estado</label><select id="umEstado"><option>Activo</option><option>Inactivo</option></select></div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-ghost" id="umCancel">Cancelar</button>
+        <button class="btn-gold" id="umSave">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase + cursos (para el menú de curso) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cursos-data.js?v=6"></script>
+  <script src="js/usuarios-data.js"></script>
+  <script>
+  (function () {
+    function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+    // Lista de cursos disponibles (títulos) para el menú de "Curso"
+    function cursosDisponibles() {
+      var c = (window.Cursos ? Cursos.getCache() : []).map(function (x) { return x.titulo || 'Curso'; });
+      if (!c.length) c = ['MARCA START', 'MARCA PROFIT'];
+      return c;
+    }
+    function opcionesCurso(sel) {
+      return cursosDisponibles().map(function (t) {
+        return '<option value="' + esc(t) + '"' + (t === sel ? ' selected' : '') + '>' + esc(t) + '</option>';
+      }).join('');
+    }
+    var tbody = document.getElementById('uTbody');
+    var overlay = document.getElementById('uModal');
+    var f = {
+      title: document.getElementById('umTitle'),
+      nombre: document.getElementById('umNombre'),
+      email: document.getElementById('umEmail'),
+      clave: document.getElementById('umClave'),
+      cursos: document.getElementById('umCursos'),
+      rol: document.getElementById('umRol'),
+      estado: document.getElementById('umEstado')
+    };
+    var editId = null;
+
+    // Casillas de cursos (uno o varios). 'marcados' = lista de cursos del estudiante
+    function casillasCurso(marcados, id) {
+      marcados = marcados || [];
+      return cursosDisponibles().map(function (t) {
+        var ck = marcados.indexOf(t) >= 0 ? 'checked' : '';
+        return '<label style="display:inline-flex;align-items:center;gap:5px;margin-right:14px;font-size:.85rem;cursor:pointer;white-space:nowrap;">' +
+                 '<input type="checkbox" class="u-curso"' + (id ? ' data-id="' + id + '"' : '') + ' value="' + esc(t) + '" ' + ck + ' /> ' + esc(t) +
+               '</label>';
+      }).join('');
+    }
+
+    function stats(list) {
+      var est = list.filter(function(u){ return u.rol !== 'Administrador'; });
+      var activos = est.filter(function(u){ return u.estado === 'Activo'; }).length;
+      document.getElementById('stTotal').textContent = est.length;
+      document.getElementById('stActivos').textContent = activos;
+      document.getElementById('stPct').textContent = est.length ? Math.round(activos/est.length*100) + '%' : '0%';
+      document.getElementById('stUsuarios').textContent = est.length;
+      document.getElementById('stAdmins').textContent = list.filter(function(u){ return u.rol === 'Administrador'; }).length;
+    }
+
+    var buscarTop = document.getElementById('uBuscarTop');
+
+    function render(list) {
+      var q = (buscarTop && buscarTop.value || '').trim().toLowerCase();
+      var filtrada = (list || Usuarios.getAll()).filter(function (u) {
+        return u.rol !== 'Administrador' && (!q || (u.nombre + ' ' + u.email + ' ' + (u.cursos || []).join(' ')).toLowerCase().indexOf(q) >= 0);
+      });
+      tbody.innerHTML = filtrada.map(function (u) {
+        var rolBadge = u.rol === 'Administrador' ? 'green' : 'gold';
+        var estBadge = u.estado === 'Activo' ? 'green' : 'gray';
+        return '<tr>' +
+          '<td>' + esc(u.nombre) + '</td>' +
+          '<td>' + esc(u.email) + '</td>' +
+          '<td><div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">' + casillasCurso(u.cursos, u.id) +
+            '<button class="btn-gold" style="padding:5px 12px;font-size:.76rem;" data-savecursos="' + u.id + '">💾 Guardar</button></div></td>' +
+          '<td><span class="badge ' + rolBadge + '">' + esc(u.rol) + '</span></td>' +
+          '<td><span class="badge ' + estBadge + '">' + esc(u.estado) + '</span></td>' +
+          '<td><button class="icon-btn sm" data-edit="' + u.id + '" title="Editar">✏️</button> ' +
+              '<button class="icon-btn del sm" data-del="' + u.id + '" title="Eliminar">🗑️</button></td>' +
+        '</tr>';
+      }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--a-muted);padding:24px;">Sin estudiantes.</td></tr>';
+
+      tbody.querySelectorAll('[data-edit]').forEach(function(b){ b.addEventListener('click', function(){ abrir(b.getAttribute('data-edit')); }); });
+      tbody.querySelectorAll('[data-del]').forEach(function(b){ b.addEventListener('click', function(){ borrar(b.getAttribute('data-del')); }); });
+      tbody.querySelectorAll('[data-savecursos]').forEach(function(b){
+        b.addEventListener('click', function(){
+          var id = b.getAttribute('data-savecursos');
+          var sel = [];
+          tbody.querySelectorAll('.u-curso[data-id="' + id + '"]:checked').forEach(function(x){ sel.push(x.value); });
+          Usuarios.update(id, { cursos: sel });
+          alert('✅ Cursos actualizados. El estudiante los verá al iniciar sesión.');
+        });
+      });
+      stats(Usuarios.getAll());
+    }
+
+    function abrir(id) {
+      editId = id || null;
+      var u = id ? Usuarios.getAll().filter(function(x){ return x.id === id; })[0] : null;
+      f.title.textContent = u ? 'Editar estudiante' : 'Nuevo estudiante';
+      f.nombre.value = u ? u.nombre : '';
+      f.email.value = u ? u.email : '';
+      f.clave.value = u ? (u.clave || '') : '';
+      f.cursos.innerHTML = casillasCurso(u ? (u.cursos || []) : []);
+      f.rol.value = u ? u.rol : 'Estudiante';
+      f.estado.value = u ? u.estado : 'Activo';
+      overlay.classList.add('open');
+    }
+    function cerrar() { overlay.classList.remove('open'); editId = null; }
+    function guardar() {
+      var nombre = (f.nombre.value || '').trim();
+      if (!nombre) { alert('Escribe el nombre.'); return; }
+      var cursos = [];
+      f.cursos.querySelectorAll('input:checked').forEach(function(x){ cursos.push(x.value); });
+      var data = { nombre: nombre, email: (f.email.value||'').trim(), clave: (f.clave.value||'').trim(), cursos: cursos, rol: f.rol.value, estado: f.estado.value };
+      if (editId) Usuarios.update(editId, data); else Usuarios.add(data);
+      cerrar();
+    }
+    // Verifica la contraseña del administrador (contra Firebase)
+    function verificarClaveAdmin(pass) {
+      if (!window.estrategiumAuth) return Promise.reject(new Error('sin-auth'));
+      var user = window.estrategiumAuth.currentUser;
+      try {
+        if (user && user.email && typeof firebase !== 'undefined' && firebase.auth.EmailAuthProvider) {
+          var cred = firebase.auth.EmailAuthProvider.credential(user.email, pass);
+          return user.reauthenticateWithCredential(cred);
+        }
+      } catch (e) {}
+      var admin = Usuarios.getAll().filter(function (x) { return x.rol === 'Administrador'; })[0];
+      if (admin && admin.email) return window.estrategiumAuth.signInWithEmailAndPassword(admin.email, pass);
+      return Promise.reject(new Error('sin-auth'));
+    }
+
+    function borrar(id) {
+      var u = Usuarios.getAll().filter(function (x) { return x.id === id; })[0];
+      if (!u) return;
+      var pass = prompt('Para eliminar a "' + u.nombre + '", escribe la CONTRASEÑA del administrador:');
+      if (pass === null) return; // canceló
+      verificarClaveAdmin(pass).then(function () {
+        Usuarios.remove(id);
+        alert('✅ Estudiante eliminado.');
+      }).catch(function (err) {
+        if (err && err.message === 'sin-auth') {
+          // Sin Firebase configurado: pide confirmación simple
+          if (confirm('No se pudo verificar con Firebase. ¿Eliminar de todos modos a "' + u.nombre + '"?')) Usuarios.remove(id);
+          return;
+        }
+        alert('❌ Contraseña incorrecta. No se eliminó.');
+      });
+    }
+
+    document.getElementById('uNuevo').addEventListener('click', function(){ abrir(null); });
+    document.getElementById('umSave').addEventListener('click', guardar);
+    document.getElementById('umCancel').addEventListener('click', cerrar);
+    overlay.querySelector('.modal-close').addEventListener('click', cerrar);
+    overlay.addEventListener('click', function(e){ if (e.target === overlay) cerrar(); });
+    if (buscarTop) buscarTop.addEventListener('input', function(){ render(); });
+
+    Usuarios.onChange(render);
+  })();
+  </script>
+</body>
+</html>

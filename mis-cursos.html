@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mis cursos — Estrategium Business</title>
+  <link rel="stylesheet" href="css/styles.css?v=42" />
+</head>
+<body data-guard="estudiante">
+
+  <!-- Header portal -->
+  <header class="portal-header">
+    <div class="container portal-nav">
+      <a href="mis-cursos.html" class="brand">
+        <span class="brand-main">ESTRATEGIUM</span>
+        <span class="brand-sub">BUSINESS</span>
+      </a>
+      <div class="portal-menu">
+        <span class="portal-hello">👤 <b data-user-name>Estudiante</b></span><a href="mis-cursos.html" class="portal-pill">MIS CURSOS</a>
+        <div class="portal-dropdown">
+          <span class="portal-pill">CUENTA ▾</span>
+          <div class="dd-menu">
+            <a href="curso-marca-start.html">Curso 1 · MARCA START</a>
+            <a href="curso-marca-profit.html">Curso 2 · MARCA PROFIT</a>
+            <a href="login-estudiantes.html" data-logout="login-estudiantes.html">Cerrar sesión</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner -->
+  <section class="portal-banner">
+    <div class="container"><h1>MIS CURSOS ONLINE</h1></div>
+  </section>
+
+  <!-- Cursos (se cargan desde la nube/Firestore) -->
+  <section class="section">
+    <div class="container" id="portalCursos">
+      <p style="text-align:center;color:var(--gray-500);">Cargando tus cursos…</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="brand-main">ESTRATEGIUM</div>
+      <div class="brand-sub">BUSINESS</div>
+      <div class="copy">© 2026 Estrategium Business — Zona de estudiantes.</div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+
+  <!-- Firebase: sesión + datos de cursos compartidos -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/session.js"></script>
+  <script src="js/cursos-data.js?v=6"></script>
+  <script src="js/usuarios-data.js"></script>
+  <script>
+  (function () {
+    var cont = document.getElementById('portalCursos');
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+    function nLecciones(c) { return (c.modulos || []).reduce(function (n, m) { return n + ((m.lecciones || []).length); }, 0); }
+
+    // Cursos en los que está inscrito el estudiante (LEÍDOS EN VIVO desde el admin)
+    function inscritos() {
+      try {
+        var s = JSON.parse(localStorage.getItem('estrategium_user') || 'null');
+        if (!s) return null;
+        // Busca al estudiante por email y trae sus cursos actuales
+        if (window.Usuarios && s.email) {
+          var u = Usuarios.getAll().filter(function (x) {
+            return x.rol === 'Estudiante' && (x.email || '').toLowerCase() === (s.email || '').toLowerCase();
+          })[0];
+          if (u) {
+            // Actualiza la sesión con lo último
+            try { s.cursos = u.cursos || []; localStorage.setItem('estrategium_user', JSON.stringify(s)); } catch (e) {}
+            return u.cursos || [];
+          }
+          // Entró (ej. con Google) pero no está en la lista del admin → lo registra
+          if ((s.rol || '').toLowerCase() === 'estudiante') {
+            Usuarios.add({ nombre: s.name || s.email, email: s.email, clave: '', cursos: [], rol: 'Estudiante', estado: 'Activo' });
+            return [];
+          }
+        }
+        return Array.isArray(s.cursos) ? s.cursos : null;
+      } catch (e) { return null; }
+    }
+
+    function render(cursos) {
+      // No mostramos borradores en el portal del estudiante
+      cursos = (cursos || []).filter(function (c) { return c.precioLabel !== 'BORRADOR'; });
+      // Solo los cursos asignados al estudiante (si tiene lista de inscripción)
+      var mis = inscritos();
+      if (mis) cursos = cursos.filter(function (c) { return mis.indexOf(c.titulo) >= 0; });
+      if (!cursos.length) {
+        cont.innerHTML = '<p style="text-align:center;color:var(--gray-500);">' + (mis ? 'Aún no tienes cursos asignados. Contacta al administrador.' : 'Aún no hay cursos publicados. Vuelve pronto.') + '</p>';
+        return;
+      }
+      cont.innerHTML = cursos.map(function (c, i) {
+        var videos = nLecciones(c) || (c.videoUrl ? 1 : 0);
+        var thumb = c.imagen
+          ? '<div class="cc-thumb" style="background-image:url(\'' + esc(c.imagen) + '\')"></div>'
+          : '<div class="cc-thumb" style="background:linear-gradient(135deg,#102a54,#0a1f44);display:grid;place-items:center;font-size:2.4rem;">' + esc(c.icon || '🎓') + '</div>';
+        return '' +
+          '<div class="course-card"' + (i ? ' style="margin-top:24px"' : '') + '>' +
+            thumb +
+            '<div>' +
+              '<h2>' + esc(c.titulo || 'Curso') + '</h2>' +
+              '<div class="course-meta">' +
+                '<span>' + videos + ' Videos</span>' +
+                '<span>' + ((c.modulos || []).length) + ' Módulos</span>' +
+              '</div>' +
+              '<a href="curso.html?id=' + encodeURIComponent(c.id) + '" class="btn btn-continue">CONTINUAR</a>' +
+            '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    if (window.Cursos) Cursos.onChange(render);
+    else cont.innerHTML = '<p style="text-align:center;color:var(--gray-500);">No se pudieron cargar los cursos.</p>';
+    // Si el admin cambia la asignación (otra pestaña), se actualiza al instante
+    if (window.Usuarios) Usuarios.onChange(function () { render(window.Cursos ? Cursos.getCache() : []); });
+  })();
+  </script>
+</body>
+</html>
+

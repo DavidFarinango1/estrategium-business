@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Administrador — Estrategium Business</title>
+  <link rel="stylesheet" href="css/styles.css?v=38" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav">
+      <a href="index.html" class="brand">
+        <span class="brand-main">ESTRATEGIUM</span>
+        <span class="brand-sub">BUSINESS</span>
+      </a>
+      <nav class="nav-actions">
+        <a href="index.html#contacto" class="nav-pill">CONTACTO</a>
+        <a href="implementacion-marca.html" class="nav-pill">IMPLEMENTACIÓN</a>
+        <a href="login-estudiantes.html" class="nav-login">LOGIN ESTUDIANTES</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="login-wrap">
+    <form class="login-card admin" id="loginForm" action="admin.html">
+      <span class="login-badge admin">🛡️ Panel de administración</span>
+      <div class="brand-main">ESTRATEGIUM <span style="font-weight:400">BUSINESS</span></div>
+      <h2>Acceso administrador</h2>
+      <p class="lc-sub">Inicia sesión para gestionar cursos, estudiantes y contenidos.</p>
+
+      <label>Correo del administrador</label>
+      <div class="input-ico">
+        <span>👤</span>
+        <input type="email" id="loginEmail" placeholder="admin@correo.com" required />
+      </div>
+
+      <label>Contraseña</label>
+      <div class="input-ico">
+        <span>🔒</span>
+        <input type="password" id="loginPass" placeholder="Ingresa tu contraseña" required />
+      </div>
+
+      <button class="btn btn-login" type="submit">Ingresar al panel</button>
+      <a href="#" class="forgot">¿Olvidaste tu contraseña?</a>
+
+      <span class="login-switch">¿Eres estudiante? <a href="login-estudiantes.html">Acceso estudiantes</a></span>
+    </form>
+  </main>
+
+  <script src="js/main.js"></script>
+
+  <!-- Firebase Authentication (Google) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/usuarios-data.js"></script>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      var email = (document.getElementById('loginEmail').value || '').trim();
+      var pass = (document.getElementById('loginPass').value || '').trim();
+      // Login real con Firebase (email/contraseña). El admin se crea en Firebase Authentication.
+      if (window.googleListo && window.loginEmailPassword) {
+        e.preventDefault();
+        var btn = document.querySelector('#loginForm .btn-login');
+        if (btn) { btn.disabled = true; btn.textContent = 'Ingresando...'; }
+        window.loginEmailPassword(email, pass, 'admin').catch(function (err) {
+          if (btn) { btn.disabled = false; btn.textContent = 'Ingresar al panel'; }
+          if (err && err.code === 'no-autorizado') { alert('Este correo no está autorizado como administrador.'); return; }
+          alert('Correo o contraseña incorrectos.');
+        });
+        return;
+      }
+      // Sin Firebase (modo demo): guarda sesión local
+      try { localStorage.setItem('estrategium_user', JSON.stringify({ name: email.split('@')[0] || 'Admin', email: email, rol: 'admin' })); } catch (x) {}
+    });
+  </script>
+</body>
+</html>

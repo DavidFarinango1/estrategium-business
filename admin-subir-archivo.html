@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestionar cursos — Estrategium Admin</title>
+  <link rel="stylesheet" href="css/admin.css?v=2" />
+  <script src="js/admin-embed.js"></script>
+</head>
+<body class="admin">
+  <div class="admin-shell">
+
+    <aside class="admin-sidebar">
+      <div class="admin-brand">
+        <div class="b-main">ESTRATEGIUM</div>
+        <div class="b-sub">ADMIN</div>
+      </div>
+      <nav class="admin-nav">
+        <a href="panel-admin.html"><span class="ico">⌂</span> Inicio</a>
+        <a href="admin-subir-archivo.html" class="active"><span class="ico">↑</span> Gestionar cursos</a>
+        <a href="admin-usuarios.html"><span class="ico">◎</span> Estudiantes</a>
+        <a href="admin-cursos.html"><span class="ico">▦</span> Cursos</a>
+        <a href="admin-ventas.html"><span class="ico">▤</span> Ventas</a>
+        <a href="admin-notificaciones.html"><span class="ico">✉</span> Notificaciones</a>
+        <a href="admin-configuracion.html"><span class="ico">⚙</span> Configuración</a>
+      </nav>
+      <div class="admin-side-foot">Admin: Cristyan</div>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <div class="tb-title">
+          <h1>Gestionar cursos</h1>
+          <p>Elige un curso y organiza sus categorías (módulos) y subcategorías (lecciones) con su video.</p>
+        </div>
+        <div class="admin-search"><span>⌕</span><input type="text" placeholder="Buscar usuarios, ventas o cursos..." /></div>
+        <div class="admin-avatar">D</div>
+      </div>
+
+      <!-- Seleccionar curso + guardar -->
+      <div class="card" style="padding:22px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;">
+        <div class="field" style="margin:0;flex:1;min-width:240px;">
+          <label>Curso a gestionar</label>
+          <select id="saNivel"><option value="">— Elige el curso —</option></select>
+        </div>
+        <button class="btn-gold" id="saGuardar" style="white-space:nowrap;">💾 Guardar cambios</button>
+      </div>
+
+      <!-- Estructura del curso -->
+      <div class="section-label">Estructura del curso</div>
+      <div class="card" style="padding:22px;">
+        <div id="saEstructura"></div>
+        <button type="button" class="est-mini-btn" id="saAddModulo" style="margin-top:8px;">+ Agregar módulo (categoría)</button>
+        <p class="muted-note">Renombra o crea <b>categorías</b> (módulos) y <b>subcategorías</b> (lecciones) con su link de video. Pulsa <b>Guardar cambios</b> para que se reflejen en el portal del estudiante.</p>
+      </div>
+
+      <a href="panel-admin.html" class="back-link">← Inicio</a>
+    </main>
+  </div>
+
+  <!-- Firebase + Firestore (datos compartidos) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cursos-data.js?v=6"></script>
+  <script>
+  (function () {
+    function esc2(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+    function toEmbed(url) {
+      url = (url || '').trim();
+      if (!url) return '';
+      var m = url.match(/vimeo\.com\/(?:video\/)?(\d+)/i);
+      if (m) return 'https://player.vimeo.com/video/' + m[1] + '?title=0&byline=0&portrait=0';
+      m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{6,})/i);
+      if (m) return 'https://www.youtube.com/embed/' + m[1];
+      if (/^https?:\/\//i.test(url)) return url;
+      return '';
+    }
+
+    var estBox = document.getElementById('saEstructura');
+    var sel = document.getElementById('saNivel');
+    var estructura = []; // estado de trabajo (módulos con lecciones)
+
+    // ---- Selector de curso ----
+    function llenarNivel() {
+      var cursos = (window.Cursos ? Cursos.getCache() : []);
+      var actual = sel.value;
+      sel.innerHTML = '<option value="">— Elige el curso —</option>' +
+        cursos.map(function (c) { return '<option value="' + c.id + '">' + esc2(c.titulo || 'Curso') + '</option>'; }).join('');
+      if (actual) sel.value = actual;
+      // si no hay selección, carga el primero
+      if (!sel.value && cursos.length) { sel.value = cursos[0].id; cargarCurso(); }
+    }
+
+    function cargarCurso() {
+      var c = (window.Cursos ? Cursos.getCache() : []).filter(function (x) { return x.id === sel.value; })[0];
+      estructura = (c && c.modulos) ? JSON.parse(JSON.stringify(c.modulos)) : [];
+      if (!estructura.length) estructura = [{ nombre: 'Módulo 1', lecciones: [{ titulo: 'Lección 1', videoUrl: '', descripcion: '', completado: false }] }];
+      renderEstructura();
+    }
+    sel.addEventListener('change', cargarCurso);
+
+    // ---- Editor de estructura ----
+    function syncEstructura() {
+      var mods = [];
+      estBox.querySelectorAll('.est-mod').forEach(function (modEl) {
+        var lecciones = [];
+        modEl.querySelectorAll('.est-les').forEach(function (lesEl) {
+          var t = (lesEl.querySelector('.est-les-name').value || '').trim();
+          var v = (lesEl.querySelector('.est-les-video').value || '').trim();
+          var dEl = lesEl.querySelector('.est-les-desc');
+          if (t) lecciones.push({
+            titulo: t,
+            videoUrl: toEmbed(v),
+            descripcion: dEl ? (dEl.value || '').trim() : '',
+            completado: lesEl.getAttribute('data-completado') === '1'
+          });
+        });
+        mods.push({ nombre: (modEl.querySelector('.est-mod-name').value || '').trim() || 'Módulo', lecciones: lecciones });
+      });
+      estructura = mods;
+    }
+
+    function renderEstructura() {
+      estBox.innerHTML = '';
+      estructura.forEach(function (m, i) {
+        var wrap = document.createElement('div');
+        wrap.className = 'est-mod';
+        var lessons = (m.lecciones || []).map(function (l, li) {
+          var vid = l.videoUrl ? esc2(l.videoUrl) : '';
+          return '<div class="est-les" data-completado="' + (l.completado ? '1' : '0') + '">' +
+                   '<div class="est-row">' +
+                     '<input class="est-les-name" value="' + esc2(l.titulo || '') + '" placeholder="Nombre de la lección (subcategoría)" />' +
+                     '<input class="est-les-video" value="' + vid + '" placeholder="link de video (opcional)" style="flex:.7;" />' +
+                     '<button type="button" class="icon-btn del sm" data-rmles="' + i + ':' + li + '" title="Quitar lección">✕</button>' +
+                   '</div>' +
+                   '<textarea class="est-les-desc" rows="2" placeholder="Descripción de la lección (aparece debajo del video en la lección del estudiante)">' + esc2(l.descripcion || '') + '</textarea>' +
+                 '</div>';
+        }).join('');
+        wrap.innerHTML =
+          '<div class="est-mod-title">MÓDULO ' + (i + 1) + ' (categoría)</div>' +
+          '<div class="est-row">' +
+            '<input class="est-mod-name" value="' + esc2(m.nombre || '') + '" placeholder="Nombre del módulo (categoría)" />' +
+            '<button type="button" class="icon-btn del sm" data-del="' + i + '" title="Eliminar módulo">🗑️</button>' +
+          '</div>' +
+          '<div class="est-les-list">' + lessons + '</div>' +
+          '<button type="button" class="est-mini-btn" data-addles="' + i + '">+ Agregar lección (subcategoría)</button>';
+        estBox.appendChild(wrap);
+      });
+
+      estBox.querySelectorAll('[data-del]').forEach(function (b) {
+        b.addEventListener('click', function () { syncEstructura(); estructura.splice(+b.getAttribute('data-del'), 1); renderEstructura(); });
+      });
+      estBox.querySelectorAll('[data-addles]').forEach(function (b) {
+        b.addEventListener('click', function () { syncEstructura(); estructura[+b.getAttribute('data-addles')].lecciones.push({ titulo: 'Nueva lección', videoUrl: '', descripcion: '', completado: false }); renderEstructura(); });
+      });
+      estBox.querySelectorAll('[data-rmles]').forEach(function (b) {
+        b.addEventListener('click', function () { syncEstructura(); var p = b.getAttribute('data-rmles').split(':'); estructura[+p[0]].lecciones.splice(+p[1], 1); renderEstructura(); });
+      });
+    }
+
+    document.getElementById('saAddModulo').addEventListener('click', function () {
+      syncEstructura();
+      estructura.push({ nombre: 'Nuevo módulo', lecciones: [{ titulo: 'Nueva lección', videoUrl: '', descripcion: '', completado: false }] });
+      renderEstructura();
+    });
+
+    // ---- Guardar ----
+    document.getElementById('saGuardar').addEventListener('click', function () {
+      if (!sel.value) { alert('Elige un curso para gestionar.'); return; }
+      syncEstructura();
+      var btn = this; btn.disabled = true; btn.textContent = 'Guardando...';
+      Promise.resolve(Cursos.update(sel.value, { modulos: estructura })).then(function () {
+        btn.disabled = false; btn.textContent = '💾 Guardar cambios';
+        alert('✅ Cambios guardados. Ya se ven en el portal del estudiante.');
+      }).catch(function (err) {
+        btn.disabled = false; btn.textContent = '💾 Guardar cambios';
+        alert('No se pudo guardar: ' + (err && err.message ? err.message : err));
+      });
+    });
+
+    if (window.Cursos) Cursos.onChange(llenarNivel);
+  })();
+  </script>
+</body>
+</html>

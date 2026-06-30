@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lección — Estrategium Business</title>
+  <link rel="stylesheet" href="css/styles.css?v=42" />
+</head>
+<body>
+
+  <!-- Header portal -->
+  <header class="portal-header">
+    <div class="container portal-nav">
+      <a href="mis-cursos.html" class="brand">
+        <span class="brand-main">ESTRATEGIUM</span>
+        <span class="brand-sub">BUSINESS</span>
+      </a>
+      <div class="portal-menu">
+        <span class="portal-hello">👤 <b data-user-name>Estudiante</b></span><a href="mis-cursos.html" class="portal-pill">MIS CURSOS</a>
+        <div class="portal-dropdown">
+          <span class="portal-pill">CUENTA ▾</span>
+          <div class="dd-menu">
+            <a href="mis-cursos.html">Mis cursos</a>
+            <a href="login-estudiantes.html" data-logout="login-estudiantes.html">Cerrar sesión</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="lp-grid">
+    <!-- Barra lateral -->
+    <aside class="lp-side" id="lpSide">
+      <a href="mis-cursos.html" class="lp-back" id="lpBack">← Volver al curso</a>
+      <h2 id="lpCurso">Curso</h2>
+      <div id="lpMods"></div>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="lp-main">
+      <div class="lp-top">
+        <a href="#" id="lpPrev">‹ Lección anterior</a>
+        <a href="#" id="lpNext">Lección siguiente ›</a>
+      </div>
+
+      <div class="lp-prog-wrap">
+        <div class="lp-prog-bar"><span id="lpProgBar" style="width:0%"></span></div>
+        <div class="lp-prog-label" id="lpProgLabel">PROGRESO DEL CURSO</div>
+      </div>
+
+      <h1 id="lpTitle">Lección</h1>
+
+      <div class="lp-video" id="lpVideo">
+        <div class="play-btn">▶</div>
+      </div>
+
+      <div class="lp-desc" id="lpDesc" style="margin-top:20px;color:#3a4a63;font-size:1rem;line-height:1.6;"></div>
+
+      <div class="lp-bottom">
+        <a href="#" class="lp-next" id="lpNextBottom">✓ SIGUIENTE LECCIÓN</a>
+      </div>
+    </main>
+  </div>
+
+  <!-- Firebase + datos compartidos -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/session.js"></script>
+  <script src="js/cursos-data.js?v=6"></script>
+  <script>
+  (function () {
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+    var qs = new URLSearchParams(location.search);
+    var id = qs.get('id');
+    var curM = parseInt(qs.get('m') || '0', 10);
+    var curL = parseInt(qs.get('l') || '0', 10);
+
+    var lpCurso = document.getElementById('lpCurso');
+    var lpBack = document.getElementById('lpBack');
+    var lpMods = document.getElementById('lpMods');
+    var lpTitle = document.getElementById('lpTitle');
+    var lpVideo = document.getElementById('lpVideo');
+    var lpPrev = document.getElementById('lpPrev');
+    var lpNext = document.getElementById('lpNext');
+    var lpProgBar = document.getElementById('lpProgBar');
+    var lpProgLabel = document.getElementById('lpProgLabel');
+
+    // Menú CUENTA
+    document.querySelectorAll('.portal-dropdown > .portal-pill').forEach(function (p) {
+      p.addEventListener('click', function (e) { e.stopPropagation(); p.parentElement.classList.toggle('open'); });
+    });
+    document.addEventListener('click', function () {
+      document.querySelectorAll('.portal-dropdown.open').forEach(function (el) { el.classList.remove('open'); });
+    });
+
+    var modulos = [];
+    var flat = []; // lista plana de lecciones: {mi, li, titulo, videoUrl}
+
+    function setVideo(url) {
+      if (url) {
+        lpVideo.innerHTML = '<iframe src="' + esc(url) + '" style="width:100%;height:100%;border:0;border-radius:6px;" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>';
+      } else {
+        lpVideo.innerHTML = '<div style="text-align:center;color:#5a6b8c;"><div class="play-btn" style="margin:0 auto 10px;">▶</div>Esta lección aún no tiene video</div>';
+      }
+    }
+
+    function activar(mi, li) {
+      curM = mi; curL = li;
+      var les = (modulos[mi] && modulos[mi].lecciones[li]) || null;
+      if (!les) return;
+      lpTitle.textContent = les.titulo || 'Lección';
+      setVideo(les.videoUrl);
+      var dEl = document.getElementById('lpDesc');
+      if (dEl) dEl.textContent = les.descripcion || '';
+
+      // marca activa + abre su módulo
+      lpMods.querySelectorAll('.lp-lesson').forEach(function (el) { el.classList.remove('active'); });
+      var sel = lpMods.querySelector('.lp-lesson[data-mi="' + mi + '"][data-li="' + li + '"]');
+      if (sel) { sel.classList.add('active'); var mod = sel.closest('.lp-mod'); if (mod) mod.classList.add('open'); }
+
+      // prev / next
+      var idx = flat.findIndex(function (f) { return f.mi === mi && f.li === li; });
+      lpPrev.style.visibility = idx > 0 ? 'visible' : 'hidden';
+      lpNext.style.visibility = (idx >= 0 && idx < flat.length - 1) ? 'visible' : 'hidden';
+      lpPrev.onclick = function (e) { e.preventDefault(); if (idx > 0) activar(flat[idx - 1].mi, flat[idx - 1].li); };
+      lpNext.onclick = function (e) { e.preventDefault(); if (idx < flat.length - 1) activar(flat[idx + 1].mi, flat[idx + 1].li); };
+
+      // Botón grande "Siguiente lección" (abajo)
+      var nb = document.getElementById('lpNextBottom');
+      if (nb) {
+        var hayNext = idx >= 0 && idx < flat.length - 1;
+        nb.style.display = hayNext ? '' : 'none';
+        nb.onclick = function (e) { e.preventDefault(); if (hayNext) activar(flat[idx + 1].mi, flat[idx + 1].li); };
+      }
+
+      var pct = flat.length ? Math.round(((idx + 1) / flat.length) * 100) : 0;
+      lpProgBar.style.width = pct + '%';
+      lpProgLabel.textContent = 'PROGRESO DEL CURSO: ' + pct + '%';
+      window.scrollTo(0, 0);
+    }
+
+    function build(cursos) {
+      var c = (cursos || []).filter(function (x) { return x.id === id; })[0];
+      if (!c) { lpCurso.textContent = 'Curso no encontrado'; lpMods.innerHTML = '<a href="mis-cursos.html" style="color:var(--navy-900)">Volver a Mis cursos</a>'; return; }
+      lpCurso.textContent = c.titulo || 'Curso';
+      lpBack.href = 'curso.html?id=' + encodeURIComponent(c.id);
+
+      modulos = (c.modulos && c.modulos.length) ? c.modulos
+        : [{ nombre: c.titulo || 'Contenido', lecciones: [{ titulo: 'Introducción', videoUrl: c.videoUrl || '' }] }];
+
+      // lista plana
+      flat = [];
+      modulos.forEach(function (m, mi) { (m.lecciones || []).forEach(function (l, li) { flat.push({ mi: mi, li: li, titulo: l.titulo, videoUrl: l.videoUrl }); }); });
+
+      // construye barra lateral
+      lpMods.innerHTML = modulos.map(function (m, mi) {
+        var lessons = (m.lecciones || []).map(function (l, li) {
+          var t = esc(l.titulo || 'Lección');
+          return '<div class="lp-lesson" data-mi="' + mi + '" data-li="' + li + '"><span class="check">✔</span> ' + t + '</div>';
+        }).join('');
+        return '<div class="lp-mod' + (mi === curM ? ' open' : '') + '">' +
+                 '<div class="lp-mod-head"><span class="ic">' + (mi === curM ? '－' : '＋') + '</span> ' + esc(m.nombre || 'Módulo') + '</div>' +
+                 '<div class="lp-lessons">' + lessons + '</div>' +
+               '</div>';
+      }).join('');
+
+      // eventos
+      lpMods.querySelectorAll('.lp-mod-head').forEach(function (h) {
+        h.addEventListener('click', function () { h.parentElement.classList.toggle('open'); });
+      });
+      lpMods.querySelectorAll('.lp-lesson').forEach(function (el) {
+        el.addEventListener('click', function () { activar(+el.getAttribute('data-mi'), +el.getAttribute('data-li')); });
+      });
+
+      // activa la lección pedida (o la primera)
+      if (!modulos[curM] || !modulos[curM].lecciones[curL]) { curM = 0; curL = 0; }
+      activar(curM, curL);
+    }
+
+    if (window.Cursos) Cursos.onChange(build);
+  })();
+  </script>
+</body>
+</html>

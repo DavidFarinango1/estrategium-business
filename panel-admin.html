@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel principal — Estrategium Admin</title>
+  <link rel="stylesheet" href="css/admin.css?v=2" />
+  <script src="js/admin-embed.js"></script>
+</head>
+<body class="admin" data-guard="admin">
+  <div class="admin-shell">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-brand">
+        <div class="b-main">ESTRATEGIUM</div>
+        <div class="b-sub">ADMIN</div>
+      </div>
+      <nav class="admin-nav">
+        <a href="panel-admin.html" class="active"><span class="ico">⌂</span> Inicio</a>
+        <a href="admin-subir-archivo.html"><span class="ico">↑</span> Gestionar cursos</a>
+        <a href="admin-usuarios.html"><span class="ico">◎</span> Estudiantes</a>
+        <a href="admin-cursos.html"><span class="ico">▦</span> Cursos</a>
+        <a href="admin-ventas.html"><span class="ico">▤</span> Ventas</a>
+        <a href="admin-notificaciones.html"><span class="ico">✉</span> Notificaciones</a>
+        <a href="admin-configuracion.html"><span class="ico">⚙</span> Configuración</a>
+      </nav>
+      <div class="admin-side-foot">
+        Admin: <span data-user-name>Cristyan</span>
+        <a href="login-admin.html" data-logout="login-admin.html" style="display:block;margin-top:8px;color:var(--a-gold);font-size:.82rem;">Cerrar sesión</a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <div class="tb-title">
+          <h1>Panel principal</h1>
+          <p>Vista central para gestionar cursos, usuarios, ventas y archivos.</p>
+        </div>
+        <div class="admin-search">
+          <span>⌕</span><input type="text" placeholder="Buscar usuarios, ventas o cursos..." />
+        </div>
+        <div class="admin-avatar" data-user-initial data-user-photo>D</div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stat-grid">
+        <div class="card stat"><div class="s-label">Ventas hoy</div><div class="s-num">$1,250</div><div class="s-delta green">+12%</div></div>
+        <div class="card stat"><div class="s-label">Cursos activos</div><div class="s-num">12</div><div class="s-delta green">+2</div></div>
+        <div class="card stat"><div class="s-label">Usuarios</div><div class="s-num">845</div><div class="s-delta green">+35</div></div>
+        <div class="card stat"><div class="s-label">Archivos nuevos</div><div class="s-num">18</div><div class="s-delta green">+4</div></div>
+      </div>
+
+      <!-- Módulos -->
+      <div class="section-label">Módulos del administrador / clic para abrir</div>
+      <div class="mod-grid">
+        <a href="admin-subir-archivo.html" class="mod is-active"><div class="m-ico">↑</div><div><h3>Subir archivo</h3><p>Carga video, PDF, plantillas y recursos descargables.</p></div></a>
+        <a href="admin-usuarios.html" class="mod is-active"><div class="m-ico">◎</div><div><h3>Usuarios registrados</h3><p>Consulta, filtra, activa y asigna roles a usuarios.</p></div></a>
+        <a href="admin-cursos.html" class="mod"><div class="m-ico">▦</div><div><h3>Cursos y módulos</h3><p>Organiza lecciones por niveles: Start, Growth y Profit.</p></div></a>
+        <a href="admin-ventas.html" class="mod"><div class="m-ico">◈</div><div><h3>Pagos PayPhone</h3><p>Valida transacciones y libera acceso al contenido.</p></div></a>
+        <a href="admin-ventas.html" class="mod"><div class="m-ico">▤</div><div><h3>Ventas</h3><p>Seguimiento de compras por usuario, curso y estado.</p></div></a>
+        <a href="admin-notificaciones.html" class="mod"><div class="m-ico">✉</div><div><h3>Notificaciones</h3><p>Correo, SMS y push para confirmar pagos y avances.</p></div></a>
+        <a href="admin-configuracion.html" class="mod"><div class="m-ico">⚙</div><div><h3>Configuración</h3><p>Branding, automatización, respaldos e integraciones API.</p></div></a>
+      </div>
+
+      <!-- Acción rápida + actividad -->
+      <div class="section-label">Acción rápida</div>
+      <div class="two-col">
+        <div class="card qa">
+          <div>
+            <h3>Publicar curso nuevo</h3>
+            <p>1. Subir archivo &nbsp; 2. Precio &nbsp; 3. Publicar</p>
+          </div>
+          <a href="admin-subir-archivo.html" class="btn-gold">Ir</a>
+        </div>
+        <div class="card qa">
+          <div>
+            <h3>Actividad reciente</h3>
+            <p>Juan Pérez compró MARCA Start &nbsp;•&nbsp; Ana Gómez completó Profit Accelerator</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Firebase: sesión, usuario y cierre de sesión -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/session.js"></script>
+</body>
+</html>

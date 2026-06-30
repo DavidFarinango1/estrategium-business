@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de administración — Estrategium</title>
+  <link rel="stylesheet" href="css/admin.css?v=2" />
+  <style>
+    .admin-frame-wrap { height: 100vh; overflow: hidden; }
+    #adminFrame { width: 100%; height: 100%; border: 0; display: block; background: var(--a-bg); }
+  </style>
+</head>
+<body class="admin">
+  <div class="admin-shell">
+
+    <!-- Menú lateral fijo -->
+    <aside class="admin-sidebar">
+      <div class="admin-brand">
+        <div class="b-main">ESTRATEGIUM</div>
+        <div class="b-sub">ADMIN</div>
+      </div>
+      <nav class="admin-nav">
+        <a href="#" data-src="panel-admin.html" class="active"><span class="ico">⌂</span> Inicio</a>
+        <a href="#" data-src="admin-subir-archivo.html"><span class="ico">↑</span> Gestionar cursos</a>
+        <a href="#" data-src="admin-usuarios.html"><span class="ico">◎</span> Estudiantes</a>
+        <a href="#" data-src="admin-cursos.html"><span class="ico">▦</span> Cursos</a>
+        <a href="#" data-src="admin-ventas.html"><span class="ico">▤</span> Ventas</a>
+        <a href="#" data-src="admin-notificaciones.html"><span class="ico">✉</span> Notificaciones</a>
+        <a href="#" data-src="admin-configuracion.html"><span class="ico">⚙</span> Configuración</a>
+      </nav>
+      <div class="admin-side-foot">
+        Admin: <span data-user-name>Cristyan</span>
+        <a href="login-admin.html" data-logout="login-admin.html" style="display:block;margin-top:8px;color:var(--a-gold);font-size:.82rem;">Cerrar sesión</a>
+      </div>
+    </aside>
+
+    <!-- Contenido (cambia aquí mismo, sin recargar) -->
+    <div class="admin-frame-wrap">
+      <iframe id="adminFrame" src="panel-admin.html" title="Contenido del panel"></iframe>
+    </div>
+  </div>
+
+  <!-- Firebase: sesión y cierre de sesión -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/session.js"></script>
+  <script>
+  (function () {
+    var frame = document.getElementById('adminFrame');
+    var links = Array.prototype.slice.call(document.querySelectorAll('.admin-nav a[data-src]'));
+
+    function setActive(src) {
+      links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('data-src') === src); });
+    }
+
+    // Si la URL trae ?p=archivo.html, abre esa sección al entrar
+    var inicial = new URLSearchParams(location.search).get('p');
+    if (inicial && links.some(function (a) { return a.getAttribute('data-src') === inicial; })) {
+      frame.src = inicial; setActive(inicial);
+    }
+
+    links.forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        var src = a.getAttribute('data-src');
+        frame.src = src;
+        setActive(src);
+      });
+    });
+
+    // Mantiene el menú activo en sintonía cuando se navega dentro del contenido
+    frame.addEventListener('load', function () {
+      try {
+        var p = frame.contentWindow.location.pathname.split('/').pop();
+        if (p) setActive(p);
+      } catch (e) {}
+    });
+  })();
+  </script>
+</body>
+</html>

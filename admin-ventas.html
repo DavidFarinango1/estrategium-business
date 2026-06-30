@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ventas — Estrategium Admin</title>
+  <link rel="stylesheet" href="css/admin.css?v=2" />
+  <script src="js/admin-embed.js"></script>
+</head>
+<body class="admin">
+  <div class="admin-shell">
+
+    <aside class="admin-sidebar">
+      <div class="admin-brand">
+        <div class="b-main">ESTRATEGIUM</div>
+        <div class="b-sub">ADMIN</div>
+      </div>
+      <nav class="admin-nav">
+        <a href="panel-admin.html"><span class="ico">⌂</span> Inicio</a>
+        <a href="admin-subir-archivo.html"><span class="ico">↑</span> Gestionar cursos</a>
+        <a href="admin-usuarios.html"><span class="ico">◎</span> Estudiantes</a>
+        <a href="admin-cursos.html"><span class="ico">▦</span> Cursos</a>
+        <a href="admin-ventas.html" class="active"><span class="ico">▤</span> Ventas</a>
+        <a href="admin-notificaciones.html"><span class="ico">✉</span> Notificaciones</a>
+        <a href="admin-configuracion.html"><span class="ico">⚙</span> Configuración</a>
+      </nav>
+      <div class="admin-side-foot">Admin: Cristyan</div>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <div class="tb-title">
+          <h1>Ventas y pagos PayPhone</h1>
+          <p>Seguimiento de transacciones y validación de pagos.</p>
+        </div>
+        <div class="admin-search"><span>⌕</span><input type="text" placeholder="Buscar usuarios, ventas o cursos..." /></div>
+        <div class="admin-avatar">D</div>
+      </div>
+
+      <div class="stat-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="card stat"><div class="s-label">Ingresos mes</div><div class="s-num">$12,480</div><div class="s-delta green">+22%</div></div>
+        <div class="card stat"><div class="s-label">Pagos completados</div><div class="s-num">386</div><div class="s-delta green">+41</div></div>
+      </div>
+
+      <div class="two-col" style="grid-template-columns:1.6fr 1fr;margin-top:22px;align-items:start;">
+        <!-- Lista de ventas -->
+        <div class="card table-wrap">
+          <div class="table-head"><h3>Lista de ventas</h3><span id="vtOrden" style="color:var(--a-muted);font-size:.82rem;"></span></div>
+          <table class="adm">
+            <thead><tr><th>Usuario</th><th>Curso</th><th>Monto</th><th>Fecha</th></tr></thead>
+            <tbody id="vtBody"></tbody>
+          </table>
+        </div>
+
+        <!-- PayPhone + filtros -->
+        <div>
+          <div class="card" style="padding:24px;margin-bottom:18px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <h3 style="margin:0;">PayPhone API</h3>
+              <span style="color:var(--a-gold);font-size:1.3rem;">◈</span>
+            </div>
+            <p style="color:var(--a-muted);font-size:.9rem;margin:12px 0 0;">Credenciales centralizadas, validación automática y notificación al usuario tras pago exitoso.</p>
+          </div>
+          <div class="card" style="padding:24px;">
+            <div class="section-label" style="margin:0 0 14px;">Filtros de revisión</div>
+            <div style="display:flex;gap:12px;">
+              <button class="btn-ghost" style="flex:1;" id="vtPorCurso">Por curso</button>
+              <button class="btn-ghost" style="flex:1;" id="vtPorFecha">Por fecha</button>
+            </div>
+            <p style="color:var(--a-muted);font-size:.85rem;margin:16px 0 0;">Ordena la lista de ventas por curso o por fecha.</p>
+          </div>
+        </div>
+      </div>
+
+      <a href="panel-admin.html" class="back-link">← Inicio</a>
+    </main>
+  </div>
+
+  <script>
+  (function () {
+    function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+    // Ventas de ejemplo (USUARIO, CURSO, MONTO, FECHA dd/mm/aaaa)
+    var ventas = [
+      { usuario: 'Juan Pérez', curso: 'MARCA Start', monto: 19, fecha: '28/05/2026' },
+      { usuario: 'Ana Gómez', curso: 'Profit Accelerator', monto: 97, fecha: '28/05/2026' },
+      { usuario: 'Luis Ruiz', curso: 'MARCA Growth', monto: 47, fecha: '27/05/2026' },
+      { usuario: 'Carla Vega', curso: 'MARCA Start', monto: 19, fecha: '27/05/2026' }
+    ];
+    var body = document.getElementById('vtBody');
+    var ordenLbl = document.getElementById('vtOrden');
+    var modo = '';   // 'curso' | 'fecha'
+    var asc = true;
+
+    function aDate(f) { var p = (f || '').split('/'); return new Date(+p[2], (+p[1] - 1), +p[0]).getTime() || 0; }
+
+    function render() {
+      var lista = ventas.slice();
+      if (modo === 'curso') {
+        lista.sort(function (a, b) { return a.curso.localeCompare(b.curso) * (asc ? 1 : -1); });
+        ordenLbl.textContent = 'Ordenado por curso ' + (asc ? '↑' : '↓');
+      } else if (modo === 'fecha') {
+        lista.sort(function (a, b) { return (aDate(a.fecha) - aDate(b.fecha)) * (asc ? 1 : -1); });
+        ordenLbl.textContent = 'Ordenado por fecha ' + (asc ? '↑ (antiguas)' : '↓ (recientes)');
+      } else {
+        ordenLbl.textContent = '';
+      }
+      body.innerHTML = lista.map(function (v) {
+        return '<tr><td>' + esc(v.usuario) + '</td><td>' + esc(v.curso) + '</td><td>$' + v.monto + '</td><td>' + esc(v.fecha) + '</td></tr>';
+      }).join('');
+    }
+
+    function marcar(activo) {
+      document.getElementById('vtPorCurso').classList.toggle('btn-gold', activo === 'curso');
+      document.getElementById('vtPorCurso').classList.toggle('btn-ghost', activo !== 'curso');
+      document.getElementById('vtPorFecha').classList.toggle('btn-gold', activo === 'fecha');
+      document.getElementById('vtPorFecha').classList.toggle('btn-ghost', activo !== 'fecha');
+    }
+
+    document.getElementById('vtPorCurso').addEventListener('click', function () {
+      asc = (modo === 'curso') ? !asc : true; modo = 'curso'; marcar('curso'); render();
+    });
+    document.getElementById('vtPorFecha').addEventListener('click', function () {
+      asc = (modo === 'fecha') ? !asc : false; modo = 'fecha'; marcar('fecha'); render();
+    });
+
+    render();
+  })();
+  </script>
+</body>
+</html>

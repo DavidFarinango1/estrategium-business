@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Curso — Estrategium Business</title>
+  <link rel="stylesheet" href="css/styles.css?v=42" />
+</head>
+<body data-guard="estudiante">
+
+  <!-- Header portal -->
+  <header class="portal-header">
+    <div class="container portal-nav">
+      <a href="mis-cursos.html" class="brand">
+        <span class="brand-main">ESTRATEGIUM</span>
+        <span class="brand-sub">BUSINESS</span>
+      </a>
+      <div class="portal-menu">
+        <span class="portal-hello">👤 <b data-user-name>Estudiante</b></span><a href="mis-cursos.html" class="portal-pill">MIS CURSOS</a>
+        <div class="portal-dropdown">
+          <span class="portal-pill">CUENTA ▾</span>
+          <div class="dd-menu">
+            <a href="mis-cursos.html">Mis cursos</a>
+            <a href="login-estudiantes.html" data-logout="login-estudiantes.html">Cerrar sesión</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner -->
+  <section class="portal-banner">
+    <div class="container"><h1 id="cursoTitulo">Curso</h1></div>
+  </section>
+
+  <!-- Contenido del curso -->
+  <section class="section">
+    <div class="container">
+      <div class="course-meta" id="cursoMeta" style="justify-content:center;margin-bottom:24px"></div>
+      <div id="cursoModulos"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="brand-main">ESTRATEGIUM</div>
+      <div class="brand-sub">BUSINESS</div>
+      <div class="copy">© 2026 Estrategium Business — Zona de estudiantes.</div>
+    </div>
+  </footer>
+
+  <!-- Firebase + datos compartidos -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/session.js"></script>
+  <script src="js/cursos-data.js?v=6"></script>
+  <script>
+  (function () {
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+    var id = new URLSearchParams(location.search).get('id');
+
+    var elTitulo = document.getElementById('cursoTitulo');
+    var elMeta = document.getElementById('cursoMeta');
+    var elMods = document.getElementById('cursoModulos');
+
+    // Menú CUENTA
+    document.querySelectorAll('.portal-dropdown > .portal-pill').forEach(function (p) {
+      p.addEventListener('click', function (e) { e.stopPropagation(); p.parentElement.classList.toggle('open'); });
+    });
+    document.addEventListener('click', function () {
+      document.querySelectorAll('.portal-dropdown.open').forEach(function (el) { el.classList.remove('open'); });
+    });
+
+    function render(cursos) {
+      var c = (cursos || []).filter(function (x) { return x.id === id; })[0];
+      if (!c) {
+        elTitulo.textContent = 'Curso no encontrado';
+        elMods.innerHTML = '<p style="text-align:center;color:var(--gray-500);">Este curso ya no está disponible. <a href="mis-cursos.html">Volver a Mis cursos</a>.</p>';
+        elMeta.innerHTML = '';
+        return;
+      }
+      elTitulo.textContent = c.titulo || 'Curso';
+      var modulos = c.modulos && c.modulos.length ? c.modulos
+        : [{ nombre: c.titulo || 'Contenido', lecciones: [{ titulo: 'Introducción', videoUrl: c.videoUrl || '' }] }];
+      var totalLecc = modulos.reduce(function (n, m) { return n + (m.lecciones || []).length; }, 0);
+      elMeta.innerHTML = '<span>' + totalLecc + ' Videos</span><span>0 Quizzes</span><span>0 Worksheets</span><span>0 Files</span>';
+
+      // Para el botón CONTINUAR: primera lección sin completar (o la primera)
+      var continuar = null;
+
+      var html = modulos.map(function (m, mi) {
+        var lecciones = m.lecciones || [];
+        var hechas = lecciones.filter(function (l) { return l.completado; }).length;
+        var pct = lecciones.length ? Math.round((hechas / lecciones.length) * 100) : 0;
+
+        var rows = lecciones.map(function (l, li) {
+          var link = 'leccion.html?id=' + encodeURIComponent(c.id) + '&m=' + mi + '&l=' + li;
+          if (continuar === null && !l.completado) continuar = link;
+          var done = !!l.completado;
+          var badge = done
+            ? '<span class="badge-done">Completado</span>'
+            : '<span class="badge-go">Ir a la Lección</span>';
+          return '<a class="lesson-row" href="' + link + '" style="text-decoration:none;color:inherit;">' +
+                   '<span class="l-title"><span class="' + (done ? 'check' : 'play') + '">' + (done ? '✔' : '▶') + '</span> ' + esc(l.titulo || 'Lección') + '</span>' +
+                   badge +
+                 '</a>';
+        }).join('');
+
+        return '<div class="module">' +
+                 '<div class="module-head"><span>－ ' + esc(m.nombre || 'Módulo') + '</span>' +
+                 '<span class="progress"><span class="progress-bar"><span style="width:' + pct + '%"></span></span> ' + pct + '% COMPLETADO</span></div>' +
+                 rows +
+               '</div>';
+      }).join('');
+
+      // Botón CONTINUAR (a la primera lección pendiente o, si todo está hecho, a la primera)
+      var primera = 'leccion.html?id=' + encodeURIComponent(c.id) + '&m=0&l=0';
+      html += '<div style="text-align:center;margin-top:30px"><a href="' + (continuar || primera) + '" class="btn btn-continue">CONTINUAR</a></div>';
+
+      elMods.innerHTML = html;
+    }
+
+    if (window.Cursos) Cursos.onChange(render);
+  })();
+  </script>
+</body>
+</html>

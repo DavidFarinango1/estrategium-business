@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuración — Estrategium Admin</title>
+  <link rel="stylesheet" href="css/admin.css?v=2" />
+  <script src="js/admin-embed.js"></script>
+</head>
+<body class="admin">
+  <div class="admin-shell">
+
+    <aside class="admin-sidebar">
+      <div class="admin-brand">
+        <div class="b-main">ESTRATEGIUM</div>
+        <div class="b-sub">ADMIN</div>
+      </div>
+      <nav class="admin-nav">
+        <a href="panel-admin.html"><span class="ico">⌂</span> Inicio</a>
+        <a href="admin-subir-archivo.html"><span class="ico">↑</span> Gestionar cursos</a>
+        <a href="admin-usuarios.html"><span class="ico">◎</span> Estudiantes</a>
+        <a href="admin-cursos.html"><span class="ico">▦</span> Cursos</a>
+        <a href="admin-ventas.html"><span class="ico">▤</span> Ventas</a>
+        <a href="admin-notificaciones.html"><span class="ico">✉</span> Notificaciones</a>
+        <a href="admin-configuracion.html" class="active"><span class="ico">⚙</span> Configuración</a>
+      </nav>
+      <div class="admin-side-foot">Admin: Cristyan</div>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <div class="tb-title">
+          <h1>Configuración general y seguridad</h1>
+          <p>Control maestro del portal privado del administrador.</p>
+        </div>
+        <div class="admin-search"><span>⌕</span><input type="text" placeholder="Buscar usuarios, ventas o cursos..." /></div>
+        <div class="admin-avatar">D</div>
+      </div>
+
+      <!-- Imagen / Logo -->
+      <div class="card" style="padding:28px;">
+        <h3 style="color:var(--a-gold);margin:0 0 20px;">⚙ Imagen / Logo</h3>
+        <div class="two-col" style="align-items:start;">
+          <div>
+            <strong>Logo de la empresa</strong>
+            <p style="color:var(--a-muted);font-size:.9rem;margin:6px 0 14px;" id="cfgLogoInfo">ⓘ Sin logo cargado</p>
+            <input type="file" id="cfgLogoFile" accept="image/*" hidden />
+            <button class="btn-ghost" id="cfgSubirLogo">⬆ Subir logo</button>
+            <p style="color:var(--a-muted);font-size:.88rem;margin:18px 0 8px;">Aparece en el RIDE (PDF de la factura). Requisitos obligatorios:</p>
+            <ul class="req-list">
+              <li>Formato permitido: JPG, JPEG, PNG, GIF, BMP, WEBP</li>
+              <li>Dimensiones máximas: 500 × 300 px (no se acepta más grande)</li>
+              <li>Peso máximo: 500 KB</li>
+              <li>Fondo recomendado: transparente (PNG) o blanco</li>
+            </ul>
+            <p style="color:var(--a-muted);font-size:.85rem;">Si la imagen no cumple, no podrá cargarse.</p>
+          </div>
+          <div>
+            <strong style="display:block;margin-bottom:12px;">Vista previa</strong>
+            <div class="logo-preview" id="cfgLogoPrev">🖼</div>
+          </div>
+        </div>
+        <div style="text-align:right;margin-top:18px;">
+          <button class="btn-blue" id="cfgGuardar">💾 Guardar configuración</button>
+        </div>
+      </div>
+
+      <!-- Usuarios y permisos -->
+      <div class="card table-wrap" style="margin-top:24px;">
+        <div class="table-head">
+          <h3>🛡️ Administrador</h3>
+          <button class="btn-blue" id="cfgAddUser">+ Agregar Usuario</button>
+        </div>
+        <table class="adm">
+          <thead><tr><th>Nombre</th><th>Correo</th><th>Perfil</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="cfgTbody"></tbody>
+        </table>
+        <p style="color:var(--a-muted);font-size:.85rem;margin-top:14px;">Administrador del panel. ✏️ editar nombre.</p>
+      </div>
+
+      <a href="panel-admin.html" class="back-link">← Inicio</a>
+    </main>
+  </div>
+
+  <script src="js/usuarios-data.js"></script>
+  <script>
+  (function () {
+    function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+
+    // ---- Logo ----
+    var LKEY = 'estrategium_logo';
+    var prev = document.getElementById('cfgLogoPrev');
+    var info = document.getElementById('cfgLogoInfo');
+    var fileInput = document.getElementById('cfgLogoFile');
+    var logoData = '';
+    try { logoData = localStorage.getItem(LKEY) || ''; } catch (e) {}
+    function pintarLogo() {
+      if (logoData) { prev.innerHTML = '<img src="' + logoData + '" style="max-width:100%;max-height:100%;" />'; info.textContent = '✓ Logo cargado'; }
+      else { prev.textContent = '🖼'; info.textContent = 'ⓘ Sin logo cargado'; }
+    }
+    pintarLogo();
+    document.getElementById('cfgSubirLogo').addEventListener('click', function(){ fileInput.click(); });
+    fileInput.addEventListener('change', function(){
+      var file = fileInput.files[0]; if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(){ logoData = reader.result; pintarLogo(); };
+      reader.readAsDataURL(file);
+    });
+    document.getElementById('cfgGuardar').addEventListener('click', function(){
+      try { localStorage.setItem(LKEY, logoData); } catch (e) {}
+      alert('✅ Configuración guardada.');
+    });
+
+    // ---- Usuarios y permisos (administradores) ----
+    var tbody = document.getElementById('cfgTbody');
+    function usuario(email){ return (email || '').split('@')[0]; }
+    function render(list) {
+      var admins = (list || Usuarios.getAll()).filter(function(u){ return u.rol === 'Administrador'; });
+      tbody.innerHTML = admins.map(function(u){
+        var est = u.estado === 'Activo' ? 'green' : 'gray';
+        return '<tr>' +
+          '<td>' + esc(u.nombre) + '</td>' +
+          '<td>' + esc(u.email || '—') + '</td>' +
+          '<td>' + esc(u.rol) + '</td>' +
+          '<td><span class="badge ' + est + '">' + esc(u.estado) + '</span></td>' +
+          '<td>' +
+            '<span style="cursor:pointer;" data-edit="' + u.id + '" title="Editar nombre">✏️</span>' +
+          '</td>' +
+        '</tr>';
+      }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--a-muted);padding:20px;">Sin administradores.</td></tr>';
+
+      tbody.querySelectorAll('[data-edit]').forEach(function(b){ b.addEventListener('click', function(){
+        var u = Usuarios.getAll().filter(function(x){return x.id===b.getAttribute('data-edit');})[0];
+        var nombre = prompt('Nombre del administrador:', u ? u.nombre : '');
+        if (nombre) Usuarios.update(b.getAttribute('data-edit'), { nombre: nombre.trim() });
+      }); });
+      tbody.querySelectorAll('[data-toggle]').forEach(function(b){ b.addEventListener('click', function(){
+        var u = Usuarios.getAll().filter(function(x){return x.id===b.getAttribute('data-toggle');})[0];
+        if (u) Usuarios.update(u.id, { estado: u.estado === 'Activo' ? 'Inactivo' : 'Activo' });
+      }); });
+      tbody.querySelectorAll('[data-del]').forEach(function(b){ b.addEventListener('click', function(){
+        var u = Usuarios.getAll().filter(function(x){return x.id===b.getAttribute('data-del');})[0];
+        if (u && confirm('¿Eliminar a "' + u.nombre + '"?')) Usuarios.remove(u.id);
+      }); });
+    }
+    document.getElementById('cfgAddUser').addEventListener('click', function(){
+      var hayAdmin = Usuarios.getAll().some(function(u){ return u.rol === 'Administrador'; });
+      if (hayAdmin) { alert('Solo puede haber un administrador. Edita o elimina el actual antes de crear otro.'); return; }
+      var nombre = prompt('Nombre del nuevo administrador:'); if (!nombre) return;
+      var email = prompt('Email / usuario:', '') || '';
+      Usuarios.add({ nombre: nombre.trim(), email: email.trim(), curso: '', rol: 'Administrador', estado: 'Activo' });
+    });
+
+    // Oculta "+ Agregar Usuario" cuando ya existe un administrador
+    function actualizarBoton() {
+      var hayAdmin = Usuarios.getAll().some(function(u){ return u.rol === 'Administrador'; });
+      document.getElementById('cfgAddUser').style.display = hayAdmin ? 'none' : '';
+    }
+
+    Usuarios.onChange(function (list) { render(list); actualizarBoton(); });
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+Coloca aquí las imágenes del proyecto.
+
+Para la sección "Todo lo que incluye tu acceso" del Workshop MARCA START:
+guarda el mockup del producto (laptop + libro MÉTODO M.A.R.C.A. + checklist + plantillas)
+con este nombre EXACTO:
+
+    producto-marca-start.png
+
+(También puede ser .jpg, pero entonces cambia la extensión en el HTML.)
+
+Mientras no exista la imagen, se mostrará un recuadro gris que dice
+"Coloca aquí la imagen del producto".

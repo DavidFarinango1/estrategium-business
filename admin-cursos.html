@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cursos — Estrategium Admin</title>
+  <link rel="stylesheet" href="css/admin.css?v=2" />
+  <script src="js/admin-embed.js"></script>
+</head>
+<body class="admin">
+  <div class="admin-shell">
+
+    <aside class="admin-sidebar">
+      <div class="admin-brand">
+        <div class="b-main">ESTRATEGIUM</div>
+        <div class="b-sub">ADMIN</div>
+      </div>
+      <nav class="admin-nav">
+        <a href="panel-admin.html"><span class="ico">⌂</span> Inicio</a>
+        <a href="admin-subir-archivo.html"><span class="ico">↑</span> Gestionar cursos</a>
+        <a href="admin-usuarios.html"><span class="ico">◎</span> Estudiantes</a>
+        <a href="admin-cursos.html" class="active"><span class="ico">▦</span> Cursos</a>
+        <a href="admin-ventas.html"><span class="ico">▤</span> Ventas</a>
+        <a href="admin-notificaciones.html"><span class="ico">✉</span> Notificaciones</a>
+        <a href="admin-configuracion.html"><span class="ico">⚙</span> Configuración</a>
+      </nav>
+      <div class="admin-side-foot">Admin: Cristyan</div>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <div class="tb-title">
+          <h1>Cursos y biblioteca de contenidos</h1>
+          <p>Organización editable por niveles, módulos y recursos.</p>
+        </div>
+        <div class="admin-search"><span>⌕</span><input type="text" placeholder="Buscar usuarios, ventas o cursos..." /></div>
+        <div class="admin-avatar">D</div>
+      </div>
+
+      <div class="cursos-toolbar">
+        <div class="section-label" style="margin:0;">Cursos activos</div>
+        <button class="btn-gold" id="addCurso">+ Agregar curso</button>
+      </div>
+
+      <div class="adm-cursos-list" id="cursosGrid"><!-- generado por JS --></div>
+
+      <a href="panel-admin.html" class="back-link">← Inicio</a>
+    </main>
+  </div>
+
+  <!-- Modal editar / agregar curso -->
+  <div class="modal-overlay" id="cursoModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="mTitle">Editar curso</h3>
+        <button class="modal-close" title="Cerrar">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="row-2">
+          <div class="field"><label>Ícono (emoji)</label><input id="mIcon" type="text" maxlength="3" placeholder="🚀" /></div>
+          <div class="field"><label>Etapa / etiqueta</label><input id="mEtapa" type="text" placeholder="ETAPA 1" /></div>
+        </div>
+        <div class="field"><label>Título del curso</label><input id="mTitulo" type="text" placeholder="WORKSHOP MARCA START" /></div>
+        <div class="field">
+          <label>Imagen del curso</label>
+          <input id="mImagen" type="text" placeholder="Pega una URL de imagen, o sube un archivo abajo" />
+          <input id="mImagenFile" type="file" accept="image/*" style="margin-top:8px;" />
+          <div id="mImagenPrev" style="margin-top:10px;"></div>
+        </div>
+        <div class="field"><label>Descripción corta</label><input id="mLead" type="text" placeholder="Descubre el método base..." /></div>
+        <div class="field">
+          <label>Contenido / lista (una línea por punto)</label>
+          <textarea id="mItems" rows="6" placeholder="Workshop completo en video&#10;Método M.A.R.C.A explicado&#10;Acceso inmediato"></textarea>
+        </div>
+        <div class="row-2">
+          <div class="field"><label>Etiqueta de precio</label><input id="mPrecioLabel" type="text" placeholder="INVERSIÓN ÚNICA" /></div>
+          <div class="field"><label>Moneda</label><input id="mMoneda" type="text" placeholder="USD" /></div>
+        </div>
+        <div class="field"><label>Video del curso (enlace YouTube o Vimeo)</label><input id="mVideo" type="text" placeholder="https://vimeo.com/1173025258" /></div>
+
+        <div class="field">
+          <label>Subcategorías — módulos y lecciones (barra lateral del estudiante)</label>
+          <div id="mEstructura"></div>
+          <button type="button" class="est-mini-btn" id="mAddModulo" style="margin-top:6px;">+ Agregar módulo</button>
+          <p class="muted-note">Renombra o crea módulos y lecciones. Cada lección puede tener su propio video; así aparecerá en la pantalla del curso del estudiante.</p>
+        </div>
+
+        <div class="field"><label>Precio o texto</label><input id="mPrecio" type="text" placeholder="19" /></div>
+        <div class="field" style="display:flex;align-items:center;gap:10px;margin-bottom:0;">
+          <input id="mConsult" type="checkbox" style="width:auto;" />
+          <label style="margin:0;">Es consultoría (muestra “Agenda tu llamada” en vez de precio)</label>
+        </div>
+        <p class="muted-note">Los cambios se guardan en este navegador (localStorage) y se reflejan al instante.</p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-ghost" id="mCancel">Cancelar</button>
+        <button class="btn-gold" id="mSave">Guardar curso</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase + Firestore (datos compartidos) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cursos-data.js?v=6"></script>
+  <script src="js/admin-cursos.js?v=6"></script>
+</body>
+</html>
