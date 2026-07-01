@@ -42,7 +42,29 @@
           <label>Curso a gestionar</label>
           <select id="saNivel"><option value="">— Elige el curso —</option></select>
         </div>
+        <button class="btn-blue" id="saNuevoCurso" style="white-space:nowrap;">+ Nuevo curso</button>
         <button class="btn-gold" id="saGuardar" style="white-space:nowrap;">💾 Guardar cambios</button>
+      </div>
+
+      <!-- Datos del curso: nombre + imagen -->
+      <div class="card" id="saDatosCurso" style="padding:22px;margin-top:16px;">
+        <div class="field" style="margin:0 0 16px;">
+          <label>Nombre del curso</label>
+          <input id="saTitulo" type="text" placeholder="Nombre del curso" />
+        </div>
+        <div class="field" style="margin:0;">
+          <label>Imagen / foto del curso (se ve en la tarjeta del curso)</label>
+          <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+            <div id="saImgPrev" style="width:170px;height:104px;border-radius:10px;background-color:#0d1730;background-size:cover;background-position:center;border:1px solid var(--a-border);display:grid;place-items:center;color:var(--a-muted);font-size:.8rem;text-align:center;">Sin imagen</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <input type="file" id="saImgFile" accept="image/*" style="color:var(--a-muted);font-size:.85rem;" />
+              <button type="button" class="est-mini-btn" id="saImgQuitar">Quitar imagen</button>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:18px;text-align:right;">
+          <button type="button" class="icon-btn del" id="saEliminarCurso" style="font-size:.85rem;padding:8px 12px;width:auto;">🗑️ Eliminar este curso</button>
+        </div>
       </div>
 
       <!-- Estructura del curso -->
@@ -77,10 +99,24 @@
       if (/^https?:\/\//i.test(url)) return url;
       return '';
     }
+    // Vista previa del video a partir del link pegado
+    function previewHtml(url) {
+      var emb = toEmbed(url);
+      if (emb) return '<iframe src="' + esc2(emb) + '" style="width:100%;height:100%;border:0;display:block;" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>';
+      return '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--a-muted);font-size:.82rem;text-align:center;padding:10px;">🎬 Pega el link del video para ver la vista previa aquí</div>';
+    }
 
     var estBox = document.getElementById('saEstructura');
     var sel = document.getElementById('saNivel');
     var estructura = []; // estado de trabajo (módulos con lecciones)
+    var imagenActual = ''; // dataURL o URL de la imagen del curso
+
+    function pintarImagen() {
+      var prev = document.getElementById('saImgPrev');
+      if (!prev) return;
+      if (imagenActual) { prev.style.backgroundImage = "url('" + imagenActual + "')"; prev.textContent = ''; }
+      else { prev.style.backgroundImage = ''; prev.textContent = 'Sin imagen'; }
+    }
 
     // ---- Selector de curso ----
     function llenarNivel() {
@@ -97,9 +133,55 @@
       var c = (window.Cursos ? Cursos.getCache() : []).filter(function (x) { return x.id === sel.value; })[0];
       estructura = (c && c.modulos) ? JSON.parse(JSON.stringify(c.modulos)) : [];
       if (!estructura.length) estructura = [{ nombre: 'Módulo 1', lecciones: [{ titulo: 'Lección 1', videoUrl: '', descripcion: '', completado: false }] }];
+      // Datos del curso (nombre + imagen)
+      var tEl = document.getElementById('saTitulo');
+      if (tEl) tEl.value = c ? (c.titulo || '') : '';
+      imagenActual = c ? (c.imagen || '') : '';
+      pintarImagen();
       renderEstructura();
     }
     sel.addEventListener('change', cargarCurso);
+
+    // ---- Imagen del curso ----
+    document.getElementById('saImgFile').addEventListener('change', function () {
+      var f = this.files && this.files[0]; if (!f) return;
+      if (f.size > 1.5 * 1024 * 1024) { alert('La imagen es muy grande. Usa una de menos de 1.5 MB.'); this.value = ''; return; }
+      var r = new FileReader();
+      r.onload = function () { imagenActual = r.result; pintarImagen(); };
+      r.readAsDataURL(f);
+    });
+    document.getElementById('saImgQuitar').addEventListener('click', function () {
+      imagenActual = ''; document.getElementById('saImgFile').value = ''; pintarImagen();
+    });
+
+    // ---- Nuevo curso ----
+    document.getElementById('saNuevoCurso').addEventListener('click', function () {
+      var nombre = prompt('Nombre del nuevo curso:');
+      if (!nombre || !nombre.trim()) return;
+      var nuevo = {
+        titulo: nombre.trim(), icon: '🎓', etapa: '', lead: '', items: [], imagen: '',
+        precioLabel: 'INVERSIÓN ÚNICA', moneda: 'USD', precio: '0', consultoria: false, videoUrl: '',
+        modulos: [{ nombre: 'Módulo 1', lecciones: [{ titulo: 'Lección 1', videoUrl: '', descripcion: '', completado: false }] }]
+      };
+      Promise.resolve(Cursos.add(nuevo)).then(function (id) {
+        llenarNivel();
+        if (id) sel.value = id;
+        cargarCurso();
+        alert('✅ Curso creado. Edita su contenido y pulsa "Guardar cambios".');
+      });
+    });
+
+    // ---- Eliminar curso ----
+    document.getElementById('saEliminarCurso').addEventListener('click', function () {
+      if (!sel.value) { alert('Elige un curso primero.'); return; }
+      var c = (window.Cursos ? Cursos.getCache() : []).filter(function (x) { return x.id === sel.value; })[0];
+      var nom = c ? (c.titulo || 'este curso') : 'este curso';
+      if (!confirm('¿Eliminar el curso "' + nom + '"? Se borrará todo su contenido.')) return;
+      Promise.resolve(Cursos.remove(sel.value)).then(function () {
+        sel.value = ''; llenarNivel();
+        alert('✅ Curso eliminado.');
+      });
+    });
 
     // ---- Editor de estructura ----
     function syncEstructura() {
@@ -135,7 +217,10 @@
                      '<input class="est-les-video" value="' + vid + '" placeholder="link de video (opcional)" style="flex:.7;" />' +
                      '<button type="button" class="icon-btn del sm" data-rmles="' + i + ':' + li + '" title="Quitar lección">✕</button>' +
                    '</div>' +
-                   '<textarea class="est-les-desc" rows="2" placeholder="Descripción de la lección (aparece debajo del video en la lección del estudiante)">' + esc2(l.descripcion || '') + '</textarea>' +
+                   '<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:stretch;">' +
+                     '<textarea class="est-les-desc" rows="4" placeholder="Descripción de la lección (aparece debajo del video en la lección del estudiante)" style="flex:1 1 300px;min-width:0;">' + esc2(l.descripcion || '') + '</textarea>' +
+                     '<div class="est-les-preview" style="flex:1 1 300px;min-width:0;aspect-ratio:16/9;background:#000;border:1px solid var(--a-border);border-radius:9px;overflow:hidden;">' + previewHtml(l.videoUrl) + '</div>' +
+                   '</div>' +
                  '</div>';
         }).join('');
         wrap.innerHTML =
@@ -158,6 +243,15 @@
       estBox.querySelectorAll('[data-rmles]').forEach(function (b) {
         b.addEventListener('click', function () { syncEstructura(); var p = b.getAttribute('data-rmles').split(':'); estructura[+p[0]].lecciones.splice(+p[1], 1); renderEstructura(); });
       });
+      // Vista previa del video en vivo al pegar/escribir el link
+      estBox.querySelectorAll('.est-les-video').forEach(function (inp) {
+        var upd = function () {
+          var prev = inp.closest('.est-les').querySelector('.est-les-preview');
+          if (prev) prev.innerHTML = previewHtml(inp.value);
+        };
+        inp.addEventListener('input', upd);
+        inp.addEventListener('change', upd);
+      });
     }
 
     document.getElementById('saAddModulo').addEventListener('click', function () {
@@ -170,8 +264,11 @@
     document.getElementById('saGuardar').addEventListener('click', function () {
       if (!sel.value) { alert('Elige un curso para gestionar.'); return; }
       syncEstructura();
+      var titulo = (document.getElementById('saTitulo').value || '').trim();
+      var data = { modulos: estructura, imagen: imagenActual };
+      if (titulo) data.titulo = titulo;
       var btn = this; btn.disabled = true; btn.textContent = 'Guardando...';
-      Promise.resolve(Cursos.update(sel.value, { modulos: estructura })).then(function () {
+      Promise.resolve(Cursos.update(sel.value, data)).then(function () {
         btn.disabled = false; btn.textContent = '💾 Guardar cambios';
         alert('✅ Cambios guardados. Ya se ven en el portal del estudiante.');
       }).catch(function (err) {

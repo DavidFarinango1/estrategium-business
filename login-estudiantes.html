@@ -40,6 +40,7 @@
       <div class="input-ico">
         <span>🔒</span>
         <input type="password" id="loginPass" placeholder="Ingresa tu contraseña" required />
+        <button type="button" id="togglePass" title="Ver / ocultar contraseña" aria-label="Ver u ocultar contraseña" style="border:none;background:none;cursor:pointer;font-size:1.05rem;padding:0;line-height:1;">👁️</button>
       </div>
 
       <button class="btn btn-login" type="submit">Ingresar</button>
@@ -69,6 +70,17 @@
   <script src="js/auth.js"></script>
   <script src="js/usuarios-data.js"></script>
   <script>
+    // Ver / ocultar contraseña
+    (function () {
+      var tp = document.getElementById('togglePass');
+      if (tp) tp.addEventListener('click', function () {
+        var inp = document.getElementById('loginPass');
+        var show = inp.type === 'password';
+        inp.type = show ? 'text' : 'password';
+        tp.textContent = show ? '🙈' : '👁️';
+        inp.focus();
+      });
+    })();
     document.getElementById('googleBtn').addEventListener('click', function (e) {
       if (window.googleListo && window.loginConGoogle) { e.preventDefault(); window.loginConGoogle('estudiante'); }
     });

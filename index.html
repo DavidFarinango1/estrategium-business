@@ -167,9 +167,64 @@
     </div>
   </footer>
 
+  <!-- Comentarios y sugerencias -->
+  <section class="section" id="opiniones" style="background:var(--navy-900,#0a1f44);padding:60px 0;">
+    <div class="container">
+      <h2 style="text-align:center;color:#fff;margin:0 0 8px;">Tu opinión nos importa</h2>
+      <p style="text-align:center;color:rgba(255,255,255,.75);max-width:640px;margin:0 auto 34px;">Déjanos un comentario o envíanos una sugerencia. Lo leemos todo.</p>
+
+      <div style="display:flex;flex-wrap:wrap;gap:24px;">
+        <!-- Comentarios -->
+        <form class="fb-card" id="formComentario" style="flex:1 1 340px;background:#fff;border:1px solid #e5e9f0;border-radius:14px;padding:26px;box-shadow:0 6px 22px rgba(10,31,68,.06);">
+          <h3 style="margin:0 0 4px;color:var(--navy-900,#0a1f44);display:flex;align-items:center;gap:8px;">💬 Comentarios</h3>
+          <p style="margin:0 0 16px;color:var(--gray-500,#5a6b8c);font-size:.9rem;">Cuéntanos tu experiencia con Estrategium.</p>
+          <input type="text" name="nombre" placeholder="Tu nombre" required style="width:100%;padding:11px 12px;margin-bottom:10px;border:1px solid #dfe4ec;border-radius:8px;font-size:.92rem;box-sizing:border-box;" />
+          <input type="email" name="email" placeholder="Tu correo (opcional)" style="width:100%;padding:11px 12px;margin-bottom:10px;border:1px solid #dfe4ec;border-radius:8px;font-size:.92rem;box-sizing:border-box;" />
+          <textarea name="mensaje" placeholder="Escribe tu comentario…" required rows="4" style="width:100%;padding:11px 12px;margin-bottom:14px;border:1px solid #dfe4ec;border-radius:8px;font-size:.92rem;box-sizing:border-box;resize:vertical;"></textarea>
+          <button type="submit" class="btn btn-gold" style="width:100%;">Enviar comentario</button>
+          <p class="fb-ok" style="display:none;color:#1a8a4a;font-size:.9rem;margin:12px 0 0;text-align:center;">✅ ¡Gracias! Recibimos tu comentario.</p>
+        </form>
+
+        <!-- Sugerencias -->
+        <form class="fb-card" id="formSugerencia" style="flex:1 1 340px;background:#fff;border:1px solid #e5e9f0;border-radius:14px;padding:26px;box-shadow:0 6px 22px rgba(10,31,68,.06);">
+          <h3 style="margin:0 0 4px;color:var(--navy-900,#0a1f44);display:flex;align-items:center;gap:8px;">💡 Sugerencias</h3>
+          <p style="margin:0 0 16px;color:var(--gray-500,#5a6b8c);font-size:.9rem;">¿Cómo podemos mejorar? Envíanos tu idea.</p>
+          <input type="text" name="nombre" placeholder="Tu nombre" required style="width:100%;padding:11px 12px;margin-bottom:10px;border:1px solid #dfe4ec;border-radius:8px;font-size:.92rem;box-sizing:border-box;" />
+          <input type="email" name="email" placeholder="Tu correo (opcional)" style="width:100%;padding:11px 12px;margin-bottom:10px;border:1px solid #dfe4ec;border-radius:8px;font-size:.92rem;box-sizing:border-box;" />
+          <textarea name="mensaje" placeholder="Escribe tu sugerencia…" required rows="4" style="width:100%;padding:11px 12px;margin-bottom:14px;border:1px solid #dfe4ec;border-radius:8px;font-size:.92rem;box-sizing:border-box;resize:vertical;"></textarea>
+          <button type="submit" class="btn btn-gold" style="width:100%;">Enviar sugerencia</button>
+          <p class="fb-ok" style="display:none;color:#1a8a4a;font-size:.9rem;margin:12px 0 0;text-align:center;">✅ ¡Gracias! Recibimos tu sugerencia.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
   <a href="#whatsapp" class="wa-float" id="whatsapp" title="Hablar por WhatsApp">✆</a>
 
   <script src="js/main.js"></script>
+  <script src="js/mensajes-data.js"></script>
+  <script>
+    (function () {
+      function fecha() { try { return new Date().toLocaleString('es-EC'); } catch (e) { return ''; } }
+      function conectar(formId, tipo) {
+        var form = document.getElementById(formId);
+        if (!form) return;
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var nombre = (form.nombre.value || '').trim();
+          var email = (form.email.value || '').trim();
+          var mensaje = (form.mensaje.value || '').trim();
+          if (!nombre || !mensaje) return;
+          if (window.Mensajes) Mensajes.add({ tipo: tipo, nombre: nombre, email: email, mensaje: mensaje, fecha: fecha() });
+          form.reset();
+          var ok = form.querySelector('.fb-ok');
+          if (ok) { ok.style.display = 'block'; setTimeout(function () { ok.style.display = 'none'; }, 4000); }
+        });
+      }
+      conectar('formComentario', 'comentario');
+      conectar('formSugerencia', 'sugerencia');
+    })();
+  </script>
 </body>
 </html>
 

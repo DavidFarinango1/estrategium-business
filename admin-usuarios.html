@@ -90,12 +90,12 @@
       if (!c.length) c = ['MARCA START', 'MARCA PROFIT'];
       return c;
     }
-    function casillasCurso(marcados, insId) {
+    function casillasCurso(marcados, key) {
       marcados = marcados || [];
       return cursosDisponibles().map(function (t) {
         var ck = marcados.indexOf(t) >= 0 ? 'checked' : '';
         return '<label style="display:inline-flex;align-items:center;gap:5px;margin-right:12px;font-size:.82rem;cursor:pointer;white-space:nowrap;">' +
-                 '<input type="checkbox" class="i-curso" data-ins="' + insId + '" value="' + esc(t) + '" ' + ck + ' /> ' + esc(t) +
+                 '<input type="checkbox" class="i-curso" data-row="' + key + '" value="' + esc(t) + '" ' + ck + ' /> ' + esc(t) +
                '</label>';
       }).join('');
     }
@@ -126,43 +126,74 @@
     var buscar = document.getElementById('insBuscar');
     var buscarTop = document.getElementById('uBuscarTop');
     var visor = document.getElementById('insVisor');
+    var rowsMap = {};
 
     function badge(estado) {
       if (estado === 'aprobado') return '<span class="badge green">aprobado</span>';
       if (estado === 'negado') return '<span class="badge del" style="background:rgba(255,93,93,.15);color:#ff6b6b;">negado</span>';
-      return '<span class="badge gold">pendiente</span>';
+      if (estado === 'pendiente') return '<span class="badge gold">pendiente</span>';
+      return '<span class="badge" style="background:rgba(120,140,180,.18);color:#9fb0d0;">registrado</span>';
     }
 
-    function render(list) {
-      list = list || Inscripciones.getAll();
+    // Une inscripciones + estudiantes (por email). Los estudiantes sin inscripción (ej. Google) también aparecen.
+    function construirFilas() {
+      var ins = Inscripciones.getAll();
+      var users = Usuarios.getAll().filter(function(u){ return u.rol === 'Estudiante'; });
+      var vistos = {};
+      var filas = [];
+      ins.slice().reverse().forEach(function(i){
+        var e = (i.email || '').toLowerCase();
+        vistos[e] = true;
+        filas.push({ key: 'i:' + i.id, ins: i, email: i.email, nombre: i.nombre, clave: i.clave });
+      });
+      users.forEach(function(u){
+        var e = (u.email || '').toLowerCase();
+        if (vistos[e]) return;
+        filas.push({ key: 'u:' + u.id, ins: null, user: u, email: u.email, nombre: u.nombre, clave: u.clave });
+      });
+      return filas;
+    }
+
+    function render() {
       studentStats();
-      insStats(list);
+      insStats(Inscripciones.getAll());
       var q = (buscar.value || '').toLowerCase();
       if (!q && buscarTop) q = (buscarTop.value || '').toLowerCase();
-      var fil = list.filter(function(i){ return !q || (i.nombre + ' ' + i.email + ' ' + (i.curso||'')).toLowerCase().indexOf(q) >= 0; });
-      fil = fil.slice().reverse();
-      tbody.innerHTML = fil.map(function(i){
-        var estU = studentByEmail(i.email);
-        var marcados = estU ? (estU.cursos || []) : (i.curso ? [i.curso] : []);
+      var filas = construirFilas().filter(function(r){
+        var estU = studentByEmail(r.email);
+        var cursosStr = (estU && estU.cursos ? estU.cursos.join(' ') : '');
+        return !q || ((r.nombre || '') + ' ' + (r.email || '') + ' ' + cursosStr).toLowerCase().indexOf(q) >= 0;
+      });
+      rowsMap = {};
+      tbody.innerHTML = filas.map(function(r, idx){
+        rowsMap[r.key] = r;
+        var estU = studentByEmail(r.email);
+        var marcados = estU ? (estU.cursos || []) : [];   // sin comprar => desmarcado
+        var estado = r.ins ? r.ins.estado : 'registrado';
+        var monto = r.ins ? ('$' + esc(String(r.ins.monto))) : '—';
+        var fecha = r.ins ? esc(r.ins.fecha || '') : '—';
+        var comp = (r.ins && r.ins.comprobante) ? '<button class="btn-gold" style="padding:5px 12px;font-size:.78rem;" data-ver="' + r.key + '">Ver foto</button>' : '—';
+        var acciones = '';
+        if (r.ins) {
+          acciones += (r.ins.estado !== 'aprobado' ? '<button class="btn-gold" style="padding:5px 10px;font-size:.76rem;background:#3ad07a;color:#062;" data-aprob="' + r.key + '">Aprobar</button> ' : '');
+          acciones += (r.ins.estado !== 'negado' ? '<button class="btn-ghost" style="padding:5px 10px;font-size:.76rem;color:#ff6b6b;border-color:#ff6b6b;" data-negar="' + r.key + '">Negar</button> ' : '');
+        }
+        acciones += '<button class="icon-btn del sm" data-del="' + r.key + '" title="Eliminar">🗑️</button>';
         return '<tr>' +
-          '<td>' + (i.n || '') + '</td>' +
-          '<td>' + badge(i.estado) + '</td>' +
-          '<td>' + esc(i.nombre) + '</td>' +
-          '<td>' + esc(i.email) + '</td>' +
+          '<td>' + (idx + 1) + '</td>' +
+          '<td>' + badge(estado) + '</td>' +
+          '<td>' + esc(r.nombre) + '</td>' +
+          '<td>' + esc(r.email) + '</td>' +
           '<td><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:230px;">' +
-              casillasCurso(marcados, i.id) +
-              '<button class="btn-gold" style="padding:5px 12px;font-size:.74rem;" data-savecursos="' + i.id + '">💾 Guardar</button>' +
+              casillasCurso(marcados, r.key) +
+              '<button class="btn-gold" style="padding:5px 12px;font-size:.74rem;" data-savecursos="' + r.key + '">💾 Guardar</button>' +
             '</div></td>' +
-          '<td>$' + esc(String(i.monto)) + '</td>' +
-          '<td style="font-size:.8rem;">' + esc(i.fecha || '') + '</td>' +
-          '<td>' + (i.comprobante ? '<button class="btn-gold" style="padding:5px 12px;font-size:.78rem;" data-ver="' + i.id + '">Ver foto</button>' : '—') + '</td>' +
-          '<td style="white-space:nowrap;">' +
-            (i.estado !== 'aprobado' ? '<button class="btn-gold" style="padding:5px 10px;font-size:.76rem;background:#3ad07a;color:#062;" data-aprob="' + i.id + '">Aprobar</button> ' : '') +
-            (i.estado !== 'negado' ? '<button class="btn-ghost" style="padding:5px 10px;font-size:.76rem;color:#ff6b6b;border-color:#ff6b6b;" data-negar="' + i.id + '">Negar</button> ' : '') +
-            '<button class="icon-btn del sm" data-del="' + i.id + '" title="Eliminar">🗑️</button>' +
-          '</td>' +
+          '<td>' + monto + '</td>' +
+          '<td style="font-size:.8rem;">' + fecha + '</td>' +
+          '<td>' + comp + '</td>' +
+          '<td style="white-space:nowrap;">' + acciones + '</td>' +
         '</tr>';
-      }).join('') || '<tr><td colspan="9" style="text-align:center;color:var(--a-muted);padding:24px;">Aún no hay inscripciones. Cuando alguien pague por transferencia aparecerá aquí.</td></tr>';
+      }).join('') || '<tr><td colspan="9" style="text-align:center;color:var(--a-muted);padding:24px;">Aún no hay estudiantes ni inscripciones.</td></tr>';
 
       tbody.querySelectorAll('[data-ver]').forEach(function(b){ b.addEventListener('click', function(){ verFoto(b.getAttribute('data-ver')); }); });
       tbody.querySelectorAll('[data-aprob]').forEach(function(b){ b.addEventListener('click', function(){ aprobar(b.getAttribute('data-aprob')); }); });
@@ -171,33 +202,32 @@
       tbody.querySelectorAll('[data-savecursos]').forEach(function(b){ b.addEventListener('click', function(){ guardarCursos(b.getAttribute('data-savecursos')); }); });
     }
 
-    function getIns(id){ return Inscripciones.getAll().filter(function(x){ return x.id === id; })[0]; }
-
     // ---- Guardar cursos del estudiante (crea el estudiante si no existe) ----
-    function guardarCursos(id) {
-      var i = getIns(id); if (!i) return;
+    function guardarCursos(key) {
+      var r = rowsMap[key]; if (!r) return;
       var sel = [];
-      tbody.querySelectorAll('.i-curso[data-ins="' + id + '"]:checked').forEach(function(x){ sel.push(x.value); });
-      var estU = studentByEmail(i.email);
+      tbody.querySelectorAll('.i-curso[data-row="' + key + '"]:checked').forEach(function(x){ sel.push(x.value); });
+      var estU = studentByEmail(r.email);
       if (estU) {
         Usuarios.update(estU.id, { cursos: sel, estado: 'Activo' });
       } else {
-        Usuarios.add({ nombre: i.nombre, email: i.email, clave: i.clave || '', cursos: sel, rol: 'Estudiante', estado: 'Activo' });
+        Usuarios.add({ nombre: r.nombre, email: r.email, clave: r.clave || '', cursos: sel, rol: 'Estudiante', estado: 'Activo' });
       }
-      alert('✅ Cursos actualizados para ' + i.nombre + '. Los verá al iniciar sesión.');
+      alert('✅ Cursos actualizados para ' + r.nombre + '. Los verá al iniciar sesión.');
     }
 
-    function verFoto(id) {
-      var i = getIns(id); if (!i || !i.comprobante) return;
-      document.getElementById('insVisorTit').textContent = 'Comprobante de pago de ' + i.nombre;
-      document.getElementById('insVisorImg').src = i.comprobante;
+    function verFoto(key) {
+      var r = rowsMap[key]; if (!r || !r.ins || !r.ins.comprobante) return;
+      document.getElementById('insVisorTit').textContent = 'Comprobante de pago de ' + r.nombre;
+      document.getElementById('insVisorImg').src = r.ins.comprobante;
       visor.style.display = 'block';
       visor.scrollIntoView({ behavior: 'smooth' });
     }
     document.getElementById('insCerrar').addEventListener('click', function(){ visor.style.display = 'none'; });
 
-    function aprobar(id) {
-      var i = getIns(id); if (!i) return;
+    function aprobar(key) {
+      var r = rowsMap[key]; if (!r || !r.ins) return;
+      var i = r.ins;
       var est = studentByEmail(i.email);
       var claveActual = i.clave || (est && est.clave) || '';
       var clave = prompt('Aprobar a "' + i.nombre + '" (' + i.email + ') en ' + i.curso + '.\n\nEscribe la CONTRASEÑA con la que entrará a sus cursos:', claveActual);
@@ -210,18 +240,22 @@
       } else {
         Usuarios.add({ nombre: i.nombre, email: i.email, clave: clave, cursos: [i.curso], rol: 'Estudiante', estado: 'Activo' });
       }
-      Inscripciones.update(id, { estado: 'aprobado' });
+      Inscripciones.update(i.id, { estado: 'aprobado' });
       var claveFinal = clave || (est && est.clave) || '(sin cambios)';
       alert('✅ Aprobado.\n\nEl estudiante entra en "Login estudiantes" con:\nCorreo: ' + i.email + '\nContraseña: ' + claveFinal + '\n\ny verá el curso ' + i.curso + '. Comparte estas credenciales con él.');
     }
 
-    function negar(id) {
-      var i = getIns(id); if (!i) return;
-      if (confirm('¿Negar la inscripción de "' + i.nombre + '"?')) Inscripciones.update(id, { estado: 'negado' });
+    function negar(key) {
+      var r = rowsMap[key]; if (!r || !r.ins) return;
+      if (confirm('¿Negar la inscripción de "' + r.nombre + '"?')) Inscripciones.update(r.ins.id, { estado: 'negado' });
     }
-    function borrar(id) {
-      var i = getIns(id); if (!i) return;
-      if (confirm('¿Eliminar la inscripción de "' + i.nombre + '"?')) Inscripciones.remove(id);
+    function borrar(key) {
+      var r = rowsMap[key]; if (!r) return;
+      if (r.ins) {
+        if (confirm('¿Eliminar la inscripción de "' + r.nombre + '"?')) Inscripciones.remove(r.ins.id);
+      } else if (r.user) {
+        if (confirm('¿Eliminar al estudiante "' + r.nombre + '"?')) Usuarios.remove(r.user.id);
+      }
     }
 
     buscar.addEventListener('input', function(){ render(); });

@@ -37,20 +37,70 @@
       </div>
 
       <div class="notif-grid">
-        <div class="card notif">
-          <div class="n-ico">✉</div>
-          <h2>COMENTARIOS</h2>
-          <p>Confirmación de compra, bienvenida y newsletters.</p>
+        <div class="card notif" style="text-align:left;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+            <div class="n-ico" style="margin:0;">✉</div>
+            <h2 style="margin:0;">COMENTARIOS <span id="cntComentarios" style="color:var(--a-gold);">(0)</span></h2>
+          </div>
+          <p style="margin:0 0 14px;">Comentarios enviados por los visitantes desde la página.</p>
+          <div id="listaComentarios" style="max-height:360px;overflow:auto;"></div>
         </div>
-        <div class="card notif">
-          <div class="n-ico">✉</div>
-          <h2>SUGERENCIAS</h2>
-          <p>Buzón de sugerencias y mejoras enviadas por los usuarios.</p>
+        <div class="card notif" style="text-align:left;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+            <div class="n-ico" style="margin:0;">💡</div>
+            <h2 style="margin:0;">SUGERENCIAS <span id="cntSugerencias" style="color:var(--a-gold);">(0)</span></h2>
+          </div>
+          <p style="margin:0 0 14px;">Buzón de sugerencias y mejoras enviadas por los usuarios.</p>
+          <div id="listaSugerencias" style="max-height:360px;overflow:auto;"></div>
         </div>
       </div>
 
       <a href="panel-admin.html" class="back-link">← Inicio</a>
     </main>
   </div>
+
+  <script src="js/mensajes-data.js"></script>
+  <script>
+  (function () {
+    if (!window.Mensajes) return;
+    function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+
+    function tarjeta(m) {
+      return '<div style="border:1px solid var(--a-border);border-radius:10px;padding:12px 14px;margin-bottom:10px;background:rgba(255,255,255,.02);">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">' +
+            '<div>' +
+              '<strong style="color:#fff;">' + esc(m.nombre || 'Anónimo') + '</strong>' +
+              (m.email ? '<span style="color:var(--a-muted);font-size:.82rem;"> · ' + esc(m.email) + '</span>' : '') +
+            '</div>' +
+            '<button class="icon-btn del sm" data-del="' + m.id + '" title="Eliminar">🗑️</button>' +
+          '</div>' +
+          '<p style="margin:8px 0 6px;color:#dfe6f2;font-size:.92rem;line-height:1.5;">' + esc(m.mensaje || '') + '</p>' +
+          '<span style="color:var(--a-muted);font-size:.76rem;">' + esc(m.fecha || '') + '</span>' +
+        '</div>';
+    }
+
+    function pinta(list, tipo, contId, cntId) {
+      var items = list.filter(function (m) { return m.tipo === tipo; }).slice().reverse();
+      var cont = document.getElementById(contId);
+      document.getElementById(cntId).textContent = '(' + items.length + ')';
+      cont.innerHTML = items.length
+        ? items.map(tarjeta).join('')
+        : '<p style="color:var(--a-muted);font-size:.9rem;">Aún no hay ' + (tipo === 'comentario' ? 'comentarios' : 'sugerencias') + '.</p>';
+      cont.querySelectorAll('[data-del]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (confirm('¿Eliminar este mensaje?')) Mensajes.remove(b.getAttribute('data-del'));
+        });
+      });
+    }
+
+    function render(list) {
+      list = list || Mensajes.getAll();
+      pinta(list, 'comentario', 'listaComentarios', 'cntComentarios');
+      pinta(list, 'sugerencia', 'listaSugerencias', 'cntSugerencias');
+    }
+
+    Mensajes.onChange(render);
+  })();
+  </script>
 </body>
 </html>

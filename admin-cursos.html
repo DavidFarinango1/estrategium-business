@@ -55,15 +55,11 @@
         <button class="modal-close" title="Cerrar">×</button>
       </div>
       <div class="modal-body">
-        <div class="row-2">
-          <div class="field"><label>Ícono (emoji)</label><input id="mIcon" type="text" maxlength="3" placeholder="🚀" /></div>
-          <div class="field"><label>Etapa / etiqueta</label><input id="mEtapa" type="text" placeholder="ETAPA 1" /></div>
-        </div>
         <div class="field"><label>Título del curso</label><input id="mTitulo" type="text" placeholder="WORKSHOP MARCA START" /></div>
         <div class="field">
           <label>Imagen del curso</label>
-          <input id="mImagen" type="text" placeholder="Pega una URL de imagen, o sube un archivo abajo" />
-          <input id="mImagenFile" type="file" accept="image/*" style="margin-top:8px;" />
+          <input id="mImagen" type="hidden" />
+          <input id="mImagenFile" type="file" accept="image/*" />
           <div id="mImagenPrev" style="margin-top:10px;"></div>
         </div>
         <div class="field"><label>Descripción corta</label><input id="mLead" type="text" placeholder="Descubre el método base..." /></div>
@@ -75,21 +71,11 @@
           <div class="field"><label>Etiqueta de precio</label><input id="mPrecioLabel" type="text" placeholder="INVERSIÓN ÚNICA" /></div>
           <div class="field"><label>Moneda</label><input id="mMoneda" type="text" placeholder="USD" /></div>
         </div>
-        <div class="field"><label>Video del curso (enlace YouTube o Vimeo)</label><input id="mVideo" type="text" placeholder="https://vimeo.com/1173025258" /></div>
-
-        <div class="field">
-          <label>Subcategorías — módulos y lecciones (barra lateral del estudiante)</label>
-          <div id="mEstructura"></div>
-          <button type="button" class="est-mini-btn" id="mAddModulo" style="margin-top:6px;">+ Agregar módulo</button>
-          <p class="muted-note">Renombra o crea módulos y lecciones. Cada lección puede tener su propio video; así aparecerá en la pantalla del curso del estudiante.</p>
-        </div>
-
         <div class="field"><label>Precio o texto</label><input id="mPrecio" type="text" placeholder="19" /></div>
         <div class="field" style="display:flex;align-items:center;gap:10px;margin-bottom:0;">
           <input id="mConsult" type="checkbox" style="width:auto;" />
           <label style="margin:0;">Es consultoría (muestra “Agenda tu llamada” en vez de precio)</label>
         </div>
-        <p class="muted-note">Los cambios se guardan en este navegador (localStorage) y se reflejan al instante.</p>
       </div>
       <div class="modal-foot">
         <button class="btn-ghost" id="mCancel">Cancelar</button>
@@ -105,6 +91,6 @@
   <script src="js/firebase-config.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/cursos-data.js?v=6"></script>
-  <script src="js/admin-cursos.js?v=6"></script>
+  <script src="js/admin-cursos.js?v=9"></script>
 </body>
 </html>

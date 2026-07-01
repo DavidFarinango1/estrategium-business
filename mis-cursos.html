@@ -95,44 +95,87 @@
       } catch (e) { return null; }
     }
 
+    // Enlace de compra según el curso
+    function planLink(c) {
+      var t = (c.titulo || '').toUpperCase();
+      if (t.indexOf('PROFIT') >= 0) return 'checkout-marca-profit.html';
+      if (t.indexOf('START') >= 0) return 'checkout-marca-start.html';
+      return 'index.html#planes';
+    }
+    function precioDe(c) {
+      if (c.precioLabel && c.precioLabel !== 'BORRADOR') return c.precioLabel;
+      var t = (c.titulo || '').toUpperCase();
+      if (t.indexOf('PROFIT') >= 0) return 'USD 49';
+      if (t.indexOf('START') >= 0) return 'USD 19';
+      return '';
+    }
+    function thumbDe(c) {
+      return c.imagen
+        ? '<div class="cc-thumb" style="background-image:url(\'' + esc(c.imagen) + '\')"></div>'
+        : '<div class="cc-thumb" style="background:linear-gradient(135deg,#102a54,#0a1f44);display:grid;place-items:center;font-size:2.4rem;">' + esc(c.icon || '🎓') + '</div>';
+    }
+    // Tarjeta de un curso que YA tiene el estudiante
+    function cardOwned(c, i) {
+      var videos = nLecciones(c) || (c.videoUrl ? 1 : 0);
+      return '<div class="course-card"' + (i ? ' style="margin-top:24px"' : '') + '>' +
+          thumbDe(c) +
+          '<div>' +
+            '<h2>' + esc(c.titulo || 'Curso') + '</h2>' +
+            '<div class="course-meta"><span>' + videos + ' Videos</span><span>' + ((c.modulos || []).length) + ' Módulos</span></div>' +
+            '<a href="curso.html?id=' + encodeURIComponent(c.id) + '" class="btn btn-continue">CONTINUAR</a>' +
+          '</div>' +
+        '</div>';
+    }
+    // Tarjeta de un curso DISPONIBLE para comprar
+    function cardComprar(c, i) {
+      var videos = nLecciones(c) || (c.videoUrl ? 1 : 0);
+      var precio = precioDe(c);
+      return '<div class="course-card"' + (i ? ' style="margin-top:24px"' : '') + '>' +
+          thumbDe(c) +
+          '<div>' +
+            '<h2>' + esc(c.titulo || 'Curso') + '</h2>' +
+            '<div class="course-meta"><span>' + videos + ' Videos</span><span>' + ((c.modulos || []).length) + ' Módulos</span>' +
+              (precio ? '<span style="color:var(--gold,#c9a24b);font-weight:700;">' + esc(precio) + '</span>' : '') +
+            '</div>' +
+            '<a href="' + planLink(c) + '" class="btn btn-continue" style="background:var(--gold,#c9a24b);color:#0a1f44;">ADQUIRIR CURSO</a>' +
+          '</div>' +
+        '</div>';
+    }
+
     function render(cursos) {
       // No mostramos borradores en el portal del estudiante
       cursos = (cursos || []).filter(function (c) { return c.precioLabel !== 'BORRADOR'; });
-      // Solo los cursos asignados al estudiante (si tiene lista de inscripción)
       var mis = inscritos();
-      if (mis) cursos = cursos.filter(function (c) { return mis.indexOf(c.titulo) >= 0; });
+      // Cursos que ya tiene / cursos disponibles para adquirir
+      var owned = mis ? cursos.filter(function (c) { return mis.indexOf(c.titulo) >= 0; }) : cursos;
+      var disponibles = mis ? cursos.filter(function (c) { return mis.indexOf(c.titulo) < 0; }) : [];
 
       // Menú desplegable "MIS CURSOS" con los cursos del estudiante
       var menu = document.getElementById('misCursosMenu');
       if (menu) {
-        menu.innerHTML = (cursos.length
-          ? cursos.map(function (c) { return '<a href="curso.html?id=' + encodeURIComponent(c.id) + '">' + esc(c.titulo || 'Curso') + '</a>'; }).join('')
+        menu.innerHTML = (owned.length
+          ? owned.map(function (c) { return '<a href="curso.html?id=' + encodeURIComponent(c.id) + '">' + esc(c.titulo || 'Curso') + '</a>'; }).join('')
           : '<a href="mis-cursos.html" style="color:var(--gray-500)">Sin cursos asignados</a>') +
           '<a href="mis-cursos.html">Ver todos</a>';
       }
 
-      if (!cursos.length) {
-        cont.innerHTML = '<p style="text-align:center;color:var(--gray-500);">' + (mis ? 'Aún no tienes cursos asignados. Contacta al administrador.' : 'Aún no hay cursos publicados. Vuelve pronto.') + '</p>';
-        return;
+      var html = '';
+      if (owned.length) {
+        html += owned.map(cardOwned).join('');
+      } else {
+        html += '<p style="text-align:center;color:var(--gray-500);margin-bottom:8px;">Aún no tienes cursos. Elige un plan y adquiérelo para empezar 👇</p>';
       }
-      cont.innerHTML = cursos.map(function (c, i) {
-        var videos = nLecciones(c) || (c.videoUrl ? 1 : 0);
-        var thumb = c.imagen
-          ? '<div class="cc-thumb" style="background-image:url(\'' + esc(c.imagen) + '\')"></div>'
-          : '<div class="cc-thumb" style="background:linear-gradient(135deg,#102a54,#0a1f44);display:grid;place-items:center;font-size:2.4rem;">' + esc(c.icon || '🎓') + '</div>';
-        return '' +
-          '<div class="course-card"' + (i ? ' style="margin-top:24px"' : '') + '>' +
-            thumb +
-            '<div>' +
-              '<h2>' + esc(c.titulo || 'Curso') + '</h2>' +
-              '<div class="course-meta">' +
-                '<span>' + videos + ' Videos</span>' +
-                '<span>' + ((c.modulos || []).length) + ' Módulos</span>' +
-              '</div>' +
-              '<a href="curso.html?id=' + encodeURIComponent(c.id) + '" class="btn btn-continue">CONTINUAR</a>' +
-            '</div>' +
-          '</div>';
-      }).join('');
+
+      if (disponibles.length) {
+        html += '<h2 style="text-align:center;color:var(--navy-900,#0a1f44);margin:' + (owned.length ? '46px' : '26px') + ' 0 22px;">Cursos disponibles para adquirir</h2>';
+        html += disponibles.map(cardComprar).join('');
+      }
+
+      if (!owned.length && !disponibles.length) {
+        html = '<p style="text-align:center;color:var(--gray-500);">Aún no hay cursos publicados. Vuelve pronto.</p>';
+      }
+
+      cont.innerHTML = html;
     }
 
     if (window.Cursos) Cursos.onChange(render);
