@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mis cursos — Estrategium Business</title>
-  <link rel="stylesheet" href="css/styles.css?v=42" />
+  <link rel="stylesheet" href="css/styles.css?v=43" />
 </head>
 <body data-guard="estudiante">
 
@@ -16,12 +16,15 @@
         <span class="brand-sub">BUSINESS</span>
       </a>
       <div class="portal-menu">
-        <span class="portal-hello">👤 <b data-user-name>Estudiante</b></span><a href="mis-cursos.html" class="portal-pill">MIS CURSOS</a>
+        <span class="portal-hello">👤 <b data-user-email>tu@correo.com</b></span>
+        <div class="portal-dropdown">
+          <span class="portal-pill">MIS CURSOS ▾</span>
+          <div class="dd-menu" id="misCursosMenu"><a href="mis-cursos.html">Ver todos</a></div>
+        </div>
         <div class="portal-dropdown">
           <span class="portal-pill">CUENTA ▾</span>
           <div class="dd-menu">
-            <a href="curso-marca-start.html">Curso 1 · MARCA START</a>
-            <a href="curso-marca-profit.html">Curso 2 · MARCA PROFIT</a>
+            <a href="mis-cursos.html">Mis cursos</a>
             <a href="login-estudiantes.html" data-logout="login-estudiantes.html">Cerrar sesión</a>
           </div>
         </div>
@@ -58,7 +61,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="js/auth.js"></script>
-  <script src="js/session.js"></script>
+  <script src="js/session.js?v=2"></script>
   <script src="js/cursos-data.js?v=6"></script>
   <script src="js/usuarios-data.js"></script>
   <script>
@@ -98,6 +101,16 @@
       // Solo los cursos asignados al estudiante (si tiene lista de inscripción)
       var mis = inscritos();
       if (mis) cursos = cursos.filter(function (c) { return mis.indexOf(c.titulo) >= 0; });
+
+      // Menú desplegable "MIS CURSOS" con los cursos del estudiante
+      var menu = document.getElementById('misCursosMenu');
+      if (menu) {
+        menu.innerHTML = (cursos.length
+          ? cursos.map(function (c) { return '<a href="curso.html?id=' + encodeURIComponent(c.id) + '">' + esc(c.titulo || 'Curso') + '</a>'; }).join('')
+          : '<a href="mis-cursos.html" style="color:var(--gray-500)">Sin cursos asignados</a>') +
+          '<a href="mis-cursos.html">Ver todos</a>';
+      }
+
       if (!cursos.length) {
         cont.innerHTML = '<p style="text-align:center;color:var(--gray-500);">' + (mis ? 'Aún no tienes cursos asignados. Contacta al administrador.' : 'Aún no hay cursos publicados. Vuelve pronto.') + '</p>';
         return;

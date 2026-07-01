@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lección — Estrategium Business</title>
-  <link rel="stylesheet" href="css/styles.css?v=42" />
+  <link rel="stylesheet" href="css/styles.css?v=43" />
 </head>
-<body>
+<body data-guard="estudiante">
 
   <!-- Header portal -->
   <header class="portal-header">
@@ -16,7 +16,11 @@
         <span class="brand-sub">BUSINESS</span>
       </a>
       <div class="portal-menu">
-        <span class="portal-hello">👤 <b data-user-name>Estudiante</b></span><a href="mis-cursos.html" class="portal-pill">MIS CURSOS</a>
+        <span class="portal-hello">👤 <b data-user-email>tu@correo.com</b></span>
+        <div class="portal-dropdown">
+          <span class="portal-pill">MIS CURSOS ▾</span>
+          <div class="dd-menu" id="misCursosMenu"><a href="mis-cursos.html">Ver todos</a></div>
+        </div>
         <div class="portal-dropdown">
           <span class="portal-pill">CUENTA ▾</span>
           <div class="dd-menu">
@@ -68,11 +72,27 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="js/auth.js"></script>
-  <script src="js/session.js"></script>
+  <script src="js/session.js?v=2"></script>
   <script src="js/cursos-data.js?v=6"></script>
+  <script src="js/usuarios-data.js"></script>
+  <script src="js/portal-menu.js"></script>
   <script>
   (function () {
     function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+    function inscritoEn(titulo) {
+      try {
+        var s = JSON.parse(localStorage.getItem('estrategium_user') || 'null');
+        if (!s) return true;
+        var mis = null;
+        if (window.Usuarios && s.email) {
+          var u = Usuarios.getAll().filter(function (x) { return x.rol === 'Estudiante' && (x.email || '').toLowerCase() === (s.email || '').toLowerCase(); })[0];
+          if (u) mis = u.cursos || [];
+        }
+        if (mis === null) mis = Array.isArray(s.cursos) ? s.cursos : null;
+        if (mis === null) return true;
+        return mis.indexOf(titulo) >= 0;
+      } catch (e) { return true; }
+    }
     var qs = new URLSearchParams(location.search);
     var id = qs.get('id');
     var curM = parseInt(qs.get('m') || '0', 10);
@@ -145,6 +165,7 @@
     function build(cursos) {
       var c = (cursos || []).filter(function (x) { return x.id === id; })[0];
       if (!c) { lpCurso.textContent = 'Curso no encontrado'; lpMods.innerHTML = '<a href="mis-cursos.html" style="color:var(--navy-900)">Volver a Mis cursos</a>'; return; }
+      if (!inscritoEn(c.titulo)) { lpCurso.textContent = 'Sin acceso'; lpMods.innerHTML = '<p style="color:var(--navy-900)">No tienes acceso a este curso. <a href="mis-cursos.html">Volver a Mis cursos</a>.</p>'; lpTitle.textContent = 'Sin acceso'; return; }
       lpCurso.textContent = c.titulo || 'Curso';
       lpBack.href = 'curso.html?id=' + encodeURIComponent(c.id);
 

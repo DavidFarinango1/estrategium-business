@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Curso — Estrategium Business</title>
-  <link rel="stylesheet" href="css/styles.css?v=42" />
+  <link rel="stylesheet" href="css/styles.css?v=43" />
 </head>
 <body data-guard="estudiante">
 
@@ -16,7 +16,11 @@
         <span class="brand-sub">BUSINESS</span>
       </a>
       <div class="portal-menu">
-        <span class="portal-hello">👤 <b data-user-name>Estudiante</b></span><a href="mis-cursos.html" class="portal-pill">MIS CURSOS</a>
+        <span class="portal-hello">👤 <b data-user-email>tu@correo.com</b></span>
+        <div class="portal-dropdown">
+          <span class="portal-pill">MIS CURSOS ▾</span>
+          <div class="dd-menu" id="misCursosMenu"><a href="mis-cursos.html">Ver todos</a></div>
+        </div>
         <div class="portal-dropdown">
           <span class="portal-pill">CUENTA ▾</span>
           <div class="dd-menu">
@@ -56,12 +60,30 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="js/auth.js"></script>
-  <script src="js/session.js"></script>
+  <script src="js/session.js?v=2"></script>
   <script src="js/cursos-data.js?v=6"></script>
+  <script src="js/usuarios-data.js"></script>
+  <script src="js/portal-menu.js"></script>
   <script>
   (function () {
     function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
     var id = new URLSearchParams(location.search).get('id');
+
+    // ¿El estudiante está inscrito en este curso? (null = sin restricción)
+    function inscritoEn(titulo) {
+      try {
+        var s = JSON.parse(localStorage.getItem('estrategium_user') || 'null');
+        if (!s) return true;
+        var mis = null;
+        if (window.Usuarios && s.email) {
+          var u = Usuarios.getAll().filter(function (x) { return x.rol === 'Estudiante' && (x.email || '').toLowerCase() === (s.email || '').toLowerCase(); })[0];
+          if (u) mis = u.cursos || [];
+        }
+        if (mis === null) mis = Array.isArray(s.cursos) ? s.cursos : null;
+        if (mis === null) return true; // admin/demo sin lista → permitir
+        return mis.indexOf(titulo) >= 0;
+      } catch (e) { return true; }
+    }
 
     var elTitulo = document.getElementById('cursoTitulo');
     var elMeta = document.getElementById('cursoMeta');
@@ -81,6 +103,12 @@
         elTitulo.textContent = 'Curso no encontrado';
         elMods.innerHTML = '<p style="text-align:center;color:var(--gray-500);">Este curso ya no está disponible. <a href="mis-cursos.html">Volver a Mis cursos</a>.</p>';
         elMeta.innerHTML = '';
+        return;
+      }
+      if (!inscritoEn(c.titulo)) {
+        elTitulo.textContent = 'Sin acceso';
+        elMeta.innerHTML = '';
+        elMods.innerHTML = '<p style="text-align:center;color:var(--gray-500);padding:20px;">No tienes acceso a este curso. Contacta al administrador para que te lo asigne. <a href="mis-cursos.html">Volver a Mis cursos</a>.</p>';
         return;
       }
       elTitulo.textContent = c.titulo || 'Curso';

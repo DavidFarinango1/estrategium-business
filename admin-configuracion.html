@@ -20,7 +20,6 @@
         <a href="admin-subir-archivo.html"><span class="ico">↑</span> Gestionar cursos</a>
         <a href="admin-usuarios.html"><span class="ico">◎</span> Estudiantes</a>
         <a href="admin-cursos.html"><span class="ico">▦</span> Cursos</a>
-        <a href="admin-ventas.html"><span class="ico">▤</span> Ventas</a>
         <a href="admin-notificaciones.html"><span class="ico">✉</span> Notificaciones</a>
         <a href="admin-configuracion.html" class="active"><span class="ico">⚙</span> Configuración</a>
       </nav>
@@ -30,39 +29,11 @@
     <main class="admin-main">
       <div class="admin-topbar">
         <div class="tb-title">
-          <h1>Configuración general y seguridad</h1>
+          <h1>Configuración general</h1>
           <p>Control maestro del portal privado del administrador.</p>
         </div>
         <div class="admin-search"><span>⌕</span><input type="text" placeholder="Buscar usuarios, ventas o cursos..." /></div>
         <div class="admin-avatar">D</div>
-      </div>
-
-      <!-- Imagen / Logo -->
-      <div class="card" style="padding:28px;">
-        <h3 style="color:var(--a-gold);margin:0 0 20px;">⚙ Imagen / Logo</h3>
-        <div class="two-col" style="align-items:start;">
-          <div>
-            <strong>Logo de la empresa</strong>
-            <p style="color:var(--a-muted);font-size:.9rem;margin:6px 0 14px;" id="cfgLogoInfo">ⓘ Sin logo cargado</p>
-            <input type="file" id="cfgLogoFile" accept="image/*" hidden />
-            <button class="btn-ghost" id="cfgSubirLogo">⬆ Subir logo</button>
-            <p style="color:var(--a-muted);font-size:.88rem;margin:18px 0 8px;">Aparece en el RIDE (PDF de la factura). Requisitos obligatorios:</p>
-            <ul class="req-list">
-              <li>Formato permitido: JPG, JPEG, PNG, GIF, BMP, WEBP</li>
-              <li>Dimensiones máximas: 500 × 300 px (no se acepta más grande)</li>
-              <li>Peso máximo: 500 KB</li>
-              <li>Fondo recomendado: transparente (PNG) o blanco</li>
-            </ul>
-            <p style="color:var(--a-muted);font-size:.85rem;">Si la imagen no cumple, no podrá cargarse.</p>
-          </div>
-          <div>
-            <strong style="display:block;margin-bottom:12px;">Vista previa</strong>
-            <div class="logo-preview" id="cfgLogoPrev">🖼</div>
-          </div>
-        </div>
-        <div style="text-align:right;margin-top:18px;">
-          <button class="btn-blue" id="cfgGuardar">💾 Guardar configuración</button>
-        </div>
       </div>
 
       <!-- Usuarios y permisos -->
@@ -86,30 +57,6 @@
   <script>
   (function () {
     function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
-
-    // ---- Logo ----
-    var LKEY = 'estrategium_logo';
-    var prev = document.getElementById('cfgLogoPrev');
-    var info = document.getElementById('cfgLogoInfo');
-    var fileInput = document.getElementById('cfgLogoFile');
-    var logoData = '';
-    try { logoData = localStorage.getItem(LKEY) || ''; } catch (e) {}
-    function pintarLogo() {
-      if (logoData) { prev.innerHTML = '<img src="' + logoData + '" style="max-width:100%;max-height:100%;" />'; info.textContent = '✓ Logo cargado'; }
-      else { prev.textContent = '🖼'; info.textContent = 'ⓘ Sin logo cargado'; }
-    }
-    pintarLogo();
-    document.getElementById('cfgSubirLogo').addEventListener('click', function(){ fileInput.click(); });
-    fileInput.addEventListener('change', function(){
-      var file = fileInput.files[0]; if (!file) return;
-      var reader = new FileReader();
-      reader.onload = function(){ logoData = reader.result; pintarLogo(); };
-      reader.readAsDataURL(file);
-    });
-    document.getElementById('cfgGuardar').addEventListener('click', function(){
-      try { localStorage.setItem(LKEY, logoData); } catch (e) {}
-      alert('✅ Configuración guardada.');
-    });
 
     // ---- Usuarios y permisos (administradores) ----
     var tbody = document.getElementById('cfgTbody');

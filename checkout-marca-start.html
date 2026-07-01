@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reserva tu acceso — Workshop MARCA START · USD 19</title>
   <meta name="description" content="Reserva tu acceso al Workshop MARCA START por una inversión única de USD 19. Acceso inmediato y de por vida." />
-  <link rel="stylesheet" href="css/styles.css?v=37" />
+  <link rel="stylesheet" href="css/styles.css?v=43" />
 </head>
 <body>
 
@@ -121,17 +121,51 @@
         <form class="pay-card" onsubmit="return false">
           <h3>Información de contacto</h3>
           <div class="form-row">
-            <div><label>Nombre</label><input type="text" placeholder="Nombre" /></div>
-            <div><label>Apellidos</label><input type="text" placeholder="Apellidos" /></div>
+            <div><label>Nombre</label><input id="coNombre" type="text" placeholder="Nombre" /></div>
+            <div><label>Apellidos</label><input id="coApellidos" type="text" placeholder="Apellidos" /></div>
           </div>
           <label>Dirección de correo electrónico</label>
-          <input type="email" placeholder="tucorreo@ejemplo.com" />
+          <input id="coEmail" type="email" placeholder="tucorreo@ejemplo.com" />
           <label>Confirmación de correo electrónico</label>
-          <input type="email" placeholder="Repite tu correo" />
+          <input id="coEmail2" type="email" placeholder="Repite tu correo" />
           <label>Número de teléfono</label>
-          <input type="tel" placeholder="+593 ..." />
+          <input id="coTel" type="tel" placeholder="+593 ..." />
 
           <hr class="pay-divider" />
+
+          <!-- Método de pago -->
+          <div class="pay-tabs">
+            <button type="button" class="pay-tab active" data-pay="tarjeta">💳 Tarjeta</button>
+            <button type="button" class="pay-tab" data-pay="transfer">🏦 Transferencia</button>
+          </div>
+
+          <div id="pay-transfer" class="transfer-panel" hidden>
+            <p class="tp-note">Realiza el pago por transferencia y sube la foto del comprobante. Te daremos acceso al confirmar el pago.</p>
+            <h3 class="tp-heading">DATOS PARA EL PAGO</h3>
+            <p class="tp-amount">Valor de la inscripción: USD 19</p>
+
+            <div class="bank-grid">
+              <div class="bank-card">
+                <h4>Banco Pichincha</h4>
+                <p>Cuenta de Ahorros: <b>0000000000</b></p>
+                <p>Estrategium Business</p>
+                <p>C.I./RUC: 0000000000</p>
+              </div>
+              <div class="bank-card qr-card">
+                <h4>Paga con QR / DeUna!</h4>
+                <img src="images/qr-pago.png" alt="QR de pago" onerror="this.outerHTML='&lt;div class=\'qr-ph\'&gt;Sube tu QR&lt;/div&gt;'" />
+                <p style="font-size:.82rem;color:var(--gray-500)">Escanea, ingresa USD 19 y paga.</p>
+              </div>
+            </div>
+
+            <label>Comprobante de pago (foto) <span class="tr-req">*</span></label>
+            <input id="trFile" type="file" accept="image/*" />
+            <p style="color:var(--gray-500);font-size:.82rem;margin:6px 0 14px">Sube la foto o captura del pago (JPG/PNG). Sin el comprobante no se aprueba tu inscripción.</p>
+            <button id="trEnviar" type="button" class="btn btn-gold" style="width:100%">Enviar comprobante</button>
+            <div id="trMsg" style="margin-top:12px;font-weight:700"></div>
+          </div>
+
+          <div id="pay-tarjeta">
 
           <!-- Widget Payphone -->
           <div class="payphone">
@@ -179,6 +213,7 @@
               </div>
             </div>
           </div>
+          </div><!-- /pay-tarjeta -->
         </form>
 
       </div>
@@ -207,6 +242,58 @@
   <a href="#whatsapp" class="wa-float" id="whatsapp" title="Hablar por WhatsApp">✆</a>
 
   <script src="js/main.js"></script>
+  <script src="js/inscripciones-data.js"></script>
+  <script>
+  (function () {
+    var CURSO = 'MARCA START', MONTO = 19;
+    // Pestañas de pago
+    document.querySelectorAll('.pay-tab').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('.pay-tab').forEach(function (x) { x.classList.remove('active'); });
+        b.classList.add('active');
+        var m = b.getAttribute('data-pay');
+        document.getElementById('pay-tarjeta').hidden = (m !== 'tarjeta');
+        document.getElementById('pay-transfer').hidden = (m !== 'transfer');
+      });
+    });
+
+    // Enviar comprobante por transferencia
+    var fileData = '';
+    var fileInput = document.getElementById('trFile');
+    fileInput.addEventListener('change', function () {
+      var f = fileInput.files[0]; if (!f) { fileData = ''; return; }
+      var r = new FileReader(); r.onload = function () { fileData = r.result; }; r.readAsDataURL(f);
+    });
+
+    document.getElementById('trEnviar').addEventListener('click', function () {
+      var nombre = ((document.getElementById('coNombre').value || '') + ' ' + (document.getElementById('coApellidos').value || '')).trim();
+      var email = (document.getElementById('coEmail').value || '').trim();
+      var email2 = (document.getElementById('coEmail2').value || '').trim();
+      var tel = (document.getElementById('coTel').value || '').trim();
+      var msg = document.getElementById('trMsg');
+
+      if (!nombre) { msg.style.color = '#e53935'; msg.textContent = 'Escribe tu nombre y apellidos arriba.'; return; }
+      if (!email) { msg.style.color = '#e53935'; msg.textContent = 'Escribe tu correo arriba.'; return; }
+      if (email2 && email !== email2) { msg.style.color = '#e53935'; msg.textContent = 'Los correos no coinciden.'; return; }
+      if (!fileData) { msg.style.color = '#e53935'; msg.textContent = 'Sube la foto del comprobante.'; return; }
+
+      var btn = this; btn.disabled = true; btn.textContent = 'Enviando...';
+      try {
+        Inscripciones.add({
+          nombre: nombre, email: email, telefono: tel, cedula: '', clave: '',
+          curso: CURSO, monto: MONTO, comprobante: fileData, estado: 'pendiente',
+          fecha: new Date().toLocaleString('es-EC')
+        });
+        msg.style.color = '#1a8f4c';
+        msg.innerHTML = '✅ ¡Inscripción enviada! Tu pago está <b>pendiente de aprobación</b>. En cuanto el administrador lo confirme, podrás entrar con tu correo y contraseña en <a href="login-estudiantes.html">Login estudiantes</a>.';
+        btn.textContent = 'Enviado ✓';
+      } catch (e) {
+        btn.disabled = false; btn.textContent = 'Enviar comprobante';
+        msg.style.color = '#e53935'; msg.textContent = 'No se pudo enviar. Intenta de nuevo (la imagen puede ser muy grande).';
+      }
+    });
+  })();
+  </script>
 </body>
 </html>
 

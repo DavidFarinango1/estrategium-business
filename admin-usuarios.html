@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Usuarios — Estrategium Admin</title>
+  <title>Estudiantes — Estrategium Admin</title>
   <link rel="stylesheet" href="css/admin.css?v=2" />
   <script src="js/admin-embed.js"></script>
 </head>
@@ -20,7 +20,6 @@
         <a href="admin-subir-archivo.html"><span class="ico">↑</span> Gestionar cursos</a>
         <a href="admin-usuarios.html" class="active"><span class="ico">◎</span> Estudiantes</a>
         <a href="admin-cursos.html"><span class="ico">▦</span> Cursos</a>
-        <a href="admin-ventas.html"><span class="ico">▤</span> Ventas</a>
         <a href="admin-notificaciones.html"><span class="ico">✉</span> Notificaciones</a>
         <a href="admin-configuracion.html"><span class="ico">⚙</span> Configuración</a>
       </nav>
@@ -31,60 +30,45 @@
       <div class="admin-topbar">
         <div class="tb-title">
           <h1>Estudiantes registrados</h1>
-          <p>Gestiona los estudiantes, su curso y permisos.</p>
+          <p>Gestiona los estudiantes, sus cursos y aprueba los pagos por transferencia.</p>
         </div>
-        <div class="admin-search"><span>⌕</span><input type="text" id="uBuscarTop" placeholder="Buscar estudiante por nombre, email o curso..." /></div>
+        <div class="admin-search"><span>⌕</span><input type="text" id="uBuscarTop" placeholder="Buscar por nombre, email o curso..." /></div>
         <div class="admin-avatar">D</div>
       </div>
 
       <div class="stat-grid">
         <div class="card stat"><div class="s-label">Estudiantes totales</div><div class="s-num" id="stTotal">0</div><div class="s-delta green">registrados</div></div>
         <div class="card stat"><div class="s-label">Activos</div><div class="s-num" id="stActivos">0</div><div class="s-delta" id="stPct">0%</div></div>
-        <div class="card stat"><div class="s-label">Estudiantes</div><div class="s-num" id="stUsuarios">0</div><div class="s-delta">rol estudiante</div></div>
-        <div class="card stat"><div class="s-label">Admins</div><div class="s-num" id="stAdmins">0</div><div class="s-delta">OK</div></div>
+        <div class="card stat"><div class="s-label">Pendientes</div><div class="s-num" id="stInsPend">0</div><div class="s-delta">por revisar</div></div>
+        <div class="card stat"><div class="s-label">Ingresos aprobados</div><div class="s-num" id="stInsMonto">$0</div><div class="s-delta green">USD</div></div>
       </div>
 
       <div class="card table-wrap" style="margin-top:26px;">
         <div class="table-head">
-          <h3>Listado de estudiantes</h3>
-          <button class="btn-gold" id="uNuevo">+ Nuevo</button>
+          <h3>Estudiantes e inscripciones</h3>
+          <div class="admin-search" style="margin:0;"><span>⌕</span><input id="insBuscar" type="text" placeholder="Buscar por nombre o email..." /></div>
         </div>
         <table class="adm">
-          <thead><tr><th>Nombre</th><th>Email</th><th>Curso</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
-          <tbody id="uTbody"></tbody>
+          <thead><tr><th>N°</th><th>Estado</th><th>Nombre</th><th>Email</th><th>Curso</th><th>Monto</th><th>Fecha</th><th>Comprobante</th><th>Acciones</th></tr></thead>
+          <tbody id="insBody"></tbody>
         </table>
-        <p style="color:var(--a-muted);font-size:.85rem;margin-top:18px;">Usa ✏️ para editar o 🗑️ para eliminar. “+ Nuevo” agrega un usuario.</p>
+        <p style="color:var(--a-muted);font-size:.85rem;margin-top:16px;">Marca los cursos y pulsa 💾 Guardar para cambiar lo que ve el estudiante. Usa Aprobar / Negar para los pagos por transferencia.</p>
+      </div>
+
+      <!-- Vista del comprobante -->
+      <div class="card" id="insVisor" style="margin-top:20px;padding:22px;display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <h3 id="insVisorTit" style="margin:0;">Comprobante de pago</h3>
+          <button class="btn-ghost" id="insCerrar">Cerrar ✕</button>
+        </div>
+        <div style="text-align:center;"><img id="insVisorImg" alt="Comprobante" style="max-width:460px;width:100%;border-radius:10px;border:1px solid var(--a-border);" /></div>
       </div>
 
       <a href="panel-admin.html" class="back-link">← Inicio</a>
     </main>
   </div>
 
-  <!-- Modal agregar / editar usuario -->
-  <div class="modal-overlay" id="uModal">
-    <div class="modal">
-      <div class="modal-head">
-        <h3 id="umTitle">Nuevo usuario</h3>
-        <button class="modal-close" title="Cerrar">×</button>
-      </div>
-      <div class="modal-body">
-        <div class="field"><label>Nombre</label><input id="umNombre" type="text" placeholder="Nombre y apellido" /></div>
-        <div class="field"><label>Email</label><input id="umEmail" type="email" placeholder="correo@ejemplo.com" /></div>
-        <div class="field"><label>Contraseña (para que el estudiante ingrese)</label><input id="umClave" type="text" placeholder="Clave de acceso" /></div>
-        <div class="field"><label>Cursos (marca uno o ambos)</label><div id="umCursos" style="display:flex;flex-wrap:wrap;gap:14px;padding-top:4px;"></div></div>
-        <div class="row-2">
-          <div class="field"><label>Rol</label><select id="umRol"><option>Estudiante</option></select></div>
-          <div class="field"><label>Estado</label><select id="umEstado"><option>Activo</option><option>Inactivo</option></select></div>
-        </div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn-ghost" id="umCancel">Cancelar</button>
-        <button class="btn-gold" id="umSave">Guardar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Firebase + cursos (para el menú de curso) -->
+  <!-- Firebase + datos compartidos -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -92,153 +76,159 @@
   <script src="js/auth.js"></script>
   <script src="js/cursos-data.js?v=6"></script>
   <script src="js/usuarios-data.js"></script>
+  <script src="js/inscripciones-data.js"></script>
   <script>
   (function () {
+    if (!window.Inscripciones) return;
     function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
-    // Lista de cursos disponibles (títulos) para el menú de "Curso"
+
+    // ---- Cursos disponibles + casillas ----
     function cursosDisponibles() {
-      var c = (window.Cursos ? Cursos.getCache() : []).map(function (x) { return x.titulo || 'Curso'; });
+      var c = (window.Cursos ? Cursos.getCache() : [])
+        .filter(function (x) { return x.precioLabel !== 'BORRADOR'; })
+        .map(function (x) { return x.titulo || 'Curso'; });
       if (!c.length) c = ['MARCA START', 'MARCA PROFIT'];
       return c;
     }
-    function opcionesCurso(sel) {
-      return cursosDisponibles().map(function (t) {
-        return '<option value="' + esc(t) + '"' + (t === sel ? ' selected' : '') + '>' + esc(t) + '</option>';
-      }).join('');
-    }
-    var tbody = document.getElementById('uTbody');
-    var overlay = document.getElementById('uModal');
-    var f = {
-      title: document.getElementById('umTitle'),
-      nombre: document.getElementById('umNombre'),
-      email: document.getElementById('umEmail'),
-      clave: document.getElementById('umClave'),
-      cursos: document.getElementById('umCursos'),
-      rol: document.getElementById('umRol'),
-      estado: document.getElementById('umEstado')
-    };
-    var editId = null;
-
-    // Casillas de cursos (uno o varios). 'marcados' = lista de cursos del estudiante
-    function casillasCurso(marcados, id) {
+    function casillasCurso(marcados, insId) {
       marcados = marcados || [];
       return cursosDisponibles().map(function (t) {
         var ck = marcados.indexOf(t) >= 0 ? 'checked' : '';
-        return '<label style="display:inline-flex;align-items:center;gap:5px;margin-right:14px;font-size:.85rem;cursor:pointer;white-space:nowrap;">' +
-                 '<input type="checkbox" class="u-curso"' + (id ? ' data-id="' + id + '"' : '') + ' value="' + esc(t) + '" ' + ck + ' /> ' + esc(t) +
+        return '<label style="display:inline-flex;align-items:center;gap:5px;margin-right:12px;font-size:.82rem;cursor:pointer;white-space:nowrap;">' +
+                 '<input type="checkbox" class="i-curso" data-ins="' + insId + '" value="' + esc(t) + '" ' + ck + ' /> ' + esc(t) +
                '</label>';
       }).join('');
     }
 
-    function stats(list) {
+    // ---- Estudiante por email ----
+    function studentByEmail(email){
+      return Usuarios.getAll().filter(function(u){
+        return u.rol === 'Estudiante' && (u.email||'').toLowerCase() === (email||'').toLowerCase();
+      })[0];
+    }
+
+    // ---- Estadísticas ----
+    function studentStats() {
+      var list = Usuarios.getAll();
       var est = list.filter(function(u){ return u.rol !== 'Administrador'; });
       var activos = est.filter(function(u){ return u.estado === 'Activo'; }).length;
       document.getElementById('stTotal').textContent = est.length;
       document.getElementById('stActivos').textContent = activos;
       document.getElementById('stPct').textContent = est.length ? Math.round(activos/est.length*100) + '%' : '0%';
-      document.getElementById('stUsuarios').textContent = est.length;
-      document.getElementById('stAdmins').textContent = list.filter(function(u){ return u.rol === 'Administrador'; }).length;
+    }
+    function insStats(list) {
+      document.getElementById('stInsPend').textContent = list.filter(function(i){ return i.estado === 'pendiente'; }).length;
+      var aprob = list.filter(function(i){ return i.estado === 'aprobado'; });
+      document.getElementById('stInsMonto').textContent = '$' + aprob.reduce(function(s,i){ return s + (+i.monto || 0); }, 0);
     }
 
+    var tbody = document.getElementById('insBody');
+    var buscar = document.getElementById('insBuscar');
     var buscarTop = document.getElementById('uBuscarTop');
+    var visor = document.getElementById('insVisor');
+
+    function badge(estado) {
+      if (estado === 'aprobado') return '<span class="badge green">aprobado</span>';
+      if (estado === 'negado') return '<span class="badge del" style="background:rgba(255,93,93,.15);color:#ff6b6b;">negado</span>';
+      return '<span class="badge gold">pendiente</span>';
+    }
 
     function render(list) {
-      var q = (buscarTop && buscarTop.value || '').trim().toLowerCase();
-      var filtrada = (list || Usuarios.getAll()).filter(function (u) {
-        return u.rol !== 'Administrador' && (!q || (u.nombre + ' ' + u.email + ' ' + (u.cursos || []).join(' ')).toLowerCase().indexOf(q) >= 0);
-      });
-      tbody.innerHTML = filtrada.map(function (u) {
-        var rolBadge = u.rol === 'Administrador' ? 'green' : 'gold';
-        var estBadge = u.estado === 'Activo' ? 'green' : 'gray';
+      list = list || Inscripciones.getAll();
+      studentStats();
+      insStats(list);
+      var q = (buscar.value || '').toLowerCase();
+      if (!q && buscarTop) q = (buscarTop.value || '').toLowerCase();
+      var fil = list.filter(function(i){ return !q || (i.nombre + ' ' + i.email + ' ' + (i.curso||'')).toLowerCase().indexOf(q) >= 0; });
+      fil = fil.slice().reverse();
+      tbody.innerHTML = fil.map(function(i){
+        var estU = studentByEmail(i.email);
+        var marcados = estU ? (estU.cursos || []) : (i.curso ? [i.curso] : []);
         return '<tr>' +
-          '<td>' + esc(u.nombre) + '</td>' +
-          '<td>' + esc(u.email) + '</td>' +
-          '<td><div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">' + casillasCurso(u.cursos, u.id) +
-            '<button class="btn-gold" style="padding:5px 12px;font-size:.76rem;" data-savecursos="' + u.id + '">💾 Guardar</button></div></td>' +
-          '<td><span class="badge ' + rolBadge + '">' + esc(u.rol) + '</span></td>' +
-          '<td><span class="badge ' + estBadge + '">' + esc(u.estado) + '</span></td>' +
-          '<td><button class="icon-btn sm" data-edit="' + u.id + '" title="Editar">✏️</button> ' +
-              '<button class="icon-btn del sm" data-del="' + u.id + '" title="Eliminar">🗑️</button></td>' +
+          '<td>' + (i.n || '') + '</td>' +
+          '<td>' + badge(i.estado) + '</td>' +
+          '<td>' + esc(i.nombre) + '</td>' +
+          '<td>' + esc(i.email) + '</td>' +
+          '<td><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:230px;">' +
+              casillasCurso(marcados, i.id) +
+              '<button class="btn-gold" style="padding:5px 12px;font-size:.74rem;" data-savecursos="' + i.id + '">💾 Guardar</button>' +
+            '</div></td>' +
+          '<td>$' + esc(String(i.monto)) + '</td>' +
+          '<td style="font-size:.8rem;">' + esc(i.fecha || '') + '</td>' +
+          '<td>' + (i.comprobante ? '<button class="btn-gold" style="padding:5px 12px;font-size:.78rem;" data-ver="' + i.id + '">Ver foto</button>' : '—') + '</td>' +
+          '<td style="white-space:nowrap;">' +
+            (i.estado !== 'aprobado' ? '<button class="btn-gold" style="padding:5px 10px;font-size:.76rem;background:#3ad07a;color:#062;" data-aprob="' + i.id + '">Aprobar</button> ' : '') +
+            (i.estado !== 'negado' ? '<button class="btn-ghost" style="padding:5px 10px;font-size:.76rem;color:#ff6b6b;border-color:#ff6b6b;" data-negar="' + i.id + '">Negar</button> ' : '') +
+            '<button class="icon-btn del sm" data-del="' + i.id + '" title="Eliminar">🗑️</button>' +
+          '</td>' +
         '</tr>';
-      }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--a-muted);padding:24px;">Sin estudiantes.</td></tr>';
+      }).join('') || '<tr><td colspan="9" style="text-align:center;color:var(--a-muted);padding:24px;">Aún no hay inscripciones. Cuando alguien pague por transferencia aparecerá aquí.</td></tr>';
 
-      tbody.querySelectorAll('[data-edit]').forEach(function(b){ b.addEventListener('click', function(){ abrir(b.getAttribute('data-edit')); }); });
+      tbody.querySelectorAll('[data-ver]').forEach(function(b){ b.addEventListener('click', function(){ verFoto(b.getAttribute('data-ver')); }); });
+      tbody.querySelectorAll('[data-aprob]').forEach(function(b){ b.addEventListener('click', function(){ aprobar(b.getAttribute('data-aprob')); }); });
+      tbody.querySelectorAll('[data-negar]').forEach(function(b){ b.addEventListener('click', function(){ negar(b.getAttribute('data-negar')); }); });
       tbody.querySelectorAll('[data-del]').forEach(function(b){ b.addEventListener('click', function(){ borrar(b.getAttribute('data-del')); }); });
-      tbody.querySelectorAll('[data-savecursos]').forEach(function(b){
-        b.addEventListener('click', function(){
-          var id = b.getAttribute('data-savecursos');
-          var sel = [];
-          tbody.querySelectorAll('.u-curso[data-id="' + id + '"]:checked').forEach(function(x){ sel.push(x.value); });
-          Usuarios.update(id, { cursos: sel });
-          alert('✅ Cursos actualizados. El estudiante los verá al iniciar sesión.');
-        });
-      });
-      stats(Usuarios.getAll());
+      tbody.querySelectorAll('[data-savecursos]').forEach(function(b){ b.addEventListener('click', function(){ guardarCursos(b.getAttribute('data-savecursos')); }); });
     }
 
-    function abrir(id) {
-      editId = id || null;
-      var u = id ? Usuarios.getAll().filter(function(x){ return x.id === id; })[0] : null;
-      f.title.textContent = u ? 'Editar estudiante' : 'Nuevo estudiante';
-      f.nombre.value = u ? u.nombre : '';
-      f.email.value = u ? u.email : '';
-      f.clave.value = u ? (u.clave || '') : '';
-      f.cursos.innerHTML = casillasCurso(u ? (u.cursos || []) : []);
-      f.rol.value = u ? u.rol : 'Estudiante';
-      f.estado.value = u ? u.estado : 'Activo';
-      overlay.classList.add('open');
-    }
-    function cerrar() { overlay.classList.remove('open'); editId = null; }
-    function guardar() {
-      var nombre = (f.nombre.value || '').trim();
-      if (!nombre) { alert('Escribe el nombre.'); return; }
-      var cursos = [];
-      f.cursos.querySelectorAll('input:checked').forEach(function(x){ cursos.push(x.value); });
-      var data = { nombre: nombre, email: (f.email.value||'').trim(), clave: (f.clave.value||'').trim(), cursos: cursos, rol: f.rol.value, estado: f.estado.value };
-      if (editId) Usuarios.update(editId, data); else Usuarios.add(data);
-      cerrar();
-    }
-    // Verifica la contraseña del administrador (contra Firebase)
-    function verificarClaveAdmin(pass) {
-      if (!window.estrategiumAuth) return Promise.reject(new Error('sin-auth'));
-      var user = window.estrategiumAuth.currentUser;
-      try {
-        if (user && user.email && typeof firebase !== 'undefined' && firebase.auth.EmailAuthProvider) {
-          var cred = firebase.auth.EmailAuthProvider.credential(user.email, pass);
-          return user.reauthenticateWithCredential(cred);
-        }
-      } catch (e) {}
-      var admin = Usuarios.getAll().filter(function (x) { return x.rol === 'Administrador'; })[0];
-      if (admin && admin.email) return window.estrategiumAuth.signInWithEmailAndPassword(admin.email, pass);
-      return Promise.reject(new Error('sin-auth'));
+    function getIns(id){ return Inscripciones.getAll().filter(function(x){ return x.id === id; })[0]; }
+
+    // ---- Guardar cursos del estudiante (crea el estudiante si no existe) ----
+    function guardarCursos(id) {
+      var i = getIns(id); if (!i) return;
+      var sel = [];
+      tbody.querySelectorAll('.i-curso[data-ins="' + id + '"]:checked').forEach(function(x){ sel.push(x.value); });
+      var estU = studentByEmail(i.email);
+      if (estU) {
+        Usuarios.update(estU.id, { cursos: sel, estado: 'Activo' });
+      } else {
+        Usuarios.add({ nombre: i.nombre, email: i.email, clave: i.clave || '', cursos: sel, rol: 'Estudiante', estado: 'Activo' });
+      }
+      alert('✅ Cursos actualizados para ' + i.nombre + '. Los verá al iniciar sesión.');
     }
 
+    function verFoto(id) {
+      var i = getIns(id); if (!i || !i.comprobante) return;
+      document.getElementById('insVisorTit').textContent = 'Comprobante de pago de ' + i.nombre;
+      document.getElementById('insVisorImg').src = i.comprobante;
+      visor.style.display = 'block';
+      visor.scrollIntoView({ behavior: 'smooth' });
+    }
+    document.getElementById('insCerrar').addEventListener('click', function(){ visor.style.display = 'none'; });
+
+    function aprobar(id) {
+      var i = getIns(id); if (!i) return;
+      var est = studentByEmail(i.email);
+      var claveActual = i.clave || (est && est.clave) || '';
+      var clave = prompt('Aprobar a "' + i.nombre + '" (' + i.email + ') en ' + i.curso + '.\n\nEscribe la CONTRASEÑA con la que entrará a sus cursos:', claveActual);
+      if (clave === null) return;
+      clave = (clave || '').trim();
+      if (est) {
+        var cursos = est.cursos || [];
+        if (cursos.indexOf(i.curso) < 0) cursos.push(i.curso);
+        Usuarios.update(est.id, { cursos: cursos, clave: clave || est.clave, estado: 'Activo' });
+      } else {
+        Usuarios.add({ nombre: i.nombre, email: i.email, clave: clave, cursos: [i.curso], rol: 'Estudiante', estado: 'Activo' });
+      }
+      Inscripciones.update(id, { estado: 'aprobado' });
+      var claveFinal = clave || (est && est.clave) || '(sin cambios)';
+      alert('✅ Aprobado.\n\nEl estudiante entra en "Login estudiantes" con:\nCorreo: ' + i.email + '\nContraseña: ' + claveFinal + '\n\ny verá el curso ' + i.curso + '. Comparte estas credenciales con él.');
+    }
+
+    function negar(id) {
+      var i = getIns(id); if (!i) return;
+      if (confirm('¿Negar la inscripción de "' + i.nombre + '"?')) Inscripciones.update(id, { estado: 'negado' });
+    }
     function borrar(id) {
-      var u = Usuarios.getAll().filter(function (x) { return x.id === id; })[0];
-      if (!u) return;
-      var pass = prompt('Para eliminar a "' + u.nombre + '", escribe la CONTRASEÑA del administrador:');
-      if (pass === null) return; // canceló
-      verificarClaveAdmin(pass).then(function () {
-        Usuarios.remove(id);
-        alert('✅ Estudiante eliminado.');
-      }).catch(function (err) {
-        if (err && err.message === 'sin-auth') {
-          // Sin Firebase configurado: pide confirmación simple
-          if (confirm('No se pudo verificar con Firebase. ¿Eliminar de todos modos a "' + u.nombre + '"?')) Usuarios.remove(id);
-          return;
-        }
-        alert('❌ Contraseña incorrecta. No se eliminó.');
-      });
+      var i = getIns(id); if (!i) return;
+      if (confirm('¿Eliminar la inscripción de "' + i.nombre + '"?')) Inscripciones.remove(id);
     }
 
-    document.getElementById('uNuevo').addEventListener('click', function(){ abrir(null); });
-    document.getElementById('umSave').addEventListener('click', guardar);
-    document.getElementById('umCancel').addEventListener('click', cerrar);
-    overlay.querySelector('.modal-close').addEventListener('click', cerrar);
-    overlay.addEventListener('click', function(e){ if (e.target === overlay) cerrar(); });
+    buscar.addEventListener('input', function(){ render(); });
     if (buscarTop) buscarTop.addEventListener('input', function(){ render(); });
-
-    Usuarios.onChange(render);
+    Inscripciones.onChange(render);
+    if (window.Usuarios) Usuarios.onChange(function(){ render(); });
+    if (window.Cursos) Cursos.onChange(function(){ render(); });
   })();
   </script>
 </body>

@@ -49,31 +49,35 @@
   document.addEventListener('DOMContentLoaded', wireLogout);
   if (document.readyState !== 'loading') wireLogout();
 
-  // Sin Firebase configurado: modo demo, pero igual mostramos lo que haya en localStorage
+  var guard = ((document.body && document.body.getAttribute('data-guard')) || '').toLowerCase();
+  function loginPara(g) { return g === 'admin' ? 'login-admin.html' : 'login-estudiantes.html'; }
+  function usuarioLocal() { try { return JSON.parse(localStorage.getItem('estrategium_user') || 'null'); } catch (e) { return null; } }
+  function haySesionFirebase() { try { return !!(window.estrategiumAuth && window.estrategiumAuth.currentUser); } catch (e) { return false; } }
+
+  // Expulsa al login si la página es privada y NO hay ninguna sesión
+  function protegerSiSinSesion() {
+    if (!guard) return false;
+    if (usuarioLocal() || haySesionFirebase()) return false;
+    window.location.replace(loginPara(guard));
+    return true;
+  }
+
+  // Al volver con el botón "atrás" (bfcache): revalida la sesión
+  window.addEventListener('pageshow', function () { protegerSiSinSesion(); });
+
+  // Sin Firebase (modo local): valida con la sesión local
   if (!window.firebaseListo || !window.estrategiumAuth) {
-    try {
-      var cached = JSON.parse(localStorage.getItem('estrategium_user') || 'null');
-      if (cached) pintarUsuario(cached);
-    } catch (e) {}
+    var cached = usuarioLocal();
+    if (cached) pintarUsuario(cached);
+    else if (guard) window.location.replace(loginPara(guard));
     return;
   }
 
-  var guard = (document.body.getAttribute('data-guard') || '').toLowerCase();
-
+  // Con Firebase:
   window.estrategiumAuth.onAuthStateChanged(function (user) {
-    if (user) {
-      pintarUsuario(user);
-      return;
-    }
-    // Sin usuario de Google: aceptamos una sesión de demostración guardada localmente
-    var cached = null;
-    try { cached = JSON.parse(localStorage.getItem('estrategium_user') || 'null'); } catch (e) {}
-    if (cached) {
-      pintarUsuario(cached);
-    } else if (guard) {
-      // Página privada sin ninguna sesión → manda al login correspondiente
-      var login = guard === 'admin' ? 'login-admin.html' : 'login-estudiantes.html';
-      window.location.replace(login);
-    }
+    if (user) { pintarUsuario(user); return; }
+    var cached = usuarioLocal();
+    if (cached) pintarUsuario(cached);
+    else if (guard) window.location.replace(loginPara(guard));
   });
 })();

@@ -1259,6 +1259,28 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 .panel-card p { color: var(--gray-500); font-size: .9rem; margin: 0 0 18px; }
 @media (max-width: 860px) { .admin-stats { grid-template-columns: repeat(2, 1fr); } .admin-panels { grid-template-columns: 1fr; } }
 
+/* ---------- Pago: pestañas Tarjeta / Transferencia ---------- */
+.pay-tabs { display: flex; gap: 8px; margin: 6px 0 16px; }
+.pay-tab { flex: 1; padding: 12px; border: 2px solid var(--gray-200); background: #fff; border-radius: 10px; font-weight: 700; cursor: pointer; color: var(--navy-900); transition: .15s; }
+.pay-tab.active { border-color: var(--gold); background: rgba(201,162,75,.10); }
+.transfer-panel .tp-note { color: rgba(255,255,255,.72); font-size: .9rem; margin: 0 0 14px; }
+.transfer-panel .tp-heading { text-align: center; color: var(--gold); font-weight: 800; letter-spacing: 2px; margin: 6px 0 16px; font-size: 1.15rem; }
+.transfer-panel .tp-amount { color: #fff; font-weight: 800; margin: 0 0 12px; }
+.bank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+.bank-card { border: 1px solid var(--gray-200); border-radius: 12px; padding: 16px; background: #fff; }
+.bank-card h4 { margin: 0 0 8px; color: var(--navy-900); }
+.bank-card p { margin: 2px 0; font-size: .9rem; color: var(--gray-600, #444); }
+.bank-card b { color: var(--navy-900); }
+.qr-card { text-align: center; }
+.qr-card img, .qr-ph { width: 170px; height: 170px; object-fit: contain; margin: 6px auto; border: 1px solid var(--gray-200); border-radius: 10px; display: grid; place-items: center; color: var(--gray-500); }
+.transfer-panel label { display: block; margin: 12px 0 6px; font-weight: 600; color: #fff; font-size: .9rem; }
+.transfer-panel input[type=text], .transfer-panel input[type=file] { width: 100%; padding: 12px; border: 1px solid var(--gray-200); border-radius: 8px; }
+.tr-req { color: #e53935; }
+@media (max-width: 640px) { .bank-grid { grid-template-columns: 1fr; } }
+
+/* Ocultar barras de progreso / % completado en cursos y lecciones */
+.progress, .lp-prog-wrap { display: none !important; }
+
 /* ---------- Infografía ¿QUÉ SIGNIFICA MARCA? ---------- */
 .marca-info { background: var(--gray-100, #f3f6fb); }
 .marca-kicker { text-align: center; letter-spacing: 4px; color: var(--navy-900); font-weight: 800; font-size: 1.3rem; margin: 0; }
