@@ -168,7 +168,12 @@
       tbody.innerHTML = filas.map(function(r, idx){
         rowsMap[r.key] = r;
         var estU = studentByEmail(r.email);
-        var marcados = estU ? (estU.cursos || []) : [];   // sin comprar => desmarcado
+        // Cursos marcados: los que ya tiene el estudiante; si aún no tiene y hay una
+        // inscripción con pago, se pre-marca el paquete que pagó (i.curso). Google sin compra => desmarcado.
+        var marcados;
+        if (estU && estU.cursos && estU.cursos.length) marcados = estU.cursos;
+        else if (r.ins && r.ins.curso) marcados = [r.ins.curso];
+        else marcados = [];
         var estado = r.ins ? r.ins.estado : 'registrado';
         var monto = r.ins ? ('$' + esc(String(r.ins.monto))) : '—';
         var fecha = r.ins ? esc(r.ins.fecha || '') : '—';
