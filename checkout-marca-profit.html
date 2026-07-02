@@ -230,9 +230,23 @@
 
     var fileData = '';
     var fileInput = document.getElementById('trFile');
+    function comprimir(dataUrl, cb) {
+      var img = new Image();
+      img.onload = function () {
+        var max = 1200, w = img.width, h = img.height;
+        if (w > max || h > max) { if (w >= h) { h = Math.round(h * max / w); w = max; } else { w = Math.round(w * max / h); h = max; } }
+        try {
+          var c = document.createElement('canvas'); c.width = w; c.height = h;
+          c.getContext('2d').drawImage(img, 0, 0, w, h);
+          cb(c.toDataURL('image/jpeg', 0.6));
+        } catch (e) { cb(dataUrl); }
+      };
+      img.onerror = function () { cb(dataUrl); };
+      img.src = dataUrl;
+    }
     fileInput.addEventListener('change', function () {
       var f = fileInput.files[0]; if (!f) { fileData = ''; return; }
-      var r = new FileReader(); r.onload = function () { fileData = r.result; }; r.readAsDataURL(f);
+      var r = new FileReader(); r.onload = function () { comprimir(r.result, function (d) { fileData = d; }); }; r.readAsDataURL(f);
     });
 
     document.getElementById('trEnviar').addEventListener('click', function () {
@@ -246,19 +260,18 @@
       if (!fileData) { msg.style.color = '#e53935'; msg.textContent = 'Sube la foto del comprobante.'; return; }
 
       var btn = this; btn.disabled = true; btn.textContent = 'Enviando...';
-      try {
-        Inscripciones.add({
-          nombre: nombre, email: email, telefono: tel, cedula: '', clave: '',
-          curso: CURSO, monto: MONTO, comprobante: fileData, estado: 'pendiente',
-          fecha: new Date().toLocaleString('es-EC')
-        });
+      Promise.resolve(Inscripciones.add({
+        nombre: nombre, email: email, telefono: tel, cedula: '', clave: '',
+        curso: CURSO, monto: MONTO, comprobante: fileData, estado: 'pendiente',
+        fecha: new Date().toLocaleString('es-EC')
+      })).then(function () {
         msg.style.color = '#1a8f4c';
         msg.innerHTML = '✅ ¡Inscripción enviada! Tu pago está <b>pendiente de aprobación</b>. En cuanto el administrador lo confirme, podrás entrar con tu correo y contraseña en <a href="login-estudiantes.html">Login estudiantes</a>.';
         btn.textContent = 'Enviado ✓';
-      } catch (e) {
+      }).catch(function (e) {
         btn.disabled = false; btn.textContent = 'Enviar comprobante';
-        msg.style.color = '#e53935'; msg.textContent = 'No se pudo enviar. Intenta de nuevo (la imagen puede ser muy grande).';
-      }
+        msg.style.color = '#e53935'; msg.textContent = 'No se pudo enviar: ' + ((e && e.message) || 'intenta con una foto más pequeña o revisa tu conexión') + '.';
+      });
     });
   })();
   </script>
