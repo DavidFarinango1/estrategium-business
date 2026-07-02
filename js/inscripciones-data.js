@@ -1,22 +1,62 @@
 /* =====================================================================
-   Estrategium — Inscripciones por transferencia (localStorage)
+   Estrategium — Inscripciones por transferencia (Firestore o localStorage)
    Cada inscripción: { id, n, nombre, email, telefono, cedula, clave,
    curso, monto, comprobante(dataURL), estado, fecha }
    estado: 'pendiente' | 'aprobado' | 'negado'
    ===================================================================== */
 window.Inscripciones = (function () {
   var KEY = 'estrategium_inscripciones';
+  var COL = 'inscripciones';
+  var db = null, useFS = false, started = false;
   var subs = [];
-  function read() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { return []; } }
-  function save(l) { localStorage.setItem(KEY, JSON.stringify(l)); }
-  function emit() { var l = read(); subs.forEach(function (fn) { try { fn(l); } catch (e) {} }); }
+
+  function readCache() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { return []; } }
+  function writeCache(l) { try { localStorage.setItem(KEY, JSON.stringify(l)); } catch (e) {} }
+  function sortN(l) { return l.slice().sort(function (a, b) { return (a.n || 0) - (b.n || 0); }); }
+  function emit(l) { l = sortN(l); writeCache(l); subs.forEach(function (fn) { try { fn(l); } catch (e) {} }); }
   function uid() { return 'ins' + Date.now().toString(36) + Math.floor(Math.random() * 1000); }
-  window.addEventListener('storage', function (e) { if (e.key === KEY) emit(); });
-  return {
-    getAll: read,
-    add: function (o) { var l = read(); o.id = uid(); o.n = l.length + 1; l.push(o); save(l); emit(); return o.id; },
-    update: function (id, d) { var l = read().map(function (x) { return x.id === id ? Object.assign({}, x, d) : x; }); save(l); emit(); },
-    remove: function (id) { var l = read().filter(function (x) { return x.id !== id; }); save(l); emit(); },
-    onChange: function (fn) { subs.push(fn); try { fn(read()); } catch (e) {} }
-  };
+
+  function start() {
+    if (started) return; started = true;
+    window.addEventListener('storage', function (e) { if (e.key === KEY) subs.forEach(function (fn) { try { fn(readCache()); } catch (x) {} }); });
+    var preCache = readCache();
+
+    if (window.firebaseListo && typeof firebase !== 'undefined' && firebase.firestore) {
+      try {
+        db = firebase.firestore(); useFS = true;
+        db.collection(COL).onSnapshot(function (snap) {
+          var list = []; snap.forEach(function (d) { var o = d.data() || {}; o.id = d.id; list.push(o); });
+          emit(list);
+        }, function (err) {
+          // Los visitantes anónimos no pueden LEER inscripciones (solo crearlas): mantén la nube
+          // activa para que el comprobante sí se guarde; solo el admin (logueado) las lista.
+          console.warn('Firestore inscripciones (solo escritura para visitantes):', err && err.message);
+          emit(preCache);
+        });
+      } catch (e) { useFS = false; emit(preCache); }
+    } else {
+      emit(preCache);
+    }
+  }
+
+  function add(o) {
+    o = Object.assign({}, o);
+    o.n = (readCache().length) + 1;
+    if (useFS) { var c = Object.assign({}, o); delete c.id; return db.collection(COL).add(c).then(function (r) { return r.id; }); }
+    var l = readCache(); o.id = uid(); l.push(o); emit(l); return Promise.resolve(o.id);
+  }
+  function update(id, d) {
+    if (useFS) return db.collection(COL).doc(id).set(d, { merge: true });
+    var l = readCache().map(function (x) { return x.id === id ? Object.assign({}, x, d) : x; }); emit(l); return Promise.resolve();
+  }
+  function remove(id) {
+    if (useFS) return db.collection(COL).doc(id).delete();
+    var l = readCache().filter(function (x) { return x.id !== id; }); emit(l); return Promise.resolve();
+  }
+  function getAll() { return sortN(readCache()); }
+  function onChange(fn) { subs.push(fn); try { fn(getAll()); } catch (e) {} }
+
+  return { getAll: getAll, add: add, update: update, remove: remove, onChange: onChange, start: start };
 })();
+
+window.Inscripciones.start();

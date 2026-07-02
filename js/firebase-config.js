@@ -21,7 +21,7 @@
    • false = usa Firebase (Google + Firestore) para compartir entre
              dispositivos. Requiere activar Firestore y Google en la consola.
    ---------------------------------------------------------------------- */
-window.MODO_LOCAL = true;
+window.MODO_LOCAL = false;
 
 window.firebaseConfig = {
   apiKey: "AIzaSyDErbAnHCCDTV2fo96ZUjBtUN9b5L85YNo",
