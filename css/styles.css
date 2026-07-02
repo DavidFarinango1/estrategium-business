@@ -307,7 +307,15 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 .price-box .price { font-size: .9rem; margin: 2px 0 9px; }
 .price-box .price b { font-size: 1.85rem; color: var(--gold); }
 .price-box .btn-block { padding: 10px 12px; font-size: .8rem; }
-.stage-foot { display: flex; gap: 12px; align-items: flex-start; font-size: .86rem; color: #33436a; }
+.stage-foot {
+  display: flex; gap: 12px; align-items: flex-start;
+  font-size: .84rem;
+  color: #c7d2e8;
+  background: #0a1c42;
+  margin: 8px -24px -24px;
+  padding: 15px 22px 16px;
+  border-radius: 0 0 16px 16px;
+}
 .stage-foot b { color: var(--gold); }
 .stage-foot .ico { color: var(--gold); font-size: 1.3rem; }
 .consult-box {
