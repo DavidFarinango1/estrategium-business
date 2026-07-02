@@ -36,6 +36,8 @@ window.Usuarios = (function () {
     if (window.firebaseListo && typeof firebase !== 'undefined' && firebase.firestore) {
       try {
         db = firebase.firestore(); useFS = true;
+        // Una sola vez al pasar a la nube: limpia datos locales viejos para no "parpadear"
+        if (!localStorage.getItem('estrategium_cloud_clean_usuarios')) { localStorage.setItem('estrategium_cloud_clean_usuarios', '1'); writeCache([]); }
         db.collection(COL).onSnapshot(function (snap) {
           var list = []; snap.forEach(function (d) { var o = d.data() || {}; o.id = d.id; list.push(o); });
           // Primera vez con la nube vacía: sube lo local (o al menos el admin)

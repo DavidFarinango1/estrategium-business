@@ -23,6 +23,7 @@ window.Mensajes = (function () {
     if (window.firebaseListo && typeof firebase !== 'undefined' && firebase.firestore) {
       try {
         db = firebase.firestore(); useFS = true;
+        if (!localStorage.getItem('estrategium_cloud_clean_mensajes')) { localStorage.setItem('estrategium_cloud_clean_mensajes', '1'); writeCache([]); }
         db.collection(COL).onSnapshot(function (snap) {
           var list = []; snap.forEach(function (d) { var o = d.data() || {}; o.id = d.id; list.push(o); });
           emit(list);
