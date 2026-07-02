@@ -166,8 +166,10 @@
         html += '<p style="text-align:center;color:var(--gray-500);margin-bottom:8px;">Aún no tienes cursos. Elige un plan y adquiérelo para empezar 👇</p>';
       }
 
-      if (disponibles.length) {
-        html += '<h2 style="text-align:center;color:var(--navy-900,#0a1f44);margin:' + (owned.length ? '46px' : '26px') + ' 0 22px;">Cursos disponibles para adquirir</h2>';
+      // Solo mostramos "Cursos disponibles para adquirir" si el estudiante AÚN NO tiene cursos
+      // (por ejemplo, quien entra con Google sin comprar). Si ya compró, ve solo su curso.
+      if (!owned.length && disponibles.length) {
+        html += '<h2 style="text-align:center;color:var(--navy-900,#0a1f44);margin:26px 0 22px;">Cursos disponibles para adquirir</h2>';
         html += disponibles.map(cardComprar).join('');
       }
 
