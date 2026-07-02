@@ -237,13 +237,13 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
   align-items: stretch;
 }
 .stage-card {
-  background: linear-gradient(180deg, #0d2452, #0a1c42);
-  color: #cdd8ec;
+  background: #fff;
+  color: var(--text-dark);
   border-radius: 16px;
   padding: 30px 24px 24px;
   position: relative;
-  border: 1px solid rgba(201,162,75,.38);
-  box-shadow: 0 12px 30px rgba(0,0,0,.35);
+  border: 1px solid rgba(201,162,75,.45);
+  box-shadow: 0 12px 30px rgba(0,0,0,.28);
   display: flex;
   flex-direction: column;
 }
@@ -271,14 +271,14 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
   padding: 5px 18px;
   border-radius: 6px;
 }
-.stage-card h3 { text-align: center; font-size: 1.45rem; color: #fff; }
-.stage-card .stage-sub { text-align: center; font-weight: 700; color: #dce4f2; margin-bottom: 18px; font-size: .98rem; }
+.stage-card h3 { text-align: center; font-size: 1.45rem; color: var(--navy-900); }
+.stage-card .stage-sub { text-align: center; font-weight: 700; color: var(--text-dark); margin-bottom: 18px; font-size: .98rem; }
 .stage-list { list-style: none; margin-bottom: 22px; }
 .stage-list li {
   display: flex; gap: 10px; align-items: flex-start;
   padding: 6px 0;
   font-size: .92rem;
-  color: #cdd8ec;
+  color: var(--text-dark);
 }
 .stage-list li::before {
   content: "✓";
@@ -293,7 +293,7 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
   margin-top: 2px;
 }
 .price-box {
-  background: #06152f;
+  background: radial-gradient(circle at top, #001f4d, #001f4d);
   border: 1px solid rgba(201,162,75,.55);
   color: #fff;
   border-radius: 12px;
@@ -305,14 +305,14 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 .price-box .price-label { font-size: .7rem; letter-spacing: 2px; color: var(--gold); }
 .price-box .price { font-size: 1.05rem; margin: 4px 0 14px; }
 .price-box .price b { font-size: 2.6rem; color: var(--gold); }
-.stage-foot { display: flex; gap: 12px; align-items: flex-start; font-size: .86rem; color: #9fb0d0; }
+.stage-foot { display: flex; gap: 12px; align-items: flex-start; font-size: .86rem; color: var(--gray-500); }
 .stage-foot b { color: var(--gold); }
 .stage-foot .ico { color: var(--gold); font-size: 1.3rem; }
 .consult-box {
   display: block;
   text-align: center; padding: 22px 10px; margin-bottom: 16px;
   margin-top: auto;
-  background: #06152f;
+  background: radial-gradient(circle at top, #001f4d, #001f4d);
   border: 1px solid rgba(201,162,75,.55);
   border-radius: 12px;
   transition: border-color .2s, transform .2s;
