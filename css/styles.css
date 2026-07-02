@@ -299,19 +299,20 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
   color: #fff;
   border-radius: 12px;
   text-align: center;
-  padding: 18px;
+  padding: 13px 14px;
   margin-top: auto;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
-.price-box .price-label { font-size: .7rem; letter-spacing: 2px; color: var(--gold); }
-.price-box .price { font-size: 1.05rem; margin: 4px 0 14px; }
-.price-box .price b { font-size: 2.6rem; color: var(--gold); }
-.stage-foot { display: flex; gap: 12px; align-items: flex-start; font-size: .86rem; color: var(--gray-500); }
+.price-box .price-label { font-size: .64rem; letter-spacing: 2px; color: var(--gold); }
+.price-box .price { font-size: .9rem; margin: 2px 0 9px; }
+.price-box .price b { font-size: 1.85rem; color: var(--gold); }
+.price-box .btn-block { padding: 10px 12px; font-size: .8rem; }
+.stage-foot { display: flex; gap: 12px; align-items: flex-start; font-size: .86rem; color: #33436a; }
 .stage-foot b { color: var(--gold); }
 .stage-foot .ico { color: var(--gold); font-size: 1.3rem; }
 .consult-box {
   display: block;
-  text-align: center; padding: 22px 10px; margin-bottom: 16px;
+  text-align: center; padding: 15px 10px; margin-bottom: 14px;
   margin-top: auto;
   background: radial-gradient(circle at top, #001f4d, #001f4d);
   border: 1px solid rgba(201,162,75,.55);
@@ -319,9 +320,9 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
   transition: border-color .2s, transform .2s;
 }
 .consult-box:hover { border-color: var(--gold); transform: translateY(-2px); }
-.consult-box .ico { font-size: 2rem; color: var(--gold); }
-.consult-box h4 { color: #fff; margin: 8px 0 2px; }
-.consult-box .agenda { color: var(--gold); font-weight: 700; letter-spacing: 1px; }
+.consult-box .ico { font-size: 1.6rem; color: var(--gold); }
+.consult-box h4 { color: #fff; margin: 6px 0 2px; font-size: .95rem; }
+.consult-box .agenda { color: var(--gold); font-weight: 700; letter-spacing: 1px; font-size: .85rem; }
 
 /* ---------- CTA band ---------- */
 .cta-band {
