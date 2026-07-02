@@ -276,19 +276,20 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 .stage-list { list-style: none; margin-bottom: 22px; }
 .stage-list li {
   display: flex; gap: 10px; align-items: flex-start;
-  padding: 6px 0;
-  font-size: .92rem;
+  padding: 4px 0;
+  font-size: .9rem;
+  line-height: 1.4;
   color: var(--text-dark);
 }
 .stage-list li::before {
   content: "✓";
-  color: var(--navy-900);
+  color: #fff;
   font-weight: 800;
   background: var(--gold);
   border-radius: 50%;
-  width: 20px; height: 20px;
+  width: 19px; height: 19px;
   display: grid; place-items: center;
-  font-size: .7rem;
+  font-size: .66rem;
   flex-shrink: 0;
   margin-top: 2px;
 }
