@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="css/admin.css?v=2" />
   <script src="js/admin-embed.js"></script>
 </head>
-<body class="admin">
+<body class="admin" data-guard="admin">
   <div class="admin-shell">
 
     <aside class="admin-sidebar">
@@ -107,5 +107,6 @@
     Usuarios.onChange(function (list) { render(list); actualizarBoton(); });
   })();
   </script>
+  <script src="js/session.js?v=2"></script>
 </body>
 </html>
