@@ -491,25 +491,25 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
   color: #fff;
   border-radius: 16px;
   overflow: hidden;
-  padding: 58px 40px 64px;
+  padding: 40px 52px 42px;
   text-align: center;
   background:
     linear-gradient(rgba(8,18,40,.84), rgba(8,18,40,.92)),
     url("https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1400&q=80") center/cover;
-  max-width: 1120px;
+  max-width: 1320px;
   margin: 0 auto;
 }
-.problem-box h2 { font-size: clamp(2rem, 5vw, 3.3rem); line-height: 1.14; margin-bottom: 0; font-weight: 800; }
-.problem-box p { max-width: 720px; margin: 0 auto 14px; color: #dbe2ef; font-size: 1.05rem; }
+.problem-box h2 { font-size: clamp(1.6rem, 3.1vw, 2.4rem); line-height: 1.15; margin-bottom: 0; font-weight: 800; }
+.problem-box p { max-width: 760px; margin: 0 auto 12px; color: #dbe2ef; font-size: 1rem; }
 .problem-box .text-gold { color: var(--gold); }
 /* Ícono de advertencia con líneas doradas a los lados */
-.pb-warn { display: flex; align-items: center; justify-content: center; gap: 22px; margin-bottom: 26px; }
+.pb-warn { display: flex; align-items: center; justify-content: center; gap: 22px; margin-bottom: 18px; }
 .pb-warn .pb-line { height: 2px; width: 96px; }
 .pb-warn .pb-line:first-child { background: linear-gradient(90deg, transparent, var(--gold)); }
 .pb-warn .pb-line:last-child { background: linear-gradient(90deg, var(--gold), transparent); }
 .pb-tri { color: var(--gold); }
 /* Divisor dorado */
-.pb-div { display: block; width: 130px; height: 2px; background: rgba(201,162,75,.6); margin: 24px auto; }
+.pb-div { display: block; width: 130px; height: 2px; background: rgba(201,162,75,.6); margin: 15px auto; }
 /* Línea con ícono de ciclo */
 .pb-cycle { display: flex; align-items: center; justify-content: center; gap: 12px; }
 .pb-cyc { color: var(--gold); flex: none; }
