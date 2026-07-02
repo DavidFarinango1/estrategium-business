@@ -72,7 +72,7 @@
     // ¿El estudiante está inscrito en este curso? (null = sin restricción)
     function inscritoEn(titulo) {
       try {
-        var s = JSON.parse(localStorage.getItem('estrategium_user') || 'null');
+        var s = JSON.parse(localStorage.getItem('estrategium_est') || 'null');
         if (!s) return true;
         var mis = null;
         if (window.Usuarios && s.email) {

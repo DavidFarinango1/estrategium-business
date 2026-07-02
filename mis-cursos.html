@@ -73,7 +73,7 @@
     // Cursos en los que está inscrito el estudiante (LEÍDOS EN VIVO desde el admin)
     function inscritos() {
       try {
-        var s = JSON.parse(localStorage.getItem('estrategium_user') || 'null');
+        var s = JSON.parse(localStorage.getItem('estrategium_est') || 'null');
         if (!s) return null;
         // Busca al estudiante por email y trae sus cursos actuales
         if (window.Usuarios && s.email) {
@@ -82,7 +82,7 @@
           })[0];
           if (u) {
             // Actualiza la sesión con lo último
-            try { s.cursos = u.cursos || []; localStorage.setItem('estrategium_user', JSON.stringify(s)); } catch (e) {}
+            try { s.cursos = u.cursos || []; localStorage.setItem('estrategium_est', JSON.stringify(s)); } catch (e) {}
             return u.cursos || [];
           }
           // Entró (ej. con Google) pero no está en la lista del admin → lo registra

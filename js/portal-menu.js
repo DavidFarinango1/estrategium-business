@@ -4,7 +4,7 @@
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
   function misInscritos() {
     try {
-      var s = JSON.parse(localStorage.getItem('estrategium_user') || 'null');
+      var s = JSON.parse(localStorage.getItem('estrategium_est') || 'null');
       if (!s) return null;
       if (window.Usuarios && s.email) {
         var u = Usuarios.getAll().filter(function (x) { return x.rol === 'Estudiante' && (x.email || '').toLowerCase() === (s.email || '').toLowerCase(); })[0];

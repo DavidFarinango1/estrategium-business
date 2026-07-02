@@ -77,7 +77,8 @@
         info = asegurarEstudiante(u);
       }
       try {
-        localStorage.setItem('estrategium_user', JSON.stringify({
+        var sk = rol === 'admin' ? 'estrategium_admin' : 'estrategium_est';
+        localStorage.setItem(sk, JSON.stringify({
           uid: u.uid, name: info.nombre || u.displayName, email: u.email, photo: u.photoURL,
           rol: rol, cursos: info.cursos || []
         }));
@@ -108,7 +109,8 @@
         var info = asegurarEstudiante(u); nombre = info.nombre; cursos = info.cursos;
       }
       try {
-        localStorage.setItem('estrategium_user', JSON.stringify({
+        var sk = rol === 'admin' ? 'estrategium_admin' : 'estrategium_est';
+        localStorage.setItem(sk, JSON.stringify({
           uid: u.uid, name: nombre, email: u.email, rol: rol, cursos: cursos || []
         }));
       } catch (e) {}
@@ -116,11 +118,18 @@
     });
   };
 
-  // Cierra sesión y vuelve al login indicado
+  // Cierra sesión SOLO del rol indicado (por el destino). El estudiante NO cierra
+  // Firebase, para no afectar la sesión del admin en el mismo navegador.
   window.cerrarSesion = function (destino) {
-    auth.signOut().finally(function () {
-      try { localStorage.removeItem('estrategium_user'); } catch (e) {}
+    var esAdmin = /admin/i.test(destino || '');
+    try {
+      localStorage.removeItem(esAdmin ? 'estrategium_admin' : 'estrategium_est');
+      localStorage.removeItem('estrategium_user'); // limpia sesión antigua si existiera
+    } catch (e) {}
+    if (esAdmin) {
+      auth.signOut().finally(function () { window.location.href = destino || 'login-admin.html'; });
+    } else {
       window.location.href = destino || 'login-estudiantes.html';
-    });
+    }
   };
 })();

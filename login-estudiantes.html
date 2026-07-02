@@ -97,7 +97,7 @@
       if (u.estado !== 'Activo') { e.preventDefault(); alert('Tu cuenta está inactiva. Contacta al administrador.'); return; }
 
       try {
-        localStorage.setItem('estrategium_user', JSON.stringify({
+        localStorage.setItem('estrategium_est', JSON.stringify({
           name: u.nombre, email: u.email, rol: 'estudiante', cursos: u.cursos || []
         }));
       } catch (x) {}

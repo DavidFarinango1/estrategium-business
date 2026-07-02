@@ -81,7 +81,7 @@
     function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
     function inscritoEn(titulo) {
       try {
-        var s = JSON.parse(localStorage.getItem('estrategium_user') || 'null');
+        var s = JSON.parse(localStorage.getItem('estrategium_est') || 'null');
         if (!s) return true;
         var mis = null;
         if (window.Usuarios && s.email) {

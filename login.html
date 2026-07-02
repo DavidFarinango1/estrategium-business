@@ -78,7 +78,7 @@
       if (!u) { e.preventDefault(); alert('Correo o contraseña incorrectos, o no estás registrado. Pide acceso al administrador.'); return; }
       if (u.estado !== 'Activo') { e.preventDefault(); alert('Tu cuenta está inactiva. Contacta al administrador.'); return; }
       try {
-        localStorage.setItem('estrategium_user', JSON.stringify({ name: u.nombre, email: u.email, rol: 'estudiante', cursos: u.cursos || [] }));
+        localStorage.setItem('estrategium_est', JSON.stringify({ name: u.nombre, email: u.email, rol: 'estudiante', cursos: u.cursos || [] }));
       } catch (x) {}
     });
   </script>
