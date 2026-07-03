@@ -494,8 +494,8 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
   padding: 40px 52px 42px;
   text-align: center;
   background:
-    linear-gradient(rgba(8,18,40,.84), rgba(8,18,40,.92)),
-    url("https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1400&q=80") center/cover;
+    linear-gradient(rgba(8,18,40,.72), rgba(8,18,40,.82)),
+    url("images/imagen3.jpg") center/cover;
   max-width: 1320px;
   margin: 0 auto;
 }
