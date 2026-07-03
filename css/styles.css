@@ -178,8 +178,8 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 
 /* ---------- 3 etapas (bloque navy redondeado, tarjetas oscuras) ---------- */
 /* Hero con imagen (banner) */
-.hero-img { background: #001f4d; padding: 22px 6%; }
-.hero-img > a { display: block; max-width: 1200px; margin: 0 auto; }
+.hero-img { background: #001f4d; padding: 14px 1.5%; }
+.hero-img > a { display: block; max-width: 1700px; margin: 0 auto; }
 .hero-img img { width: 100%; display: block; border-radius: 14px; }
 
 .stages {
