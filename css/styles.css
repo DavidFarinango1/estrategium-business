@@ -515,6 +515,31 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 .pb-cyc { color: var(--gold); flex: none; }
 .pb-cta { font-size: 1rem; padding: 16px 30px; }
 
+/* Resultados reales (infografía) — fondo blanco, cuadros azules, 25% más pequeño */
+.ri-sec { background: #fff; }
+.ri-kicker { text-align: center; letter-spacing: 2px; color: var(--gold); font-weight: 700; margin-bottom: 8px; font-size: .8rem; }
+.ri-title { text-align: center; font-size: clamp(1.4rem, 3.1vw, 2.1rem); line-height: 1.15; margin: 0 0 10px; font-weight: 800; color: var(--navy-900); }
+.ri-title span { color: var(--gold); }
+.ri-sub { text-align: center; color: #3a4a63; max-width: 640px; margin: 0 auto 30px; font-size: .95rem; }
+.ri-sub b { color: var(--gold); }
+.ri-stats { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+.ri-stat { flex: 1 1 150px; max-width: 176px; text-align: center; background: #0a1f44; border: 1px solid rgba(201,162,75,.4); border-radius: 12px; padding: 15px 11px; }
+.ri-stat .ic { width: 40px; height: 40px; border-radius: 50%; background: var(--gold); color: #0a1f44; display: grid; place-items: center; font-size: 1.1rem; margin: 0 auto 9px; }
+.ri-stat .num { font-size: 1.45rem; font-weight: 800; color: var(--gold); }
+.ri-stat .lbl { font-weight: 700; font-size: .66rem; letter-spacing: .4px; margin: 2px 0 6px; color: #fff; }
+.ri-stat .desc { color: #aebbd4; font-size: .72rem; line-height: 1.4; }
+.ri-impact-title { text-align: center; color: var(--gold); letter-spacing: 1px; margin: 40px 0 24px; font-size: 1.05rem; }
+.ri-impacts { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; }
+.ri-imp { flex: 1 1 140px; max-width: 172px; text-align: center; }
+.ri-imp .ic { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--gold); display: grid; place-items: center; font-size: 1.3rem; margin: 0 auto 10px; }
+.ri-imp .t { font-weight: 800; font-size: .82rem; margin-bottom: 6px; color: var(--navy-900); }
+.ri-imp .d { color: #5a6b8c; font-size: .78rem; line-height: 1.4; }
+.ri-banners { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 38px; }
+.ri-banner { flex: 1 1 300px; max-width: 440px; background: #0a1f44; border: 1px solid rgba(201,162,75,.35); border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 13px; color: #fff; font-size: .88rem; }
+.ri-banner .em { font-size: 1.7rem; }
+.ri-banner .gold { color: var(--gold); font-weight: 800; }
+.ri-banner .muted { color: #aebbd4; font-size: .82rem; }
+
 /* video */
 .video-card {
   background: #001f4d;
