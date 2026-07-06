@@ -1,10 +1,10 @@
-// Servidor estático mínimo para probar el sitio en http://localhost:5000
+// Servidor estático mínimo para probar el sitio en http://localhost:5050
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
 const ROOT = __dirname;
-const PORT = 5000;
+const PORT = 5050;
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
