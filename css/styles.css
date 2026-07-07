@@ -967,14 +967,15 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 
 /* ---------- Profit: comparación de precio ---------- */
 .profit-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: center; }
-.profit-hero .ph-img {
+.ph-img {
   border-radius: 14px;
   aspect-ratio: 4/3;
   background:
     linear-gradient(rgba(8,18,40,.15), rgba(8,18,40,.25)),
-    url("https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=900&q=80") center/cover;
+    url("images/marca2.jpg") center/cover;
   box-shadow: var(--shadow);
 }
+.price-compare { text-align: center; }
 .price-compare .pc-valued { font-size: 1.4rem; font-weight: 800; color: var(--navy-900); letter-spacing: 1px; }
 .price-compare .pc-old { text-decoration: line-through; text-decoration-color: #e53935; text-decoration-thickness: 3px; color: var(--navy-900); }
 .price-compare .pc-today { color: var(--gold); font-weight: 800; font-size: 1.5rem; letter-spacing: 1px; margin-top: 10px; }
