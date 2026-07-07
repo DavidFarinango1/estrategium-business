@@ -972,7 +972,7 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
   aspect-ratio: 4/3;
   background:
     linear-gradient(rgba(8,18,40,.15), rgba(8,18,40,.25)),
-    url("images/marca2.jpg") center/cover;
+    url("../images/marca2.jpg") center/cover;
   box-shadow: var(--shadow);
 }
 .price-compare { text-align: center; }
