@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login Estudiantes — Estrategium Business</title>
-  <link rel="stylesheet" href="css/styles.css?v=44" />
+  <link rel="stylesheet" href="css/styles.css?v=47" />
 </head>
 <body>
 
@@ -45,7 +45,7 @@
       </div>
 
       <button class="btn btn-login" type="submit">Ingresar</button>
-      <a href="#" class="forgot">¿Olvidaste tu contraseña?</a>
+      <a href="#" class="forgot" id="forgotLink">¿Olvidaste tu contraseña?</a>
 
       <div class="login-divider">o continúa con</div>
       <a class="btn-google" href="mis-cursos.html" id="googleBtn">
@@ -103,6 +103,20 @@
         }));
       } catch (x) {}
       // continúa a mis-cursos.html
+    });
+    // Recuperar contraseña
+    document.getElementById('forgotLink').addEventListener('click', function (e) {
+      e.preventDefault();
+      var email = (document.getElementById('loginEmail').value || '').trim();
+      if (!email) email = (window.prompt('Ingresa tu correo para enviarte el enlace de recuperación:') || '').trim();
+      if (!email) return;
+      if (!window.googleListo || !window.recuperarPassword) { alert('Sistema no disponible por el momento. Intenta más tarde.'); return; }
+      window.recuperarPassword(email).then(function () {
+        alert('Te enviamos un correo a ' + email + ' con instrucciones para restablecer tu contraseña. Revisa también la carpeta de spam.');
+      }).catch(function (err) {
+        if (err && err.code === 'auth/user-not-found') { alert('No encontramos una cuenta con ese correo.'); return; }
+        alert('No se pudo enviar el correo de recuperación. Verifica el correo e intenta de nuevo.');
+      });
     });
   </script>
 </body>

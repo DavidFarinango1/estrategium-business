@@ -182,6 +182,7 @@
           acciones += (r.ins.estado !== 'aprobado' ? '<button class="btn-gold" style="padding:5px 10px;font-size:.76rem;background:#3ad07a;color:#062;" data-aprob="' + r.key + '">Aprobar</button> ' : '');
           acciones += (r.ins.estado !== 'negado' ? '<button class="btn-ghost" style="padding:5px 10px;font-size:.76rem;color:#ff6b6b;border-color:#ff6b6b;" data-negar="' + r.key + '">Negar</button> ' : '');
         }
+        acciones += '<button class="btn-ghost" style="padding:5px 10px;font-size:.76rem;" data-reset="' + r.key + '" title="Restablecer contraseña">🔑</button> ';
         acciones += '<button class="icon-btn del sm" data-del="' + r.key + '" title="Eliminar">🗑️</button>';
         return '<tr>' +
           '<td>' + (idx + 1) + '</td>' +
@@ -203,6 +204,7 @@
       tbody.querySelectorAll('[data-aprob]').forEach(function(b){ b.addEventListener('click', function(){ aprobar(b.getAttribute('data-aprob')); }); });
       tbody.querySelectorAll('[data-negar]').forEach(function(b){ b.addEventListener('click', function(){ negar(b.getAttribute('data-negar')); }); });
       tbody.querySelectorAll('[data-del]').forEach(function(b){ b.addEventListener('click', function(){ borrar(b.getAttribute('data-del')); }); });
+      tbody.querySelectorAll('[data-reset]').forEach(function(b){ b.addEventListener('click', function(){ resetPass(b.getAttribute('data-reset')); }); });
       tbody.querySelectorAll('[data-savecursos]').forEach(function(b){ b.addEventListener('click', function(){ guardarCursos(b.getAttribute('data-savecursos')); }); });
     }
 
@@ -252,6 +254,22 @@
     function negar(key) {
       var r = rowsMap[key]; if (!r || !r.ins) return;
       if (confirm('¿Negar la inscripción de "' + r.nombre + '"?')) Inscripciones.update(r.ins.id, { estado: 'negado' });
+    }
+
+    // ---- Restablecer contraseña del estudiante (login por correo + contraseña) ----
+    function resetPass(key) {
+      var r = rowsMap[key]; if (!r) return;
+      var estU = studentByEmail(r.email);
+      var nueva = prompt('Nueva contraseña para "' + r.nombre + '" (' + r.email + '):', '');
+      if (nueva === null) return;
+      nueva = (nueva || '').trim();
+      if (!nueva) { alert('Debes escribir una contraseña.'); return; }
+      if (estU) {
+        Usuarios.update(estU.id, { clave: nueva, estado: 'Activo' });
+      } else {
+        Usuarios.add({ nombre: r.nombre, email: r.email, clave: nueva, cursos: (r.ins && r.ins.curso) ? [r.ins.curso] : [], rol: 'Estudiante', estado: 'Activo' });
+      }
+      alert('✅ Contraseña actualizada.\n\nCorreo: ' + r.email + '\nNueva contraseña: ' + nueva + '\n\nComparte estas credenciales con el estudiante para que entre en "Login estudiantes".');
     }
     function borrar(key) {
       var r = rowsMap[key]; if (!r) return;

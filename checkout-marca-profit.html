@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reserva tu acceso — MARCA PROFIT · USD 49</title>
   <meta name="description" content="Reserva tu acceso MARCA START + MARCA PROFIT 2 en 1. Solo por hoy USD 49." />
-  <link rel="stylesheet" href="css/styles.css?v=44" />
+  <link rel="stylesheet" href="css/styles.css?v=47" />
 </head>
 <body>
 
@@ -30,89 +30,158 @@
     <div class="container"><h1>WORKSHOP MARCA PROFIT</h1></div>
   </section>
 
-  <!-- Compra -->
+  <!-- Checkout de 4 pasos -->
   <section class="section section-light" id="comprar">
-    <div class="container">
-      <h2 class="section-title" style="margin-bottom:34px">Reserva tu acceso MARCA PROFIT</h2>
-      <div class="checkout-grid">
-        <div class="checkout-left">
-          <div class="checkout-summary">
-            <div class="cs-banner">WORKSHOP MARCA START + MARCA PROFIT<br><span class="cs-2en1">2 EN 1</span></div>
-            <div class="cs-img" style="background-image:linear-gradient(rgba(8,18,40,.25),rgba(8,18,40,.35)),url('https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=900&q=80')"></div>
-            <div class="price-card price-compare">
-              <div class="pc-valued">TODO ESTO VALORADO POR:</div>
-              <div class="pc-old">$97 USD</div>
-              <div class="pc-today">SOLO POR HOY:</div>
-              <div class="pc-big">$49 <span style="font-size:.5em">USD</span></div>
-            </div>
-            <div class="cs-body">
-              <p style="color:var(--gray-500);font-size:.92rem">Incluye todo MARCA START + estrategia avanzada de fidelización,
-                calendario de campañas, manual de atención al cliente, sesiones grupales en vivo, comunidad exclusiva y bonos premium.</p>
-            </div>
-          </div>
+    <div class="container checkout-grid">
 
-          <!-- MARCA PROFIT incluye -->
-          <div class="co-includes">
-            <h3>MARCA PROFIT INCLUYE</h3>
-            <p class="plus-line">Todo MARCA START +</p>
-            <div class="inc-acc">
-              <div class="inc-item open">
-                <button class="inc-btn" type="button"><span class="inc-check">✔</span> Estrategia avanzada de fidelización<span class="inc-arrow">▾</span></button>
-                <div class="inc-detail"><p>Construye relaciones duraderas con tus clientes mediante sistemas de recompra, recompensas y seguimiento para que vuelvan una y otra vez.</p></div>
-              </div>
-              <div class="inc-item">
-                <button class="inc-btn" type="button"><span class="inc-check">✔</span> Calendario de campañas<span class="inc-arrow">▾</span></button>
-                <div class="inc-detail"><p>Planifica todo el año con campañas estratégicas que atraen, convierten y fidelizan, sin tener que improvisar cada semana.</p></div>
-              </div>
-              <div class="inc-item">
-                <button class="inc-btn" type="button"><span class="inc-check">✔</span> Manual de atención al cliente<span class="inc-arrow">▾</span></button>
-                <div class="inc-detail"><p>Estandariza una atención excepcional y crea experiencias memorables que generan lealtad en tu restaurante.</p></div>
-              </div>
-              <div class="inc-item">
-                <button class="inc-btn" type="button"><span class="inc-check">✔</span> Sistema para aumentar ticket promedio<span class="inc-arrow">▾</span></button>
-                <div class="inc-detail"><p>Técnicas probadas de venta sugestiva y combos para incrementar el consumo promedio por visita sin depender de descuentos.</p></div>
-              </div>
-              <div class="inc-item">
-                <button class="inc-btn" type="button"><span class="inc-check">✔</span> Sesiones grupales en vivo<span class="inc-arrow">▾</span></button>
-                <div class="inc-detail"><p>Acompañamiento en vivo para resolver dudas, recibir feedback y acelerar la implementación de tus resultados.</p></div>
-              </div>
-              <div class="inc-item">
-                <button class="inc-btn" type="button"><span class="inc-check">✔</span> Comunidad exclusiva<span class="inc-arrow">▾</span></button>
-                <div class="inc-detail"><p>Conéctate con otros dueños de restaurantes, comparte experiencias y crece junto a una comunidad activa.</p></div>
-              </div>
-              <div class="inc-item">
-                <button class="inc-btn" type="button"><span class="inc-check">✔</span> Bonos premium<span class="inc-arrow">▾</span></button>
-                <div class="inc-detail"><p>Recursos y herramientas adicionales que te ayudarán a implementar y escalar tu sistema mucho más rápido.</p></div>
-              </div>
-            </div>
+      <!-- Columna izquierda: resumen del curso -->
+      <div class="checkout-left">
+        <div class="checkout-summary">
+          <div class="cs-banner">WORKSHOP MARCA START + MARCA PROFIT<br><span class="cs-2en1">2 EN 1</span></div>
+          <div class="cs-img" style="background-image:linear-gradient(rgba(8,18,40,.25),rgba(8,18,40,.35)),url('https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=900&q=80')"></div>
+          <div class="price-card price-compare">
+            <div class="pc-valued">TODO ESTO VALORADO POR:</div>
+            <div class="pc-old">$97 USD</div>
+            <div class="pc-today">SOLO POR HOY:</div>
+            <div class="pc-big">$49 <span style="font-size:.5em">USD</span></div>
+          </div>
+          <div class="cs-body">
+            <p style="color:var(--gray-500);font-size:.92rem">Incluye todo MARCA START + estrategia avanzada de fidelización,
+              calendario de campañas, manual de atención al cliente, sesiones grupales en vivo, comunidad exclusiva y bonos premium.</p>
           </div>
         </div>
 
-        <div class="checkout-right">
-        <form class="pay-card" onsubmit="return false">
-          <h3>Información de contacto</h3>
-          <div class="form-row">
-            <div><label>Nombre</label><input id="coNombre" type="text" placeholder="Nombre" /></div>
-            <div><label>Apellidos</label><input id="coApellidos" type="text" placeholder="Apellidos" /></div>
+        <!-- MARCA PROFIT incluye -->
+        <div class="co-includes">
+          <h3>MARCA PROFIT INCLUYE</h3>
+          <p class="plus-line">Todo MARCA START +</p>
+          <div class="inc-acc">
+            <div class="inc-item open">
+              <button class="inc-btn" type="button"><span class="inc-check">✔</span> Estrategia avanzada de fidelización<span class="inc-arrow">▾</span></button>
+              <div class="inc-detail"><p>Construye relaciones duraderas con tus clientes mediante sistemas de recompra, recompensas y seguimiento para que vuelvan una y otra vez.</p></div>
+            </div>
+            <div class="inc-item">
+              <button class="inc-btn" type="button"><span class="inc-check">✔</span> Calendario de campañas<span class="inc-arrow">▾</span></button>
+              <div class="inc-detail"><p>Planifica todo el año con campañas estratégicas que atraen, convierten y fidelizan, sin tener que improvisar cada semana.</p></div>
+            </div>
+            <div class="inc-item">
+              <button class="inc-btn" type="button"><span class="inc-check">✔</span> Manual de atención al cliente<span class="inc-arrow">▾</span></button>
+              <div class="inc-detail"><p>Estandariza una atención excepcional y crea experiencias memorables que generan lealtad en tu restaurante.</p></div>
+            </div>
+            <div class="inc-item">
+              <button class="inc-btn" type="button"><span class="inc-check">✔</span> Sistema para aumentar ticket promedio<span class="inc-arrow">▾</span></button>
+              <div class="inc-detail"><p>Técnicas probadas de venta sugestiva y combos para incrementar el consumo promedio por visita sin depender de descuentos.</p></div>
+            </div>
+            <div class="inc-item">
+              <button class="inc-btn" type="button"><span class="inc-check">✔</span> Sesiones grupales en vivo<span class="inc-arrow">▾</span></button>
+              <div class="inc-detail"><p>Acompañamiento en vivo para resolver dudas, recibir feedback y acelerar la implementación de tus resultados.</p></div>
+            </div>
+            <div class="inc-item">
+              <button class="inc-btn" type="button"><span class="inc-check">✔</span> Comunidad exclusiva<span class="inc-arrow">▾</span></button>
+              <div class="inc-detail"><p>Conéctate con otros dueños de restaurantes, comparte experiencias y crece junto a una comunidad activa.</p></div>
+            </div>
+            <div class="inc-item">
+              <button class="inc-btn" type="button"><span class="inc-check">✔</span> Bonos premium<span class="inc-arrow">▾</span></button>
+              <div class="inc-detail"><p>Recursos y herramientas adicionales que te ayudarán a implementar y escalar tu sistema mucho más rápido.</p></div>
+            </div>
           </div>
-          <label>Dirección de correo electrónico</label>
-          <input id="coEmail" type="email" placeholder="tucorreo@ejemplo.com" />
-          <label>Número de teléfono</label>
-          <input id="coTel" type="tel" placeholder="+593 ..." />
+        </div>
+      </div>
 
-          <hr class="pay-divider" />
+      <!-- Columna derecha: flujo de 4 pasos -->
+      <div class="checkout-right">
+      <div class="ck-wrap">
 
-          <!-- Método de pago -->
-          <div class="pay-tabs">
-            <button type="button" class="pay-tab active" data-pay="tarjeta">💳 Tarjeta</button>
-            <button type="button" class="pay-tab" data-pay="transfer">🏦 Transferencia</button>
+      <!-- Indicador de pasos -->
+      <div class="ck-steps">
+        <span class="ck-step active" id="ckDot1">1<small>Cuenta</small></span>
+        <span class="ck-step" id="ckDot2">2<small>Resumen</small></span>
+        <span class="ck-step" id="ckDot3">3<small>Pago</small></span>
+        <span class="ck-step" id="ckDot4">4<small>Acceso</small></span>
+      </div>
+
+      <!-- PASO 1: Crear cuenta -->
+      <div class="ck-panel" id="ckStep1">
+        <div class="ck-card" id="ckRegistroBox">
+          <h2 class="ck-card-title">Crea tu cuenta</h2>
+          <form id="ckFormRegistro">
+            <div class="form-row">
+              <div><label>Nombre *</label><input id="ckNombre" type="text" required /></div>
+              <div><label>Apellido *</label><input id="ckApellido" type="text" required /></div>
+            </div>
+            <label>Correo electrónico *</label>
+            <input id="ckEmail" type="email" required />
+            <label>WhatsApp *</label>
+            <input id="ckTel" type="tel" placeholder="+593 ..." required />
+            <label>Contraseña *</label>
+            <input id="ckPass" type="password" minlength="6" required />
+            <label>Confirmar contraseña *</label>
+            <input id="ckPass2" type="password" minlength="6" required />
+            <label class="ck-terms"><input id="ckTerms" type="checkbox" required /> Acepto los términos</label>
+            <div id="ckRegMsg" class="ck-msg"></div>
+            <button type="submit" class="btn btn-gold" style="width:100%;margin-top:16px;">CONTINUAR</button>
+          </form>
+          <p class="ck-switch">¿Ya tienes cuenta? <a id="ckIrLogin">Iniciar sesión</a></p>
+        </div>
+
+        <!-- Mini login -->
+        <div class="ck-card" id="ckLoginBox" hidden>
+          <h2 class="ck-card-title">Iniciar sesión</h2>
+          <form id="ckFormLogin">
+            <label>Correo electrónico</label>
+            <input id="ckLoginEmail" type="email" required />
+            <label>Contraseña</label>
+            <input id="ckLoginPass" type="password" required />
+            <div id="ckLoginMsg" class="ck-msg"></div>
+            <button type="submit" class="btn btn-gold" style="width:100%;margin-top:16px;">INGRESAR</button>
+          </form>
+          <p class="ck-switch">¿No tienes cuenta? <a id="ckIrRegistro">Crear cuenta</a></p>
+        </div>
+      </div>
+
+      <!-- PASO 2: Resumen -->
+      <div class="ck-panel" id="ckStep2" hidden>
+        <div class="ck-card">
+          <a href="javascript:void(0)" class="ck-back" id="ckBack2">← Volver</a>
+          <h2 class="ck-card-title">Hola <span id="ckHola">👋</span></h2>
+          <p style="text-align:center;color:var(--gray-500);margin-top:-10px;">Estás a punto de obtener:</p>
+          <ul class="check-list" style="max-width:100%;margin:16px 0 0;">
+            <li>Workshop MARCA START + MARCA PROFIT (2 en 1)</li>
+            <li>Acceso inmediato y de por vida</li>
+            <li>Estrategia avanzada de fidelización</li>
+            <li>Calendario de campañas</li>
+            <li>Manual de atención al cliente</li>
+            <li>Sesiones grupales en vivo</li>
+            <li>Comunidad exclusiva</li>
+            <li>Bonos premium</li>
+          </ul>
+          <div class="ck-totals">
+            <div><span>Valorado en</span><span style="text-decoration:line-through">$97</span></div>
+            <div><span>Subtotal hoy</span><span>$49</span></div>
+            <div class="ck-total"><span>TOTAL</span><span>$49</span></div>
+          </div>
+          <button type="button" class="btn btn-gold" id="ckContinuarPago" style="width:100%;margin-top:18px;">Continuar al pago</button>
+        </div>
+      </div>
+
+      <!-- PASO 3: Pago -->
+      <div class="ck-panel" id="ckStep3" hidden>
+        <div class="ck-card">
+          <a href="javascript:void(0)" class="ck-back" id="ckBack3">← Volver</a>
+          <h2 class="ck-card-title">Selecciona tu forma de pago</h2>
+          <div class="ck-pay-methods">
+            <label class="ck-pay-opt"><input type="radio" name="ckMetodo" value="tarjeta" /> 💳 Tarjeta</label>
+            <label class="ck-pay-opt"><input type="radio" name="ckMetodo" value="payphone" /> 🐳 PayPhone</label>
+            <label class="ck-pay-opt"><input type="radio" name="ckMetodo" value="transfer" checked /> 🏦 Transferencia</label>
           </div>
 
-          <div id="pay-transfer" class="transfer-panel" hidden>
-            <p class="tp-note">Realiza el pago por transferencia y sube la foto del comprobante. Te daremos acceso al confirmar el pago.</p>
+          <div id="ckPayNotice" class="ck-notice" hidden>
+            Pagos con tarjeta y PayPhone estarán disponibles muy pronto. Mientras tanto, usa <b>Transferencia</b>: es rápido de confirmar y tu acceso se activa apenas se apruebe el pago.
+          </div>
+
+          <div id="ckPayTransfer" class="transfer-panel">
             <h3 class="tp-heading">DATOS PARA EL PAGO</h3>
             <p class="tp-amount">Valor de la inscripción: USD 49</p>
-
             <div class="bank-grid">
               <div class="bank-card">
                 <h4>Banco Pichincha</h4>
@@ -127,69 +196,35 @@
                 <p style="font-size:.82rem;color:var(--gray-500)">Escanea, ingresa USD 49 y paga.</p>
               </div>
             </div>
-
             <label>Comprobante de pago (foto) <span class="tr-req">*</span></label>
             <input id="trFile" type="file" accept="image/*" />
-            <p style="color:var(--gray-500);font-size:.82rem;margin:6px 0 14px">Sube la foto o captura del pago (JPG/PNG). Sin el comprobante no se aprueba tu inscripción.</p>
-            <button id="trEnviar" type="button" class="btn btn-gold" style="width:100%">Enviar comprobante</button>
-            <div id="trMsg" style="margin-top:12px;font-weight:700"></div>
+            <p style="color:var(--gray-500);font-size:.82rem;margin:6px 0 14px">Sube la foto o captura del pago (JPG/PNG).</p>
+            <button id="trEnviar" type="button" class="btn btn-gold" style="width:100%">PAGAR AHORA</button>
+            <div id="trMsg" class="ck-msg"></div>
           </div>
 
-          <div id="pay-tarjeta">
-          <!-- Widget Payphone -->
-          <div class="payphone">
-            <div class="pp-bar">
-              <span class="pp-whale">🐳</span>
-              <span class="pp-title">Check out</span>
-              <span class="pp-timer">08:50</span>
-            </div>
-            <div class="pp-body">
-              <div class="pp-store">
-                <span>Pagar a Tienda Payphone</span>
-                <span class="pp-x">✕</span>
-              </div>
-              <div class="pp-amount">› $ 49.00</div>
-
-              <div class="pp-label">Pagar con</div>
-              <div class="pp-paywith">
-                <button class="pp-method active" type="button"><span class="pp-mlogo">◯ payphone</span><small>Visa 💳</small></button>
-                <button class="pp-method" type="button"><span class="pp-mlogo">🐳 app</span></button>
-              </div>
-
-              <div class="pp-label">Información de tarjeta</div>
-              <div class="pp-field"><span class="pp-ico">💳</span><input type="text" placeholder="Ingresar número de tarjeta" /></div>
-              <div class="pp-grid2">
-                <div class="pp-field"><span class="pp-ico">📅</span><input type="text" placeholder="MM / AA" /></div>
-                <div class="pp-field"><span class="pp-ico">🔒</span><input type="text" placeholder="CVV" /></div>
-              </div>
-              <div class="pp-field"><span class="pp-ico">👤</span><input type="text" placeholder="Ingresar titular de tarjeta" /></div>
-
-              <div class="pp-label">Información personal del titular de tarjeta</div>
-              <div class="pp-field"><select><option>Cédula de Identidad</option><option>Pasaporte</option><option>RUC</option></select></div>
-              <div class="pp-field"><input type="text" placeholder="Número de Identidad" /></div>
-
-              <div class="pp-label">Información de contacto del titular de tarjeta</div>
-              <div class="pp-field"><span class="pp-ico">✉️</span><input type="email" placeholder="Ingresar un correo electrónico" /></div>
-              <div class="pp-field"><span class="pp-ico">🇪🇨</span><input type="tel" placeholder="+593  Número celular" /></div>
-
-              <p class="pp-terms">Al realizar el pago aceptas Términos y Condiciones</p>
-              <div class="pp-total"><span>TOTAL:</span><span class="pp-total-amt">[TEST] $49.00</span></div>
-              <button class="pp-pay" type="button">▭ Pagar</button>
-              <div class="pp-foot">
-                <span>Verified by <b>VISA</b></span>
-                <span><b>MasterCard</b> SecureCode</span>
-                <span>Powered by <b>payphone</b></span>
-              </div>
-            </div>
+          <div class="ck-totals">
+            <div class="ck-total"><span>Total</span><span>USD 49</span></div>
           </div>
-          </div><!-- /pay-tarjeta -->
-        </form>
         </div>
       </div>
 
-      <div style="text-align:center;margin-top:30px">
-        <a href="workshop-marca-profit.html" class="btn btn-outline-navy">← Volver al Workshop MARCA PROFIT</a>
+      <!-- PASO 4: Resultado -->
+      <div class="ck-panel" id="ckStep4" hidden>
+        <div class="ck-card ck-result pending" id="ckResultCard">
+          <div class="ico">⏳</div>
+          <h2>Pago pendiente</h2>
+          <p>Estamos confirmando tu pago. En cuanto se apruebe, verás tu acceso aquí mismo.</p>
+        </div>
       </div>
+
+      </div><!-- /ck-wrap -->
+      </div><!-- /checkout-right -->
+
+    </div>
+
+    <div style="text-align:center;margin-top:30px">
+      <a href="workshop-marca-profit.html" class="btn btn-outline-navy">← Volver al Workshop MARCA PROFIT</a>
     </div>
   </section>
 
@@ -216,17 +251,114 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="js/auth.js"></script>
+  <script src="js/usuarios-data.js"></script>
   <script src="js/inscripciones-data.js"></script>
   <script>
   (function () {
     var CURSO = 'MARCA PROFIT', MONTO = 49;
-    document.querySelectorAll('.pay-tab').forEach(function (b) {
-      b.addEventListener('click', function () {
-        document.querySelectorAll('.pay-tab').forEach(function (x) { x.classList.remove('active'); });
-        b.classList.add('active');
-        var m = b.getAttribute('data-pay');
-        document.getElementById('pay-tarjeta').hidden = (m !== 'tarjeta');
-        document.getElementById('pay-transfer').hidden = (m !== 'transfer');
+    var sesion = null;
+    var inscripcionActual = null;
+
+    function irAPaso(n) {
+      [1, 2, 3, 4].forEach(function (i) {
+        document.getElementById('ckStep' + i).hidden = (i !== n);
+        var dot = document.getElementById('ckDot' + i);
+        dot.classList.toggle('active', i === n);
+        dot.classList.toggle('done', i < n);
+      });
+      window.scrollTo({ top: document.getElementById('comprar').offsetTop - 20, behavior: 'smooth' });
+    }
+
+    function primerNombre(nombre) { return (nombre || '').trim().split(' ')[0] || 'de nuevo'; }
+
+    function irAResumen() {
+      document.getElementById('ckHola').textContent = primerNombre(sesion.nombre) + ' 👋';
+      irAPaso(2);
+    }
+
+    (function detectarSesion() {
+      try {
+        var cached = JSON.parse(localStorage.getItem('estrategium_est') || 'null');
+        if (cached && cached.email) { sesion = cached; irAResumen(); }
+      } catch (e) {}
+    })();
+
+    document.getElementById('ckFormRegistro').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var msg = document.getElementById('ckRegMsg');
+      msg.className = 'ck-msg';
+      var nombre = document.getElementById('ckNombre').value.trim();
+      var apellido = document.getElementById('ckApellido').value.trim();
+      var email = document.getElementById('ckEmail').value.trim();
+      var tel = document.getElementById('ckTel').value.trim();
+      var pass = document.getElementById('ckPass').value;
+      var pass2 = document.getElementById('ckPass2').value;
+      var terms = document.getElementById('ckTerms').checked;
+
+      if (!nombre || !apellido || !email || !tel || !pass || !pass2) { msg.classList.add('err'); msg.textContent = 'Completa todos los campos.'; return; }
+      if (pass.length < 6) { msg.classList.add('err'); msg.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
+      if (pass !== pass2) { msg.classList.add('err'); msg.textContent = 'Las contraseñas no coinciden.'; return; }
+      if (!terms) { msg.classList.add('err'); msg.textContent = 'Debes aceptar los términos.'; return; }
+      if (!window.registrarEstudiante) { msg.classList.add('err'); msg.textContent = 'Sistema no disponible. Intenta más tarde.'; return; }
+
+      var btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Creando cuenta...';
+
+      window.registrarEstudiante({ nombre: nombre, apellido: apellido, email: email, telefono: tel, pass: pass }).then(function (info) {
+        sesion = info;
+        irAResumen();
+      }).catch(function (err) {
+        btn.disabled = false; btn.textContent = 'CONTINUAR';
+        msg.classList.add('err');
+        if (err && err.code === 'auth/email-already-in-use') {
+          msg.textContent = 'Ya existe una cuenta con este correo.';
+          document.getElementById('ckLoginEmail').value = email;
+          mostrarLogin();
+        } else if (err && err.code === 'auth/invalid-email') {
+          msg.textContent = 'El correo no es válido.';
+        } else {
+          msg.textContent = 'No se pudo crear la cuenta: ' + ((err && err.message) || 'intenta de nuevo') + '.';
+        }
+      });
+    });
+
+    function mostrarLogin() { document.getElementById('ckRegistroBox').hidden = true; document.getElementById('ckLoginBox').hidden = false; }
+    function mostrarRegistro() { document.getElementById('ckLoginBox').hidden = true; document.getElementById('ckRegistroBox').hidden = false; }
+    document.getElementById('ckIrLogin').addEventListener('click', mostrarLogin);
+    document.getElementById('ckIrRegistro').addEventListener('click', mostrarRegistro);
+
+    document.getElementById('ckFormLogin').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var msg = document.getElementById('ckLoginMsg');
+      msg.className = 'ck-msg';
+      var email = document.getElementById('ckLoginEmail').value.trim();
+      var pass = document.getElementById('ckLoginPass').value;
+      if (!email || !pass) { msg.classList.add('err'); msg.textContent = 'Escribe tu correo y contraseña.'; return; }
+      if (!window.iniciarSesionEstudiante) { msg.classList.add('err'); msg.textContent = 'Sistema no disponible. Intenta más tarde.'; return; }
+
+      var btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Ingresando...';
+      window.iniciarSesionEstudiante(email, pass).then(function (info) {
+        sesion = info;
+        irAResumen();
+      }).catch(function () {
+        btn.disabled = false; btn.textContent = 'INGRESAR';
+        msg.classList.add('err'); msg.textContent = 'Correo o contraseña incorrectos.';
+      });
+    });
+
+    document.getElementById('ckContinuarPago').addEventListener('click', function () { irAPaso(3); });
+    document.getElementById('ckBack2').addEventListener('click', function () { irAPaso(1); });
+    document.getElementById('ckBack3').addEventListener('click', function () { irAPaso(2); });
+
+    document.querySelectorAll('input[name="ckMetodo"]').forEach(function (r) {
+      r.addEventListener('change', function () {
+        var m = r.value;
+        document.getElementById('ckPayTransfer').hidden = (m !== 'transfer');
+        document.getElementById('ckPayNotice').hidden = (m === 'transfer');
+        document.querySelectorAll('.ck-pay-opt').forEach(function (lab) {
+          lab.classList.toggle('active', lab.querySelector('input').checked);
+        });
       });
     });
 
@@ -252,31 +384,83 @@
     });
 
     document.getElementById('trEnviar').addEventListener('click', function () {
-      var nombre = ((document.getElementById('coNombre').value || '') + ' ' + (document.getElementById('coApellidos').value || '')).trim();
-      var email = (document.getElementById('coEmail').value || '').trim();
-      var tel = (document.getElementById('coTel').value || '').trim();
       var msg = document.getElementById('trMsg');
-
-      if (!nombre) { msg.style.color = '#e53935'; msg.textContent = 'Escribe tu nombre y apellidos arriba.'; return; }
-      if (!email) { msg.style.color = '#e53935'; msg.textContent = 'Escribe tu correo arriba.'; return; }
-      if (!fileData) { msg.style.color = '#e53935'; msg.textContent = 'Sube la foto del comprobante.'; return; }
+      msg.className = 'ck-msg';
+      if (!sesion) { msg.classList.add('err'); msg.textContent = 'Crea tu cuenta primero.'; return; }
+      if (!fileData) { msg.classList.add('err'); msg.textContent = 'Sube la foto del comprobante.'; return; }
 
       var btn = this; btn.disabled = true; btn.textContent = 'Enviando...';
       Promise.resolve(Inscripciones.add({
-        nombre: nombre, email: email, telefono: tel, cedula: '', clave: '',
+        nombre: sesion.nombre, email: sesion.email, telefono: sesion.telefono || '', cedula: '', clave: '',
         curso: CURSO, monto: MONTO, comprobante: fileData, estado: 'pendiente',
         fecha: new Date().toLocaleString('es-EC')
-      })).then(function () {
-        msg.style.color = '#1a8f4c';
-        msg.innerHTML = '✅ ¡Inscripción enviada! Tu pago está <b>pendiente de aprobación</b>. En cuanto el administrador lo confirme, podrás entrar con tu correo y contraseña en <a href="login-estudiantes.html">Login estudiantes</a>.';
-        btn.textContent = 'Enviado ✓';
+      })).then(function (id) {
+        inscripcionActual = id;
+        mostrarPendiente();
+        irAPaso(4);
+        escucharAprobacion();
+        escucharEstadoInscripcion();
       }).catch(function (e) {
-        btn.disabled = false; btn.textContent = 'Enviar comprobante';
-        msg.style.color = '#e53935'; msg.textContent = 'No se pudo enviar: ' + ((e && e.message) || 'intenta con una foto más pequeña o revisa tu conexión') + '.';
+        btn.disabled = false; btn.textContent = 'PAGAR AHORA';
+        msg.classList.add('err');
+        msg.textContent = 'No se pudo enviar: ' + ((e && e.message) || 'intenta con una foto más pequeña') + '.';
       });
     });
+
+    function mostrarPendiente() {
+      var card = document.getElementById('ckResultCard');
+      card.className = 'ck-card ck-result pending';
+      card.innerHTML = '<div class="ico">⏳</div><h2>Pago pendiente</h2>' +
+        '<p>Recibimos tu comprobante. En cuanto el administrador confirme tu pago, tu acceso se activará automáticamente aquí y podrás ingresar a tu panel.</p>';
+    }
+    function mostrarAprobado() {
+      var card = document.getElementById('ckResultCard');
+      card.className = 'ck-card ck-result ok';
+      card.innerHTML = '<div class="ico">✔</div><h2>FELICIDADES</h2>' +
+        '<p>Tu pago fue aprobado. Ya tienes acceso al Workshop.</p>' +
+        '<a href="mis-cursos.html" class="btn btn-gold" style="margin-top:14px;display:inline-block;">IR A MI PANEL</a>';
+    }
+    var mostrandoAprobado = false;
+    function mostrarNegado() {
+      if (mostrandoAprobado) return;
+      var card = document.getElementById('ckResultCard');
+      card.className = 'ck-card ck-result fail';
+      card.innerHTML = '<div class="ico">✕</div><h2>No pudimos confirmar tu pago</h2>' +
+        '<p>Revisa tu comprobante e inténtalo de nuevo. No necesitas volver a registrarte.</p>' +
+        '<button type="button" class="btn btn-gold" id="ckReintentar" style="margin-top:14px;">Pagar otra vez</button>';
+      document.getElementById('ckReintentar').addEventListener('click', function () {
+        document.getElementById('trMsg').className = 'ck-msg';
+        document.getElementById('trMsg').textContent = '';
+        document.getElementById('trFile').value = '';
+        fileData = '';
+        document.getElementById('trEnviar').disabled = false;
+        document.getElementById('trEnviar').textContent = 'PAGAR AHORA';
+        irAPaso(3);
+      });
+    }
+
+    function escucharAprobacion() {
+      if (!window.Usuarios || !sesion) return;
+      Usuarios.onChange(function (lista) {
+        var yo = lista.filter(function (u) { return (u.email || '').toLowerCase() === sesion.email.toLowerCase(); })[0];
+        if (yo && (yo.cursos || []).indexOf(CURSO) >= 0) {
+          mostrandoAprobado = true;
+          mostrarAprobado();
+          try {
+            var cached = JSON.parse(localStorage.getItem('estrategium_est') || 'null');
+            if (cached) { cached.cursos = yo.cursos; localStorage.setItem('estrategium_est', JSON.stringify(cached)); }
+          } catch (e) {}
+        }
+      });
+    }
+    function escucharEstadoInscripcion() {
+      if (!window.Inscripciones || !inscripcionActual) return;
+      Inscripciones.onChange(function (lista) {
+        var mia = lista.filter(function (i) { return i.id === inscripcionActual; })[0];
+        if (mia && mia.estado === 'negado') mostrarNegado();
+      });
+    }
   })();
   </script>
 </body>
 </html>
-

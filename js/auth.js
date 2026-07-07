@@ -118,6 +118,60 @@
     });
   };
 
+  // Crea una cuenta de estudiante real (Firebase Auth + Firestore) y deja la
+  // sesión abierta en este navegador SIN redirigir (para continuar el checkout).
+  window.registrarEstudiante = function (datos) {
+    var email = (datos.email || '').trim();
+    var pass = datos.pass || '';
+    var telefono = datos.telefono || '';
+    var nombreCompleto = ((datos.nombre || '') + ' ' + (datos.apellido || '')).trim();
+    return auth.createUserWithEmailAndPassword(email, pass).then(function (res) {
+      var u = res.user;
+      return u.updateProfile({ displayName: nombreCompleto }).then(function () { return u; });
+    }).then(function (u) {
+      var existente = window.Usuarios ? Usuarios.getAll().filter(function (x) {
+        return (x.email || '').toLowerCase() === email.toLowerCase();
+      })[0] : null;
+      var campos = { nombre: nombreCompleto, email: email, telefono: telefono, clave: pass, rol: 'Estudiante', estado: 'Activo' };
+      if (existente) {
+        return Promise.resolve(Usuarios.update(existente.id, campos)).then(function () {
+          return { uid: u.uid, nombre: nombreCompleto, email: email, telefono: telefono, cursos: existente.cursos || [] };
+        });
+      }
+      campos.cursos = [];
+      return Promise.resolve(Usuarios.add(campos)).then(function () {
+        return { uid: u.uid, nombre: nombreCompleto, email: email, telefono: telefono, cursos: [] };
+      });
+    }).then(function (info) {
+      try {
+        localStorage.setItem('estrategium_est', JSON.stringify({
+          uid: info.uid, name: info.nombre, email: info.email, telefono: info.telefono,
+          rol: 'estudiante', cursos: info.cursos || []
+        }));
+      } catch (e) {}
+      return info;
+    });
+  };
+
+  // Inicia sesión de estudiante SIN redirigir (para continuar dentro del checkout).
+  window.iniciarSesionEstudiante = function (email, pass) {
+    return auth.signInWithEmailAndPassword(email, pass).then(function (res) {
+      var u = res.user || {};
+      var info = asegurarEstudiante(u);
+      try {
+        localStorage.setItem('estrategium_est', JSON.stringify({
+          uid: u.uid, name: info.nombre, email: u.email, rol: 'estudiante', cursos: info.cursos || []
+        }));
+      } catch (e) {}
+      return { uid: u.uid, nombre: info.nombre, email: u.email, cursos: info.cursos || [] };
+    });
+  };
+
+  // Envía un correo de recuperación de contraseña (Firebase Auth).
+  window.recuperarPassword = function (email) {
+    return auth.sendPasswordResetEmail(email);
+  };
+
   // Cierra sesión SOLO del rol indicado (por el destino). El estudiante NO cierra
   // Firebase, para no afectar la sesión del admin en el mismo navegador.
   window.cerrarSesion = function (destino) {

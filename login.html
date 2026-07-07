@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login — Estrategium Business</title>
-  <link rel="stylesheet" href="css/styles.css?v=44" />
+  <link rel="stylesheet" href="css/styles.css?v=47" />
 </head>
 <body>
 
@@ -40,10 +40,11 @@
       <div class="input-ico">
         <span>🔒</span>
         <input type="password" id="loginPass" placeholder="Enter password" />
+        <button type="button" id="togglePass" title="Ver / ocultar contraseña" aria-label="Ver u ocultar contraseña" style="border:none;background:none;cursor:pointer;font-size:1.05rem;padding:0;line-height:1;">👁️</button>
       </div>
 
       <button class="btn btn-login" type="submit">Login</button>
-      <a href="#" class="forgot">Forgot your password?</a>
+      <a href="#" class="forgot" id="forgotLink">Forgot your password?</a>
 
       <div class="login-divider">o continúa con</div>
       <a class="btn-google" href="mis-cursos.html" id="googleBtn">
@@ -62,11 +63,23 @@
 
   <!-- Firebase Authentication (Google) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/usuarios-data.js"></script>
   <script>
+    // Ver / ocultar contraseña
+    (function () {
+      var tp = document.getElementById('togglePass');
+      if (tp) tp.addEventListener('click', function () {
+        var inp = document.getElementById('loginPass');
+        var show = inp.type === 'password';
+        inp.type = show ? 'text' : 'password';
+        tp.textContent = show ? '🙈' : '👁️';
+        inp.focus();
+      });
+    })();
     document.getElementById('googleBtn').addEventListener('click', function (e) {
       if (window.googleListo && window.loginConGoogle) { e.preventDefault(); window.loginConGoogle('estudiante'); }
     });
@@ -81,6 +94,20 @@
       try {
         localStorage.setItem('estrategium_est', JSON.stringify({ name: u.nombre, email: u.email, rol: 'estudiante', cursos: u.cursos || [] }));
       } catch (x) {}
+    });
+    // Recuperar contraseña
+    document.getElementById('forgotLink').addEventListener('click', function (e) {
+      e.preventDefault();
+      var email = (document.getElementById('loginEmail').value || '').trim();
+      if (!email) email = (window.prompt('Ingresa tu correo para enviarte el enlace de recuperación:') || '').trim();
+      if (!email) return;
+      if (!window.googleListo || !window.recuperarPassword) { alert('Sistema no disponible por el momento. Intenta más tarde.'); return; }
+      window.recuperarPassword(email).then(function () {
+        alert('Te enviamos un correo a ' + email + ' con instrucciones para restablecer tu contraseña. Revisa también la carpeta de spam.');
+      }).catch(function (err) {
+        if (err && err.code === 'auth/user-not-found') { alert('No encontramos una cuenta con ese correo.'); return; }
+        alert('No se pudo enviar el correo de recuperación. Verifica el correo e intenta de nuevo.');
+      });
     });
   </script>
 </body>

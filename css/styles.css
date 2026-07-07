@@ -1404,3 +1404,60 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
   .topbar { text-align: center; }
   .btn-whatsapp { width: 100%; }
 }
+
+/* =====================================================================
+   Checkout — flujo de 4 pasos (cuenta → resumen → pago → acceso)
+   ===================================================================== */
+.ck-wrap { max-width: 560px; margin: 0 auto; }
+.checkout-right .ck-wrap { max-width: none; margin: 0; }
+.checkout-right { display: flex; flex-direction: column; }
+.ck-steps { display: flex; justify-content: center; gap: 10px; margin-bottom: 34px; }
+.ck-step {
+  flex: 1; max-width: 120px; text-align: center; font-weight: 800; font-size: 1.05rem;
+  color: var(--gray-500); position: relative; padding-bottom: 6px;
+}
+.ck-step small { display: block; font-weight: 600; font-size: .72rem; letter-spacing: .5px; text-transform: uppercase; margin-top: 2px; }
+.ck-step::after { content: ""; display: block; height: 3px; background: #e2e8f0; border-radius: 3px; margin-top: 8px; }
+.ck-step.active, .ck-step.done { color: var(--navy-900); }
+.ck-step.active::after, .ck-step.done::after { background: var(--gold); }
+
+.ck-card {
+  background: #fff; border: 1px solid #e5e9f0; border-radius: 16px;
+  padding: 30px 28px; box-shadow: var(--shadow); margin-bottom: 22px;
+}
+.ck-card-title { font-size: 1.4rem; color: var(--navy-900); margin: 0 0 18px; text-align: center; }
+.ck-card label { display: block; font-weight: 700; font-size: .86rem; color: var(--navy-900); margin: 12px 0 5px; }
+.ck-card input[type="text"], .ck-card input[type="email"], .ck-card input[type="tel"], .ck-card input[type="password"] {
+  width: 100%; padding: 12px 13px; border: 1px solid #dfe4ec; border-radius: 9px; font-size: .95rem; box-sizing: border-box;
+}
+.ck-card .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ck-terms { display: flex; gap: 8px; align-items: center; font-weight: 400 !important; font-size: .88rem; margin-top: 16px !important; }
+.ck-terms input { width: auto !important; }
+.ck-msg { font-weight: 700; font-size: .88rem; margin-top: 10px; min-height: 0; }
+.ck-msg.err { color: #e53935; }
+.ck-msg.ok { color: #1a8f4c; }
+.ck-switch { text-align: center; margin-top: 16px; color: var(--gray-500); font-size: .9rem; }
+.ck-switch a { color: var(--navy-900); font-weight: 700; text-decoration: underline; cursor: pointer; }
+.ck-back { display: inline-block; font-weight: 700; font-size: .85rem; color: var(--gray-500); text-decoration: none; margin-bottom: 14px; cursor: pointer; }
+.ck-back:hover { color: var(--navy-900); }
+
+.ck-totals { border-top: 1px solid #e5e9f0; margin-top: 18px; padding-top: 14px; }
+.ck-totals > div { display: flex; justify-content: space-between; padding: 4px 0; color: var(--gray-500); }
+.ck-totals .ck-total { font-size: 1.25rem; font-weight: 800; color: var(--navy-900); border-top: 1px dashed #dfe4ec; margin-top: 8px; padding-top: 10px; }
+
+.ck-pay-methods { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+.ck-pay-opt {
+  display: flex; align-items: center; gap: 10px; border: 1px solid #dfe4ec; border-radius: 10px;
+  padding: 13px 16px; font-weight: 700; cursor: pointer; color: var(--navy-900);
+}
+.ck-pay-opt:has(input:checked), .ck-pay-opt.active { border-color: var(--gold); background: #fdf8ee; }
+.ck-pay-opt input { width: auto; }
+.ck-notice { background: #fff7e6; border: 1px solid #f0d99a; color: #7a5b00; border-radius: 10px; padding: 14px 16px; font-size: .9rem; margin-bottom: 16px; }
+
+.ck-result { text-align: center; padding: 12px 4px; }
+.ck-result .ico { font-size: 3rem; margin-bottom: 10px; }
+.ck-result h2 { color: var(--navy-900); margin-bottom: 8px; }
+.ck-result p { color: var(--gray-500); font-size: 1rem; }
+.ck-result.ok .ico { color: #1a8f4c; }
+.ck-result.pending .ico { color: var(--gold); }
+.ck-result.fail .ico { color: #e53935; }
