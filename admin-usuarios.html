@@ -242,33 +242,20 @@
       var r = rowsMap[key]; if (!r || !r.ins) return;
       var i = r.ins;
       var est = studentByEmail(i.email);
+      // Por privacidad, el admin nunca ve ni define la contraseña del estudiante:
+      // se conserva la que el propio estudiante eligió al registrarse (o queda
+      // vacía si entró con "Continuar con Google", que maneja su propio acceso).
       var claveActual = i.clave || (est && est.clave) || '';
-      // Si ya existe como usuario pero nunca tuvo una contraseña de texto plano,
-      // es porque entró con "Continuar con Google" (Google maneja su acceso) —
-      // no tiene sentido pedirle al admin que le invente una contraseña.
-      var entroConGoogle = !!est && !claveActual;
-      var clave = claveActual;
-      if (entroConGoogle) {
-        if (!confirm('Aprobar a "' + i.nombre + '" (' + i.email + ') en ' + i.curso + '?\n\nEntró con Google, no necesita contraseña para acceder.')) return;
-      } else {
-        clave = prompt('Aprobar a "' + i.nombre + '" (' + i.email + ') en ' + i.curso + '.\n\nEscribe la CONTRASEÑA con la que entrará a sus cursos:', claveActual);
-        if (clave === null) return;
-        clave = (clave || '').trim();
-      }
+      if (!confirm('Aprobar a "' + i.nombre + '" (' + i.email + ') en ' + i.curso + '?')) return;
       if (est) {
         var cursos = est.cursos || [];
         if (cursos.indexOf(i.curso) < 0) cursos.push(i.curso);
-        Usuarios.update(est.id, { cursos: cursos, clave: clave || est.clave, estado: 'Activo' });
+        Usuarios.update(est.id, { cursos: cursos, clave: claveActual || est.clave, estado: 'Activo' });
       } else {
-        Usuarios.add({ nombre: i.nombre, email: i.email, clave: clave, cursos: [i.curso], rol: 'Estudiante', estado: 'Activo' });
+        Usuarios.add({ nombre: i.nombre, email: i.email, clave: claveActual, cursos: [i.curso], rol: 'Estudiante', estado: 'Activo' });
       }
       Inscripciones.update(i.id, { estado: 'aprobado' });
-      if (entroConGoogle) {
-        alert('✅ Aprobado.\n\nEl estudiante entra con "Continuar con Google" usando: ' + i.email + '\ny verá el curso ' + i.curso + '.');
-      } else {
-        var claveFinal = clave || (est && est.clave) || '(sin cambios)';
-        alert('✅ Aprobado.\n\nEl estudiante entra en "Login estudiantes" con:\nCorreo: ' + i.email + '\nContraseña: ' + claveFinal + '\n\ny verá el curso ' + i.curso + '. Comparte estas credenciales con él.');
-      }
+      alert('✅ Aprobado.\n\n' + i.nombre + ' (' + i.email + ') ya puede acceder con la contraseña que usó al registrarse (o con "Continuar con Google") y verá el curso ' + i.curso + '.');
     }
 
     function negar(key) {

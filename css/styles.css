@@ -1437,6 +1437,29 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
   width: 100%; padding: 12px 13px; border: 1px solid #dfe4ec; border-radius: 9px; font-size: .95rem; box-sizing: border-box;
 }
 .ck-card .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ck-phone-row { display: flex; gap: 8px; }
+.ck-phone-row input { flex: 1; min-width: 0; }
+.ck-pais-select { position: relative; flex: 0 0 88px; }
+.ck-pais-btn {
+  width: 100%; height: 100%; padding: 12px 6px; border: 1px solid #dfe4ec; border-radius: 9px;
+  background: #fff; font-size: .92rem; display: flex; align-items: center; justify-content: center;
+  gap: 4px; cursor: pointer; box-sizing: border-box; color: var(--navy-900);
+}
+.ck-pais-btn:hover { border-color: #c9d2e0; }
+.ck-pais-arrow { font-size: .65rem; color: var(--gray-500); }
+.ck-pais-menu {
+  position: absolute; top: calc(100% + 4px); left: 0; z-index: 20; width: 220px; max-height: 260px;
+  overflow-y: auto; background: #fff; border: 1px solid #dfe4ec; border-radius: 9px;
+  box-shadow: var(--shadow); list-style: none; margin: 0; padding: 6px 0;
+}
+.ck-pais-menu li {
+  padding: 8px 12px; font-size: .87rem; cursor: pointer; display: flex;
+  align-items: center; justify-content: space-between; gap: 10px; white-space: nowrap;
+}
+.ck-pais-menu li:hover { background: #f5f7fb; }
+.ck-pais-menu li b { font-weight: 700; color: var(--navy-900); }
+.ck-flag-img { width: 20px; height: 15px; object-fit: cover; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0,0,0,.08); flex-shrink: 0; }
+@media (max-width: 480px) { .ck-pais-select { flex-basis: 76px; } .ck-pais-menu { width: 200px; } }
 .ck-pass-wrap { position: relative; }
 .ck-pass-wrap input[type="password"], .ck-pass-wrap input[type="text"] { padding-right: 42px !important; }
 .ck-pass-toggle { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer; font-size: 1.05rem; line-height: 1; padding: 4px; }

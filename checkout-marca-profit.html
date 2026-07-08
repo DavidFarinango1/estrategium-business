@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reserva tu acceso — MARCA PROFIT · USD 49</title>
-  <meta name="description" content="Reserva tu acceso MARCA START + MARCA PROFIT 2 en 1. Solo por hoy USD 49." />
-  <link rel="stylesheet" href="css/styles.css?v=61" />
+  <title>Reserva tu acceso — MARCA PROFIT · USD 47</title>
+  <meta name="description" content="Reserva tu acceso MARCA START + MARCA PROFIT 2 en 1. Solo por hoy USD 47." />
+  <link rel="stylesheet" href="css/styles.css?v=67" />
 </head>
 <body>
 
@@ -50,6 +50,9 @@
   </header>
   <script>
   (function () {
+    // Nota: el abrir/cerrar de los menús ".portal-dropdown" ya lo maneja
+    // js/main.js de forma global (lo usan mis-cursos.html, leccion.html, etc.).
+    // Aquí solo mostramos el encabezado correcto y llenamos el correo.
     try {
       var s = JSON.parse(localStorage.getItem('estrategium_est') || 'null');
       if (!s || !s.email) return;
@@ -57,12 +60,6 @@
       var ph = document.getElementById('ckPortalHeader');
       ph.hidden = false;
       document.getElementById('ckPortalEmail').textContent = s.email;
-      ph.querySelectorAll('.portal-dropdown > .portal-pill').forEach(function (p) {
-        p.addEventListener('click', function (e) { e.stopPropagation(); p.parentElement.classList.toggle('open'); });
-      });
-      document.addEventListener('click', function () {
-        ph.querySelectorAll('.portal-dropdown.open').forEach(function (el) { el.classList.remove('open'); });
-      });
       document.getElementById('ckCerrarSesion').addEventListener('click', function (e) {
         e.preventDefault();
         try { localStorage.removeItem('estrategium_est'); } catch (x) {}
@@ -90,7 +87,7 @@
             <div class="pc-valued">TODO ESTO VALORADO POR:</div>
             <div class="pc-old">$97 USD</div>
             <div class="pc-today">SOLO POR HOY:</div>
-            <div class="pc-big">$49 <span style="font-size:.5em">USD</span></div>
+            <div class="pc-big">$47 <span style="font-size:.5em">USD</span></div>
           </div>
           <div class="cs-body">
             <p style="color:var(--gray-500);font-size:.92rem">Incluye todo MARCA START + estrategia avanzada de fidelización,
@@ -159,7 +156,37 @@
             <label>Correo electrónico *</label>
             <input id="ckEmail" type="email" required />
             <label>WhatsApp *</label>
-            <input id="ckTel" type="tel" placeholder="+593 ..." required />
+            <div class="ck-phone-row">
+              <div class="ck-pais-select" id="ckPaisSelect">
+                <button type="button" class="ck-pais-btn" id="ckPaisBtn" aria-haspopup="listbox" aria-expanded="false">
+                  <img id="ckPaisFlag" class="ck-flag-img" src="https://flagcdn.com/24x18/ec.png" alt="" />
+                  <span id="ckPaisCode">+593</span><span class="ck-pais-arrow">▾</span>
+                </button>
+                <input type="hidden" id="ckTelPais" value="+593" />
+                <ul class="ck-pais-menu" id="ckPaisMenu" role="listbox" hidden>
+                  <li role="option" data-code="+593" data-cc="ec"><img class="ck-flag-img" src="https://flagcdn.com/24x18/ec.png" alt="" /> Ecuador <b>+593</b></li>
+                  <li role="option" data-code="+57" data-cc="co"><img class="ck-flag-img" src="https://flagcdn.com/24x18/co.png" alt="" /> Colombia <b>+57</b></li>
+                  <li role="option" data-code="+51" data-cc="pe"><img class="ck-flag-img" src="https://flagcdn.com/24x18/pe.png" alt="" /> Perú <b>+51</b></li>
+                  <li role="option" data-code="+52" data-cc="mx"><img class="ck-flag-img" src="https://flagcdn.com/24x18/mx.png" alt="" /> México <b>+52</b></li>
+                  <li role="option" data-code="+54" data-cc="ar"><img class="ck-flag-img" src="https://flagcdn.com/24x18/ar.png" alt="" /> Argentina <b>+54</b></li>
+                  <li role="option" data-code="+56" data-cc="cl"><img class="ck-flag-img" src="https://flagcdn.com/24x18/cl.png" alt="" /> Chile <b>+56</b></li>
+                  <li role="option" data-code="+591" data-cc="bo"><img class="ck-flag-img" src="https://flagcdn.com/24x18/bo.png" alt="" /> Bolivia <b>+591</b></li>
+                  <li role="option" data-code="+58" data-cc="ve"><img class="ck-flag-img" src="https://flagcdn.com/24x18/ve.png" alt="" /> Venezuela <b>+58</b></li>
+                  <li role="option" data-code="+595" data-cc="py"><img class="ck-flag-img" src="https://flagcdn.com/24x18/py.png" alt="" /> Paraguay <b>+595</b></li>
+                  <li role="option" data-code="+598" data-cc="uy"><img class="ck-flag-img" src="https://flagcdn.com/24x18/uy.png" alt="" /> Uruguay <b>+598</b></li>
+                  <li role="option" data-code="+507" data-cc="pa"><img class="ck-flag-img" src="https://flagcdn.com/24x18/pa.png" alt="" /> Panamá <b>+507</b></li>
+                  <li role="option" data-code="+506" data-cc="cr"><img class="ck-flag-img" src="https://flagcdn.com/24x18/cr.png" alt="" /> Costa Rica <b>+506</b></li>
+                  <li role="option" data-code="+502" data-cc="gt"><img class="ck-flag-img" src="https://flagcdn.com/24x18/gt.png" alt="" /> Guatemala <b>+502</b></li>
+                  <li role="option" data-code="+504" data-cc="hn"><img class="ck-flag-img" src="https://flagcdn.com/24x18/hn.png" alt="" /> Honduras <b>+504</b></li>
+                  <li role="option" data-code="+503" data-cc="sv"><img class="ck-flag-img" src="https://flagcdn.com/24x18/sv.png" alt="" /> El Salvador <b>+503</b></li>
+                  <li role="option" data-code="+505" data-cc="ni"><img class="ck-flag-img" src="https://flagcdn.com/24x18/ni.png" alt="" /> Nicaragua <b>+505</b></li>
+                  <li role="option" data-code="+1" data-cc="us"><img class="ck-flag-img" src="https://flagcdn.com/24x18/us.png" alt="" /> Estados Unidos <b>+1</b></li>
+                  <li role="option" data-code="+1" data-cc="do"><img class="ck-flag-img" src="https://flagcdn.com/24x18/do.png" alt="" /> Rep. Dominicana <b>+1</b></li>
+                  <li role="option" data-code="+34" data-cc="es"><img class="ck-flag-img" src="https://flagcdn.com/24x18/es.png" alt="" /> España <b>+34</b></li>
+                </ul>
+              </div>
+              <input id="ckTel" type="tel" placeholder="99 999 9999" required />
+            </div>
             <label>Contraseña *</label>
             <div class="ck-pass-wrap">
               <input id="ckPass" type="password" minlength="6" required />
@@ -174,6 +201,12 @@
             <div id="ckRegMsg" class="ck-msg"></div>
             <button type="submit" class="btn btn-gold" style="width:100%;margin-top:16px;">CONTINUAR</button>
           </form>
+          <div id="ckExisteBox" hidden style="margin-top:14px;padding-top:14px;border-top:1px solid #eef1f6;">
+            <p style="margin:0 0 8px;color:var(--gray-500);font-size:.88rem;">¿Esta cuenta ya es tuya? Ingresa tu contraseña para continuar:</p>
+            <input id="ckExistePass" type="password" placeholder="Contraseña" style="width:100%;padding:10px 12px;border:1px solid #dfe4ec;border-radius:8px;font-size:.9rem;box-sizing:border-box;margin-bottom:8px;" />
+            <button type="button" class="btn btn-gold" id="ckExisteIngresar" style="width:100%;">INICIAR SESIÓN</button>
+            <p class="ck-switch" style="margin-top:8px;"><a id="ckExisteOlvide">¿Olvidaste tu contraseña?</a></p>
+          </div>
           <div class="login-divider">o</div>
           <button type="button" class="btn-google" id="ckGoogleBtn">
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -214,8 +247,8 @@
           </ul>
           <div class="ck-totals">
             <div><span>Valorado en</span><span style="text-decoration:line-through">$97</span></div>
-            <div><span>Subtotal hoy</span><span>$49</span></div>
-            <div class="ck-total"><span>TOTAL</span><span>$49</span></div>
+            <div><span>Subtotal hoy</span><span>$47</span></div>
+            <div class="ck-total"><span>TOTAL</span><span>$47</span></div>
           </div>
           <button type="button" class="btn btn-gold" id="ckContinuarPago" style="width:100%;margin-top:18px;">Continuar al pago</button>
         </div>
@@ -238,7 +271,7 @@
 
           <div id="ckPayTransfer" class="transfer-panel">
             <h3 class="tp-heading">DATOS PARA EL PAGO</h3>
-            <p class="tp-amount">Valor de la inscripción: USD 49</p>
+            <p class="tp-amount">Valor de la inscripción: USD 47</p>
             <div class="bank-grid">
               <div class="bank-card">
                 <h4>Banco Pichincha</h4>
@@ -250,7 +283,7 @@
               <div class="bank-card qr-card">
                 <h4>Paga con QR / DeUna!</h4>
                 <img src="images/qr-pago.png" alt="QR de pago" onerror="this.outerHTML='&lt;div class=\'qr-ph\'&gt;Sube tu QR&lt;/div&gt;'" />
-                <p style="font-size:.82rem;color:var(--gray-500)">Escanea, ingresa USD 49 y paga.</p>
+                <p style="font-size:.82rem;color:var(--gray-500)">Escanea, ingresa USD 47 y paga.</p>
               </div>
             </div>
             <label>Comprobante de pago (foto) <span class="tr-req">*</span></label>
@@ -261,7 +294,7 @@
           </div>
 
           <div class="ck-totals">
-            <div class="ck-total"><span>Total</span><span>USD 49</span></div>
+            <div class="ck-total"><span>Total</span><span>USD 47</span></div>
           </div>
         </div>
       </div>
@@ -312,9 +345,38 @@
   <script src="js/inscripciones-data.js"></script>
   <script>
   (function () {
-    var CURSO = 'MARCA PROFIT', MONTO = 49;
+    var CURSO = 'MARCA PROFIT', MONTO = 47;
     var sesion = null;
     var inscripcionActual = null;
+
+    // ---- Selector de país (bandera + código) ----
+    (function () {
+      var btn = document.getElementById('ckPaisBtn');
+      var menu = document.getElementById('ckPaisMenu');
+      var hidden = document.getElementById('ckTelPais');
+      var flagEl = document.getElementById('ckPaisFlag');
+      var codeEl = document.getElementById('ckPaisCode');
+      if (!btn || !menu) return;
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var willOpen = menu.hidden;
+        menu.hidden = !willOpen;
+        btn.setAttribute('aria-expanded', String(willOpen));
+      });
+      menu.querySelectorAll('li').forEach(function (li) {
+        li.addEventListener('click', function () {
+          hidden.value = li.getAttribute('data-code');
+          flagEl.src = 'https://flagcdn.com/24x18/' + li.getAttribute('data-cc') + '.png';
+          codeEl.textContent = li.getAttribute('data-code');
+          menu.hidden = true;
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      });
+      document.addEventListener('click', function () {
+        menu.hidden = true;
+        btn.setAttribute('aria-expanded', 'false');
+      });
+    })();
 
     // ---- Ver / ocultar contraseña ----
     document.querySelectorAll('.ck-pass-toggle').forEach(function (btn) {
@@ -341,6 +403,7 @@
         detenerPolling();
         document.getElementById('ckVerificaBox').hidden = true;
         document.getElementById('ckRegistroBox').hidden = false;
+        document.getElementById('ckExisteBox').hidden = true;
       }
       window.scrollTo({ top: document.getElementById('comprar').offsetTop - 20, behavior: 'smooth' });
     }
@@ -373,7 +436,9 @@
       var nombre = document.getElementById('ckNombre').value.trim();
       var apellido = document.getElementById('ckApellido').value.trim();
       var email = document.getElementById('ckEmail').value.trim();
-      var tel = document.getElementById('ckTel').value.trim();
+      var telPais = document.getElementById('ckTelPais').value;
+      var telNum = document.getElementById('ckTel').value.trim();
+      var tel = telNum ? (telPais + ' ' + telNum) : '';
       var pass = document.getElementById('ckPass').value;
       var pass2 = document.getElementById('ckPass2').value;
       var terms = document.getElementById('ckTerms').checked;
@@ -396,6 +461,7 @@
 
       var btn = e.target.querySelector('button[type="submit"]');
       btn.disabled = true; btn.textContent = 'Creando cuenta...';
+      document.getElementById('ckExisteBox').hidden = true;
 
       window.registrarEstudiante({ nombre: nombre, apellido: apellido, email: email, telefono: tel, pass: pass }).then(function (info) {
         sesion = info;
@@ -404,7 +470,9 @@
         btn.disabled = false; btn.textContent = 'CONTINUAR';
         msg.classList.add('err');
         if (err && err.code === 'auth/email-already-in-use') {
-          msg.textContent = 'Ya existe una cuenta con este correo. Usa otro correo electrónico.';
+          msg.textContent = 'Ya existe una cuenta con este correo.';
+          document.getElementById('ckExisteBox').hidden = false;
+          document.getElementById('ckExistePass').value = '';
         } else if (err && err.code === 'auth/invalid-email') {
           msg.textContent = 'El correo no es válido.';
         } else {
@@ -489,6 +557,37 @@
         btn.disabled = false;
         if (err && err.code === 'auth/popup-closed-by-user') return;
         msg.classList.add('err'); msg.textContent = 'No se pudo iniciar sesión con Google: ' + ((err && err.message) || 'intenta de nuevo') + '.';
+      });
+    });
+
+    // ---- Recuperar una cuenta que ya existe (correo ya registrado antes) ----
+    document.getElementById('ckExisteIngresar').addEventListener('click', function () {
+      var msg = document.getElementById('ckRegMsg');
+      var emailVal = document.getElementById('ckEmail').value.trim();
+      var pass = document.getElementById('ckExistePass').value;
+      if (!pass) { msg.className = 'ck-msg err'; msg.textContent = 'Escribe tu contraseña.'; return; }
+      if (!window.iniciarSesionEstudiante) { msg.className = 'ck-msg err'; msg.textContent = 'Sistema no disponible. Intenta más tarde.'; return; }
+      var btn = document.getElementById('ckExisteIngresar');
+      btn.disabled = true; btn.textContent = 'Ingresando...';
+      window.iniciarSesionEstudiante(emailVal, pass).then(function (info) {
+        btn.disabled = false; btn.textContent = 'INICIAR SESIÓN';
+        document.getElementById('ckExisteBox').hidden = true;
+        sesion = info;
+        irAResumen();
+      }).catch(function () {
+        btn.disabled = false; btn.textContent = 'INICIAR SESIÓN';
+        msg.className = 'ck-msg err'; msg.textContent = 'Contraseña incorrecta.';
+      });
+    });
+    document.getElementById('ckExisteOlvide').addEventListener('click', function (e) {
+      e.preventDefault();
+      var msg = document.getElementById('ckRegMsg');
+      var emailVal = document.getElementById('ckEmail').value.trim();
+      if (!window.recuperarPassword) { msg.className = 'ck-msg err'; msg.textContent = 'Sistema no disponible. Intenta más tarde.'; return; }
+      window.recuperarPassword(emailVal).then(function () {
+        msg.className = 'ck-msg ok'; msg.textContent = 'Te enviamos un correo a ' + emailVal + ' para restablecer tu contraseña.';
+      }).catch(function () {
+        msg.className = 'ck-msg err'; msg.textContent = 'No se pudo enviar el correo. Intenta de nuevo.';
       });
     });
 
