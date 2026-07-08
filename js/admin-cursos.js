@@ -46,7 +46,7 @@
         </li>`).join('') || '<li style="color:#7f8db0;font-size:.85rem;list-style:none;">Sin puntos. Edita el curso para agregarlos.</li>';
 
       const precioBox = c.consultoria
-        ? `<a href="#" style="display:block;text-decoration:none;border:1px solid rgba(201,162,75,.55);border-radius:12px;padding:20px;text-align:center;margin-top:18px;color:#fff;">
+        ? `<a href="${esc(c.link || '#')}" target="_blank" rel="noopener" style="display:block;text-decoration:none;border:1px solid rgba(201,162,75,.55);border-radius:12px;padding:20px;text-align:center;margin-top:18px;color:#fff;">
              <div style="font-size:1.7rem;">${esc(c.icon || '👥')}</div>
              <div style="font-weight:800;letter-spacing:.5px;margin-top:8px;">${esc(c.precioLabel || 'CONSULTORÍA PERSONALIZADA')}</div>
              <div style="color:#c9a24b;font-weight:700;margin-top:6px;letter-spacing:1px;">${esc(c.precio || 'AGENDA TU LLAMADA')}</div>
@@ -83,9 +83,10 @@
   function removeCurso(id) {
     const c = Cursos.getCache().find(x => x.id === id);
     if (!c) return;
-    if (confirm('¿Eliminar el curso "' + c.titulo + '"? Esta acción no se puede deshacer.')) {
-      Cursos.remove(id); // el re-render ocurre solo al actualizarse los datos
-    }
+    (window.confirmarEliminar || function (m, cb) { if (confirm(m)) cb(); })(
+      '¿Eliminar el curso "' + c.titulo + '"? Esta acción no se puede deshacer.',
+      function () { Cursos.remove(id); } // el re-render ocurre solo al actualizarse los datos
+    );
   }
 
   // ---- Modal de edición / creación ----
@@ -98,6 +99,8 @@
     precioLabel: document.getElementById('mPrecioLabel'),
     moneda: document.getElementById('mMoneda'),
     precio: document.getElementById('mPrecio'),
+    nota: document.getElementById('mNota'),
+    link: document.getElementById('mLink'),
     consultoria: document.getElementById('mConsult'),
     imagen: document.getElementById('mImagen'),
     imagenFile: document.getElementById('mImagenFile'),
@@ -130,6 +133,8 @@
     f.precioLabel.value = c ? c.precioLabel : 'INVERSIÓN ÚNICA';
     f.moneda.value = c ? c.moneda : 'USD';
     f.precio.value = c ? c.precio : '';
+    f.nota.value = c ? (c.nota || '') : '';
+    f.link.value = c ? (c.link || '') : '';
     f.consultoria.checked = c ? !!c.consultoria : false;
     f.imagen.value = c ? (c.imagen || '') : '';
     f.imagenFile.value = '';
@@ -146,6 +151,8 @@
       precioLabel: f.precioLabel.value.trim(),
       moneda: f.moneda.value.trim(),
       precio: f.precio.value.trim(),
+      nota: f.nota.value.trim(),
+      link: f.link.value.trim(),
       consultoria: f.consultoria.checked,
       imagen: (f.imagen.value || '').trim()
     };

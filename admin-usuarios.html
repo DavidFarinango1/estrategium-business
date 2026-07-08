@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Estudiantes — Estrategium Admin</title>
-  <link rel="stylesheet" href="css/admin.css?v=2" />
+  <link rel="stylesheet" href="css/admin.css?v=6" />
   <script src="js/admin-embed.js"></script>
 </head>
 <body class="admin" data-guard="admin">
@@ -47,10 +47,12 @@
           <h3>Estudiantes e inscripciones</h3>
           <div class="admin-search" style="margin:0;"><span>⌕</span><input id="insBuscar" type="text" placeholder="Buscar por nombre o email..." /></div>
         </div>
-        <table class="adm">
-          <thead><tr><th>N°</th><th>Estado</th><th>Nombre</th><th>Email</th><th>Curso</th><th>Monto</th><th>Fecha</th><th>Comprobante</th><th>Acciones</th></tr></thead>
-          <tbody id="insBody"></tbody>
-        </table>
+        <div class="table-scroll">
+          <table class="adm">
+            <thead><tr><th>N°</th><th>Estado</th><th>Estudiante</th><th>Curso</th><th>Monto</th><th>Fecha</th><th>Foto</th><th>Acciones</th></tr></thead>
+            <tbody id="insBody"></tbody>
+          </table>
+        </div>
         <p style="color:var(--a-muted);font-size:.85rem;margin-top:16px;">Marca los cursos y pulsa 💾 Guardar para cambiar lo que ve el estudiante. Usa Aprobar / Negar para los pagos por transferencia.</p>
       </div>
 
@@ -73,7 +75,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="js/auth.js"></script>
-  <script src="js/cursos-data.js?v=6"></script>
+  <script src="js/cursos-data.js?v=7"></script>
   <script src="js/usuarios-data.js"></script>
   <script src="js/inscripciones-data.js"></script>
   <script>
@@ -93,7 +95,7 @@
       marcados = marcados || [];
       return cursosDisponibles().map(function (t) {
         var ck = marcados.indexOf(t) >= 0 ? 'checked' : '';
-        return '<label style="display:inline-flex;align-items:center;gap:5px;margin-right:12px;font-size:.82rem;cursor:pointer;white-space:nowrap;">' +
+        return '<label style="display:inline-flex;align-items:center;gap:4px;font-size:.76rem;cursor:pointer;white-space:nowrap;">' +
                  '<input type="checkbox" class="i-curso" data-row="' + key + '" value="' + esc(t) + '" ' + ck + ' /> ' + esc(t) +
                '</label>';
       }).join('');
@@ -106,14 +108,15 @@
       })[0];
     }
 
-    // ---- Estadísticas ----
-    function studentStats() {
-      var list = Usuarios.getAll();
-      var est = list.filter(function(u){ return u.rol !== 'Administrador'; });
-      var activos = est.filter(function(u){ return u.estado === 'Activo'; }).length;
-      document.getElementById('stTotal').textContent = est.length;
+    // ---- Estadísticas ---- (mismos criterios que la tabla: solo cuentas visibles)
+    function studentStats(filas) {
+      var activos = filas.filter(function(r){
+        var estU = studentByEmail(r.email);
+        return estU ? estU.estado === 'Activo' : true;
+      }).length;
+      document.getElementById('stTotal').textContent = filas.length;
       document.getElementById('stActivos').textContent = activos;
-      document.getElementById('stPct').textContent = est.length ? Math.round(activos/est.length*100) + '%' : '0%';
+      document.getElementById('stPct').textContent = filas.length ? Math.round(activos/filas.length*100) + '%' : '0%';
     }
     function insStats(list) {
       document.getElementById('stInsPend').textContent = list.filter(function(i){ return i.estado === 'pendiente'; }).length;
@@ -134,10 +137,13 @@
       return '<span class="badge" style="background:rgba(120,140,180,.18);color:#9fb0d0;">registrado</span>';
     }
 
-    // Une inscripciones + estudiantes (por email). Los estudiantes sin inscripción (ej. Google) también aparecen.
+    // Une inscripciones + estudiantes (por email). Un estudiante sin inscripción solo
+    // aparece si ya inició sesión al menos una vez (haIniciadoSesion) — así los registros
+    // "a medias" del Paso 1 del checkout (llenaron el formulario pero no pagaron ni
+    // volvieron a entrar) no ensucian la lista, sin perder la cuenta en la base de datos.
     function construirFilas() {
       var ins = Inscripciones.getAll();
-      var users = Usuarios.getAll().filter(function(u){ return u.rol === 'Estudiante'; });
+      var users = Usuarios.getAll().filter(function(u){ return u.rol === 'Estudiante' && u.haIniciadoSesion; });
       var vistos = {};
       var filas = [];
       ins.slice().reverse().forEach(function(i){
@@ -154,11 +160,12 @@
     }
 
     function render() {
-      studentStats();
+      var todasFilas = construirFilas();
+      studentStats(todasFilas);
       insStats(Inscripciones.getAll());
       var q = (buscar.value || '').toLowerCase();
       if (!q && buscarTop) q = (buscarTop.value || '').toLowerCase();
-      var filas = construirFilas().filter(function(r){
+      var filas = todasFilas.filter(function(r){
         var estU = studentByEmail(r.email);
         var cursosStr = (estU && estU.cursos ? estU.cursos.join(' ') : '');
         return !q || ((r.nombre || '') + ' ' + (r.email || '') + ' ' + cursosStr).toLowerCase().indexOf(q) >= 0;
@@ -175,30 +182,30 @@
         else marcados = [];
         var estado = r.ins ? r.ins.estado : 'registrado';
         var monto = r.ins ? ('$' + esc(String(r.ins.monto))) : '—';
-        var fecha = r.ins ? esc(r.ins.fecha || '') : '—';
-        var comp = (r.ins && r.ins.comprobante) ? '<button class="btn-gold" style="padding:5px 12px;font-size:.78rem;" data-ver="' + r.key + '">Ver foto</button>' : '—';
+        var fechaCorta = r.ins && r.ins.fecha ? esc(String(r.ins.fecha).split(',')[0]) : '—';
+        var fechaTitulo = r.ins ? esc(r.ins.fecha || '') : '';
+        var comp = (r.ins && r.ins.comprobante) ? '<button class="icon-btn sm" data-ver="' + r.key + '" title="Ver comprobante">🖼️</button>' : '—';
         var acciones = '';
         if (r.ins) {
-          acciones += (r.ins.estado !== 'aprobado' ? '<button class="btn-gold" style="padding:5px 10px;font-size:.76rem;background:#3ad07a;color:#062;" data-aprob="' + r.key + '">Aprobar</button> ' : '');
-          acciones += (r.ins.estado !== 'negado' ? '<button class="btn-ghost" style="padding:5px 10px;font-size:.76rem;color:#ff6b6b;border-color:#ff6b6b;" data-negar="' + r.key + '">Negar</button> ' : '');
+          acciones += (r.ins.estado !== 'aprobado' ? '<button class="icon-btn sm" style="background:rgba(58,208,122,.18);color:#3ad07a;" data-aprob="' + r.key + '" title="Aprobar pago">✔️</button> ' : '');
+          acciones += (r.ins.estado !== 'negado' ? '<button class="icon-btn sm" style="background:rgba(255,107,107,.14);color:#ff6b6b;" data-negar="' + r.key + '" title="Negar pago">✖️</button> ' : '');
         }
-        acciones += '<button class="btn-ghost" style="padding:5px 10px;font-size:.76rem;" data-reset="' + r.key + '" title="Restablecer contraseña">🔑</button> ';
+        acciones += '<button class="icon-btn sm" data-reset="' + r.key + '" title="Restablecer contraseña">🔑</button> ';
         acciones += '<button class="icon-btn del sm" data-del="' + r.key + '" title="Eliminar">🗑️</button>';
         return '<tr>' +
           '<td>' + (idx + 1) + '</td>' +
           '<td>' + badge(estado) + '</td>' +
-          '<td>' + esc(r.nombre) + '</td>' +
-          '<td>' + esc(r.email) + '</td>' +
-          '<td><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:230px;">' +
+          '<td><div style="font-weight:600;">' + esc(r.nombre) + '</div><div style="color:var(--a-muted);font-size:.78rem;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + esc(r.email) + '">' + esc(r.email) + '</div></td>' +
+          '<td><div style="display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:130px;">' +
               casillasCurso(marcados, r.key) +
-              '<button class="btn-gold" style="padding:5px 12px;font-size:.74rem;" data-savecursos="' + r.key + '">💾 Guardar</button>' +
+              '<button class="btn-gold" style="padding:4px 10px;font-size:.72rem;margin-top:2px;" data-savecursos="' + r.key + '">💾 Guardar</button>' +
             '</div></td>' +
           '<td>' + monto + '</td>' +
-          '<td style="font-size:.8rem;">' + fecha + '</td>' +
+          '<td style="font-size:.78rem;white-space:nowrap;" title="' + fechaTitulo + '">' + fechaCorta + '</td>' +
           '<td>' + comp + '</td>' +
           '<td style="white-space:nowrap;">' + acciones + '</td>' +
         '</tr>';
-      }).join('') || '<tr><td colspan="9" style="text-align:center;color:var(--a-muted);padding:24px;">Aún no hay estudiantes ni inscripciones.</td></tr>';
+      }).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--a-muted);padding:24px;">Aún no hay estudiantes ni inscripciones.</td></tr>';
 
       tbody.querySelectorAll('[data-ver]').forEach(function(b){ b.addEventListener('click', function(){ verFoto(b.getAttribute('data-ver')); }); });
       tbody.querySelectorAll('[data-aprob]').forEach(function(b){ b.addEventListener('click', function(){ aprobar(b.getAttribute('data-aprob')); }); });
@@ -236,9 +243,18 @@
       var i = r.ins;
       var est = studentByEmail(i.email);
       var claveActual = i.clave || (est && est.clave) || '';
-      var clave = prompt('Aprobar a "' + i.nombre + '" (' + i.email + ') en ' + i.curso + '.\n\nEscribe la CONTRASEÑA con la que entrará a sus cursos:', claveActual);
-      if (clave === null) return;
-      clave = (clave || '').trim();
+      // Si ya existe como usuario pero nunca tuvo una contraseña de texto plano,
+      // es porque entró con "Continuar con Google" (Google maneja su acceso) —
+      // no tiene sentido pedirle al admin que le invente una contraseña.
+      var entroConGoogle = !!est && !claveActual;
+      var clave = claveActual;
+      if (entroConGoogle) {
+        if (!confirm('Aprobar a "' + i.nombre + '" (' + i.email + ') en ' + i.curso + '?\n\nEntró con Google, no necesita contraseña para acceder.')) return;
+      } else {
+        clave = prompt('Aprobar a "' + i.nombre + '" (' + i.email + ') en ' + i.curso + '.\n\nEscribe la CONTRASEÑA con la que entrará a sus cursos:', claveActual);
+        if (clave === null) return;
+        clave = (clave || '').trim();
+      }
       if (est) {
         var cursos = est.cursos || [];
         if (cursos.indexOf(i.curso) < 0) cursos.push(i.curso);
@@ -247,8 +263,12 @@
         Usuarios.add({ nombre: i.nombre, email: i.email, clave: clave, cursos: [i.curso], rol: 'Estudiante', estado: 'Activo' });
       }
       Inscripciones.update(i.id, { estado: 'aprobado' });
-      var claveFinal = clave || (est && est.clave) || '(sin cambios)';
-      alert('✅ Aprobado.\n\nEl estudiante entra en "Login estudiantes" con:\nCorreo: ' + i.email + '\nContraseña: ' + claveFinal + '\n\ny verá el curso ' + i.curso + '. Comparte estas credenciales con él.');
+      if (entroConGoogle) {
+        alert('✅ Aprobado.\n\nEl estudiante entra con "Continuar con Google" usando: ' + i.email + '\ny verá el curso ' + i.curso + '.');
+      } else {
+        var claveFinal = clave || (est && est.clave) || '(sin cambios)';
+        alert('✅ Aprobado.\n\nEl estudiante entra en "Login estudiantes" con:\nCorreo: ' + i.email + '\nContraseña: ' + claveFinal + '\n\ny verá el curso ' + i.curso + '. Comparte estas credenciales con él.');
+      }
     }
 
     function negar(key) {
@@ -274,9 +294,13 @@
     function borrar(key) {
       var r = rowsMap[key]; if (!r) return;
       if (r.ins) {
-        if (confirm('¿Eliminar la inscripción de "' + r.nombre + '"?')) Inscripciones.remove(r.ins.id);
+        (window.confirmarEliminar || function (m, cb) { if (confirm(m)) cb(); })(
+          '¿Eliminar la inscripción de "' + r.nombre + '"?', function () { Inscripciones.remove(r.ins.id); }
+        );
       } else if (r.user) {
-        if (confirm('¿Eliminar al estudiante "' + r.nombre + '"?')) Usuarios.remove(r.user.id);
+        (window.confirmarEliminar || function (m, cb) { if (confirm(m)) cb(); })(
+          '¿Eliminar al estudiante "' + r.nombre + '"?', function () { Usuarios.remove(r.user.id); }
+        );
       }
     }
 

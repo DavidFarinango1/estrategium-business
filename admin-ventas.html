@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inscripciones — Estrategium Admin</title>
-  <link rel="stylesheet" href="css/admin.css?v=2" />
+  <link rel="stylesheet" href="css/admin.css?v=6" />
   <script>location.replace("admin-usuarios.html");</script>
   <script src="js/admin-embed.js"></script>
 </head>
@@ -46,10 +46,12 @@
 
       <div class="card table-wrap" style="margin-top:26px;">
         <div class="table-head"><h3>Listado de inscripciones</h3></div>
-        <table class="adm">
-          <thead><tr><th>N°</th><th>Estado</th><th>Nombre</th><th>Email</th><th>Cédula</th><th>Curso</th><th>Monto</th><th>Fecha</th><th>Comprobante</th><th>Acciones</th></tr></thead>
-          <tbody id="insBody"></tbody>
-        </table>
+        <div class="table-scroll">
+          <table class="adm">
+            <thead><tr><th>N°</th><th>Estado</th><th>Nombre</th><th>Email</th><th>Cédula</th><th>Curso</th><th>Monto</th><th>Fecha</th><th>Comprobante</th><th>Acciones</th></tr></thead>
+            <tbody id="insBody"></tbody>
+          </table>
+        </div>
       </div>
 
       <!-- Vista del comprobante -->

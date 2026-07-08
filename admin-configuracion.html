@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Configuración — Estrategium Admin</title>
-  <link rel="stylesheet" href="css/admin.css?v=2" />
+  <link rel="stylesheet" href="css/admin.css?v=6" />
   <script src="js/admin-embed.js"></script>
 </head>
 <body class="admin" data-guard="admin">
@@ -41,10 +41,12 @@
           <h3>🛡️ Administrador</h3>
           <button class="btn-blue" id="cfgAddUser">+ Agregar Usuario</button>
         </div>
-        <table class="adm">
-          <thead><tr><th>Nombre</th><th>Correo</th><th>Perfil</th><th>Estado</th><th>Acciones</th></tr></thead>
-          <tbody id="cfgTbody"></tbody>
-        </table>
+        <div class="table-scroll">
+          <table class="adm">
+            <thead><tr><th>Nombre</th><th>Correo</th><th>Perfil</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody id="cfgTbody"></tbody>
+          </table>
+        </div>
         <p style="color:var(--a-muted);font-size:.85rem;margin-top:14px;">Administrador del panel. ✏️ editar nombre.</p>
       </div>
 
@@ -91,7 +93,10 @@
       }); });
       tbody.querySelectorAll('[data-del]').forEach(function(b){ b.addEventListener('click', function(){
         var u = Usuarios.getAll().filter(function(x){return x.id===b.getAttribute('data-del');})[0];
-        if (u && confirm('¿Eliminar a "' + u.nombre + '"?')) Usuarios.remove(u.id);
+        if (!u) return;
+        (window.confirmarEliminar || function (m, cb) { if (confirm(m)) cb(); })(
+          '¿Eliminar a "' + u.nombre + '"?', function () { Usuarios.remove(u.id); }
+        );
       }); });
     }
     document.getElementById('cfgAddUser').addEventListener('click', function(){

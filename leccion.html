@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lección — Estrategium Business</title>
-  <link rel="stylesheet" href="css/styles.css?v=47" />
+  <link rel="stylesheet" href="css/styles.css?v=61" />
 </head>
 <body data-guard="estudiante">
 
@@ -61,6 +61,7 @@
       <div class="lp-desc" id="lpDesc" style="margin-top:20px;color:#3a4a63;font-size:1rem;line-height:1.6;"></div>
 
       <div class="lp-bottom">
+        <button type="button" class="lp-complete" id="lpMarcarCompletado">✔ MARCAR COMO COMPLETADO</button>
         <a href="#" class="lp-next" id="lpNextBottom">✓ SIGUIENTE LECCIÓN</a>
       </div>
     </main>
@@ -73,7 +74,7 @@
   <script src="js/firebase-config.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/session.js?v=2"></script>
-  <script src="js/cursos-data.js?v=6"></script>
+  <script src="js/cursos-data.js?v=7"></script>
   <script src="js/usuarios-data.js"></script>
   <script src="js/portal-menu.js"></script>
   <script>
@@ -107,6 +108,8 @@
     var lpNext = document.getElementById('lpNext');
     var lpProgBar = document.getElementById('lpProgBar');
     var lpProgLabel = document.getElementById('lpProgLabel');
+    var lpMarcar = document.getElementById('lpMarcarCompletado');
+    var cursoActual = null;
 
     // Menú CUENTA
     document.querySelectorAll('.portal-dropdown > .portal-pill').forEach(function (p) {
@@ -135,6 +138,14 @@
       setVideo(les.videoUrl);
       var dEl = document.getElementById('lpDesc');
       if (dEl) dEl.textContent = les.descripcion || '';
+
+      // botón "Marcar como completado"
+      if (lpMarcar) {
+        var yaCompletada = !!les.completado;
+        lpMarcar.classList.toggle('done', yaCompletada);
+        lpMarcar.disabled = yaCompletada;
+        lpMarcar.textContent = yaCompletada ? '✓ COMPLETADO' : '✔ MARCAR COMO COMPLETADO';
+      }
 
       // marca activa + abre su módulo
       lpMods.querySelectorAll('.lp-lesson').forEach(function (el) { el.classList.remove('active'); });
@@ -166,6 +177,7 @@
       var c = (cursos || []).filter(function (x) { return x.id === id; })[0];
       if (!c) { lpCurso.textContent = 'Curso no encontrado'; lpMods.innerHTML = '<a href="mis-cursos.html" style="color:var(--navy-900)">Volver a Mis cursos</a>'; return; }
       if (!inscritoEn(c.titulo)) { lpCurso.textContent = 'Sin acceso'; lpMods.innerHTML = '<p style="color:var(--navy-900)">No tienes acceso a este curso. <a href="mis-cursos.html">Volver a Mis cursos</a>.</p>'; lpTitle.textContent = 'Sin acceso'; return; }
+      cursoActual = c;
       lpCurso.textContent = c.titulo || 'Curso';
       lpBack.href = 'curso.html?id=' + encodeURIComponent(c.id);
 
@@ -180,7 +192,8 @@
       lpMods.innerHTML = modulos.map(function (m, mi) {
         var lessons = (m.lecciones || []).map(function (l, li) {
           var t = esc(l.titulo || 'Lección');
-          return '<div class="lp-lesson" data-mi="' + mi + '" data-li="' + li + '"><span class="check">✔</span> ' + t + '</div>';
+          var ck = l.completado ? '<span class="check">✔</span> ' : '';
+          return '<div class="lp-lesson' + (l.completado ? ' done' : '') + '" data-mi="' + mi + '" data-li="' + li + '">' + ck + t + '</div>';
         }).join('');
         return '<div class="lp-mod' + (mi === curM ? ' open' : '') + '">' +
                  '<div class="lp-mod-head"><span class="ic">' + (mi === curM ? '－' : '＋') + '</span> ' + esc(m.nombre || 'Módulo') + '</div>' +
@@ -199,6 +212,23 @@
       // activa la lección pedida (o la primera)
       if (!modulos[curM] || !modulos[curM].lecciones[curL]) { curM = 0; curL = 0; }
       activar(curM, curL);
+    }
+
+    // Marca la lección actual como completada y lo guarda en Firestore/local.
+    if (lpMarcar) {
+      lpMarcar.addEventListener('click', function () {
+        if (!cursoActual || lpMarcar.disabled) return;
+        var modulosClon = JSON.parse(JSON.stringify(cursoActual.modulos || modulos));
+        if (!modulosClon[curM] || !modulosClon[curM].lecciones[curL]) return;
+        modulosClon[curM].lecciones[curL].completado = true;
+        lpMarcar.disabled = true;
+        lpMarcar.textContent = 'Guardando...';
+        Promise.resolve(Cursos.update(cursoActual.id, { modulos: modulosClon })).catch(function () {
+          lpMarcar.disabled = false;
+          lpMarcar.textContent = '✔ MARCAR COMO COMPLETADO';
+          alert('No se pudo guardar. Intenta de nuevo.');
+        });
+      });
     }
 
     if (window.Cursos) Cursos.onChange(build);

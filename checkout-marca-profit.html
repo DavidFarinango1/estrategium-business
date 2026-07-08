@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reserva tu acceso — MARCA PROFIT · USD 49</title>
   <meta name="description" content="Reserva tu acceso MARCA START + MARCA PROFIT 2 en 1. Solo por hoy USD 49." />
-  <link rel="stylesheet" href="css/styles.css?v=47" />
+  <link rel="stylesheet" href="css/styles.css?v=61" />
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="site-header">
+  <!-- Header público (visitante nuevo) -->
+  <header class="site-header" id="ckSiteHeader">
     <div class="container nav">
       <a href="index.html" class="brand">
         <span class="brand-main">ESTRATEGIUM</span>
@@ -24,6 +24,53 @@
       </nav>
     </div>
   </header>
+
+  <!-- Header portal (si ya hay sesión de estudiante en este navegador) -->
+  <header class="portal-header" id="ckPortalHeader" hidden>
+    <div class="container portal-nav">
+      <a href="mis-cursos.html" class="brand">
+        <span class="brand-main">ESTRATEGIUM</span>
+        <span class="brand-sub">BUSINESS</span>
+      </a>
+      <div class="portal-menu">
+        <span class="portal-hello">👤 <b id="ckPortalEmail">tu@correo.com</b></span>
+        <div class="portal-dropdown">
+          <span class="portal-pill">MIS CURSOS ▾</span>
+          <div class="dd-menu"><a href="mis-cursos.html">Ver todos</a></div>
+        </div>
+        <div class="portal-dropdown">
+          <span class="portal-pill">CUENTA ▾</span>
+          <div class="dd-menu">
+            <a href="mis-cursos.html">Mis cursos</a>
+            <a href="login-estudiantes.html" id="ckCerrarSesion">Cerrar sesión</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <script>
+  (function () {
+    try {
+      var s = JSON.parse(localStorage.getItem('estrategium_est') || 'null');
+      if (!s || !s.email) return;
+      document.getElementById('ckSiteHeader').hidden = true;
+      var ph = document.getElementById('ckPortalHeader');
+      ph.hidden = false;
+      document.getElementById('ckPortalEmail').textContent = s.email;
+      ph.querySelectorAll('.portal-dropdown > .portal-pill').forEach(function (p) {
+        p.addEventListener('click', function (e) { e.stopPropagation(); p.parentElement.classList.toggle('open'); });
+      });
+      document.addEventListener('click', function () {
+        ph.querySelectorAll('.portal-dropdown.open').forEach(function (el) { el.classList.remove('open'); });
+      });
+      document.getElementById('ckCerrarSesion').addEventListener('click', function (e) {
+        e.preventDefault();
+        try { localStorage.removeItem('estrategium_est'); } catch (x) {}
+        window.location.href = 'login-estudiantes.html';
+      });
+    } catch (e) {}
+  })();
+  </script>
 
   <!-- Banner -->
   <section class="page-banner">
@@ -114,28 +161,38 @@
             <label>WhatsApp *</label>
             <input id="ckTel" type="tel" placeholder="+593 ..." required />
             <label>Contraseña *</label>
-            <input id="ckPass" type="password" minlength="6" required />
+            <div class="ck-pass-wrap">
+              <input id="ckPass" type="password" minlength="6" required />
+              <button type="button" class="ck-pass-toggle" data-target="ckPass" title="Ver / ocultar contraseña" aria-label="Ver u ocultar contraseña">👁️</button>
+            </div>
             <label>Confirmar contraseña *</label>
-            <input id="ckPass2" type="password" minlength="6" required />
+            <div class="ck-pass-wrap">
+              <input id="ckPass2" type="password" minlength="6" required />
+              <button type="button" class="ck-pass-toggle" data-target="ckPass2" title="Ver / ocultar contraseña" aria-label="Ver u ocultar contraseña">👁️</button>
+            </div>
             <label class="ck-terms"><input id="ckTerms" type="checkbox" required /> Acepto los términos</label>
             <div id="ckRegMsg" class="ck-msg"></div>
             <button type="submit" class="btn btn-gold" style="width:100%;margin-top:16px;">CONTINUAR</button>
           </form>
-          <p class="ck-switch">¿Ya tienes cuenta? <a id="ckIrLogin">Iniciar sesión</a></p>
+          <div class="login-divider">o</div>
+          <button type="button" class="btn-google" id="ckGoogleBtn">
+            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            </svg>
+            Continuar con Google
+          </button>
         </div>
 
-        <!-- Mini login -->
-        <div class="ck-card" id="ckLoginBox" hidden>
-          <h2 class="ck-card-title">Iniciar sesión</h2>
-          <form id="ckFormLogin">
-            <label>Correo electrónico</label>
-            <input id="ckLoginEmail" type="email" required />
-            <label>Contraseña</label>
-            <input id="ckLoginPass" type="password" required />
-            <div id="ckLoginMsg" class="ck-msg"></div>
-            <button type="submit" class="btn btn-gold" style="width:100%;margin-top:16px;">INGRESAR</button>
-          </form>
-          <p class="ck-switch">¿No tienes cuenta? <a id="ckIrRegistro">Crear cuenta</a></p>
+        <!-- Verificación de correo (tras registrarse con email + contraseña) -->
+        <div class="ck-card" id="ckVerificaBox" hidden>
+          <h2 class="ck-card-title">Verifica tu correo</h2>
+          <p style="text-align:center;color:var(--gray-500);">Te enviamos un enlace de verificación a <b id="ckVerificaEmail"></b>. Ábrelo desde tu correo (revisa también spam) y luego vuelve aquí.</p>
+          <div id="ckVerificaMsg" class="ck-msg"></div>
+          <button type="button" class="btn btn-gold" id="ckYaVerifique" style="width:100%;margin-top:16px;">YA VERIFIQUÉ MI CORREO</button>
+          <p class="ck-switch"><a id="ckReenviarCorreo">Reenviar correo</a> · <a id="ckCorregirEmail">¿Correo mal escrito? Corregirlo</a></p>
         </div>
       </div>
 
@@ -243,7 +300,7 @@
     </div>
   </footer>
 
-  <a href="#whatsapp" class="wa-float" id="whatsapp" title="Hablar por WhatsApp">✆</a>
+  <a href="https://wa.me/593978811786" target="_blank" rel="noopener" class="wa-float" id="whatsapp" title="Hablar por WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.2 1.6 6L4 29l8.2-1.6c1.8.9 3.7 1.4 5.8 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-4.9 1 1-4.7-.3-.4C5.5 18.4 5 16.7 5 15 5 9 9.9 4.2 16 4.2S27 9 27 15s-4.9 9.8-11 9.8zm6.1-7.3c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-2-1.8-2.3-.2-.3 0-.5.1-.7.1-.1.3-.4.5-.6.2-.2.2-.3.3-.5.1-.2 0-.4 0-.6 0-.2-.7-1.8-1-2.4-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.3 5.2 4.6.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.9-.8 2.1-1.5.3-.8.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg></a>
 
   <script src="js/main.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -259,6 +316,17 @@
     var sesion = null;
     var inscripcionActual = null;
 
+    // ---- Ver / ocultar contraseña ----
+    document.querySelectorAll('.ck-pass-toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var inp = document.getElementById(btn.getAttribute('data-target'));
+        if (!inp) return;
+        var show = inp.type === 'password';
+        inp.type = show ? 'text' : 'password';
+        btn.textContent = show ? '🙈' : '👁️';
+      });
+    });
+
     function irAPaso(n) {
       [1, 2, 3, 4].forEach(function (i) {
         document.getElementById('ckStep' + i).hidden = (i !== n);
@@ -266,6 +334,14 @@
         dot.classList.toggle('active', i === n);
         dot.classList.toggle('done', i < n);
       });
+      if (n === 1) {
+        // Si el envío anterior tuvo éxito, el botón quedó deshabilitado con "Creando cuenta...".
+        var regBtn = document.querySelector('#ckFormRegistro button[type="submit"]');
+        if (regBtn) { regBtn.disabled = false; regBtn.textContent = 'CONTINUAR'; }
+        detenerPolling();
+        document.getElementById('ckVerificaBox').hidden = true;
+        document.getElementById('ckRegistroBox').hidden = false;
+      }
       window.scrollTo({ top: document.getElementById('comprar').offsetTop - 20, behavior: 'smooth' });
     }
 
@@ -276,10 +352,17 @@
       irAPaso(2);
     }
 
+    // Si ya hay una sesión de estudiante en este navegador (ej. entró desde "Mis
+    // cursos" con Google, o ya se había registrado), no le vuelve a pedir crear
+    // cuenta: pasa directo al Resumen. Puede volver a "Cuenta" con "← Volver" si
+    // quiere usar otra cuenta.
     (function detectarSesion() {
       try {
         var cached = JSON.parse(localStorage.getItem('estrategium_est') || 'null');
-        if (cached && cached.email) { sesion = cached; irAResumen(); }
+        if (cached && cached.email) {
+          sesion = { uid: cached.uid, nombre: cached.name || cached.nombre, email: cached.email, telefono: cached.telefono, cursos: cached.cursos || [] };
+          irAResumen();
+        }
       } catch (e) {}
     })();
 
@@ -295,6 +378,16 @@
       var pass2 = document.getElementById('ckPass2').value;
       var terms = document.getElementById('ckTerms').checked;
 
+      // Si ya se registró en esta misma visita con este mismo correo, no intenta
+      // crear la cuenta de nuevo (fallaría por correo duplicado). Solo lo deja
+      // pasar al Resumen si ese correo YA quedó verificado; si no, lo regresa a
+      // la pantalla de verificación (no se salta el paso por escribir lo mismo).
+      if (sesion && sesion.email && email && sesion.email.toLowerCase() === email.toLowerCase()) {
+        var uActual = window.estrategiumAuth && window.estrategiumAuth.currentUser;
+        if (uActual && uActual.emailVerified) { irAResumen(); return; }
+        if (uActual) { mostrarVerificacion(); return; }
+      }
+
       if (!nombre || !apellido || !email || !tel || !pass || !pass2) { msg.classList.add('err'); msg.textContent = 'Completa todos los campos.'; return; }
       if (pass.length < 6) { msg.classList.add('err'); msg.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
       if (pass !== pass2) { msg.classList.add('err'); msg.textContent = 'Las contraseñas no coinciden.'; return; }
@@ -306,14 +399,12 @@
 
       window.registrarEstudiante({ nombre: nombre, apellido: apellido, email: email, telefono: tel, pass: pass }).then(function (info) {
         sesion = info;
-        irAResumen();
+        mostrarVerificacion();
       }).catch(function (err) {
         btn.disabled = false; btn.textContent = 'CONTINUAR';
         msg.classList.add('err');
         if (err && err.code === 'auth/email-already-in-use') {
-          msg.textContent = 'Ya existe una cuenta con este correo.';
-          document.getElementById('ckLoginEmail').value = email;
-          mostrarLogin();
+          msg.textContent = 'Ya existe una cuenta con este correo. Usa otro correo electrónico.';
         } else if (err && err.code === 'auth/invalid-email') {
           msg.textContent = 'El correo no es válido.';
         } else {
@@ -322,28 +413,82 @@
       });
     });
 
-    function mostrarLogin() { document.getElementById('ckRegistroBox').hidden = true; document.getElementById('ckLoginBox').hidden = false; }
-    function mostrarRegistro() { document.getElementById('ckLoginBox').hidden = true; document.getElementById('ckRegistroBox').hidden = false; }
-    document.getElementById('ckIrLogin').addEventListener('click', mostrarLogin);
-    document.getElementById('ckIrRegistro').addEventListener('click', mostrarRegistro);
+    // ---- Verificación de correo (enlace de Firebase, sin backend propio) ----
+    var pollTimer = null;
+    function detenerPolling() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
 
-    document.getElementById('ckFormLogin').addEventListener('submit', function (e) {
+    function enviarVerificacion() {
+      var u = window.estrategiumAuth && window.estrategiumAuth.currentUser;
+      if (u && !u.emailVerified) u.sendEmailVerification().catch(function () {});
+    }
+
+    function mostrarVerificacion() {
+      document.getElementById('ckRegistroBox').hidden = true;
+      document.getElementById('ckVerificaBox').hidden = false;
+      document.getElementById('ckVerificaEmail').textContent = sesion.email;
+      var msg = document.getElementById('ckVerificaMsg');
+      msg.className = 'ck-msg'; msg.textContent = '';
+      enviarVerificacion();
+      detenerPolling();
+      pollTimer = setInterval(function () {
+        var u = window.estrategiumAuth && window.estrategiumAuth.currentUser;
+        if (!u) return;
+        u.reload().then(function () {
+          if (u.emailVerified) { detenerPolling(); irAResumen(); }
+        }).catch(function () {});
+      }, 4000);
+    }
+
+    document.getElementById('ckYaVerifique').addEventListener('click', function () {
+      var msg = document.getElementById('ckVerificaMsg');
+      var btn = document.getElementById('ckYaVerifique');
+      var u = window.estrategiumAuth && window.estrategiumAuth.currentUser;
+      if (!u) { msg.className = 'ck-msg err'; msg.textContent = 'Sistema no disponible. Intenta más tarde.'; return; }
+      btn.disabled = true; btn.textContent = 'Verificando...';
+      u.reload().then(function () {
+        btn.disabled = false; btn.textContent = 'YA VERIFIQUÉ MI CORREO';
+        if (u.emailVerified) { detenerPolling(); irAResumen(); }
+        else { msg.className = 'ck-msg err'; msg.textContent = 'Aún no detectamos la verificación. Revisa tu correo (o spam) y haz clic en el enlace.'; }
+      }).catch(function () {
+        btn.disabled = false; btn.textContent = 'YA VERIFIQUÉ MI CORREO';
+        msg.className = 'ck-msg err'; msg.textContent = 'No se pudo verificar. Intenta de nuevo.';
+      });
+    });
+
+    document.getElementById('ckReenviarCorreo').addEventListener('click', function () {
+      var msg = document.getElementById('ckVerificaMsg');
+      enviarVerificacion();
+      msg.className = 'ck-msg ok'; msg.textContent = 'Correo reenviado. Revisa tu bandeja de entrada (o spam).';
+    });
+
+    // ---- Corregir un correo mal escrito (vuelve al formulario, ya con los datos puestos) ----
+    document.getElementById('ckCorregirEmail').addEventListener('click', function (e) {
       e.preventDefault();
-      var msg = document.getElementById('ckLoginMsg');
-      msg.className = 'ck-msg';
-      var email = document.getElementById('ckLoginEmail').value.trim();
-      var pass = document.getElementById('ckLoginPass').value;
-      if (!email || !pass) { msg.classList.add('err'); msg.textContent = 'Escribe tu correo y contraseña.'; return; }
-      if (!window.iniciarSesionEstudiante) { msg.classList.add('err'); msg.textContent = 'Sistema no disponible. Intenta más tarde.'; return; }
+      detenerPolling();
+      document.getElementById('ckVerificaBox').hidden = true;
+      document.getElementById('ckRegistroBox').hidden = false;
+      var regBtn = document.querySelector('#ckFormRegistro button[type="submit"]');
+      if (regBtn) { regBtn.disabled = false; regBtn.textContent = 'CONTINUAR'; }
+      var campoEmail = document.getElementById('ckEmail');
+      campoEmail.focus();
+      campoEmail.select();
+    });
 
-      var btn = e.target.querySelector('button[type="submit"]');
-      btn.disabled = true; btn.textContent = 'Ingresando...';
-      window.iniciarSesionEstudiante(email, pass).then(function (info) {
+    // ---- Continuar con Google (correo ya verificado por Google) ----
+    document.getElementById('ckGoogleBtn').addEventListener('click', function () {
+      var msg = document.getElementById('ckRegMsg');
+      msg.className = 'ck-msg';
+      if (!window.loginConGoogleSinRedirigir) { msg.classList.add('err'); msg.textContent = 'Sistema no disponible. Intenta más tarde.'; return; }
+      var btn = document.getElementById('ckGoogleBtn');
+      btn.disabled = true;
+      window.loginConGoogleSinRedirigir().then(function (info) {
+        btn.disabled = false;
         sesion = info;
         irAResumen();
-      }).catch(function () {
-        btn.disabled = false; btn.textContent = 'INGRESAR';
-        msg.classList.add('err'); msg.textContent = 'Correo o contraseña incorrectos.';
+      }).catch(function (err) {
+        btn.disabled = false;
+        if (err && err.code === 'auth/popup-closed-by-user') return;
+        msg.classList.add('err'); msg.textContent = 'No se pudo iniciar sesión con Google: ' + ((err && err.message) || 'intenta de nuevo') + '.';
       });
     });
 

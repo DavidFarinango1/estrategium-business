@@ -83,6 +83,16 @@ window.Cursos = (function () {
           { titulo: 'Cómo aumentar el ticket promedio un 35% sin descuentos', videoUrl: '', completado: false }
         ]}
       ]
+    },
+    {
+      icon: '⚙️', etapa: 'ETAPA 3', titulo: 'IMPLEMENTACIÓN',
+      lead: 'Instalamos el sistema completo en tu negocio para resultados extraordinarios',
+      items: ['Estrategia 100% personalizada adaptada a tu propio negocio, mercado y objetivos', 'Acompañamiento 1 a 1', 'Implementación guiada paso a paso', 'Resultados medibles y sostenibles: más clientes que regresan, más ventas, más rentabilidad'],
+      precioLabel: 'CONSULTORÍA PERSONALIZADA', moneda: '', precio: 'AGENDA TU LLAMADA', consultoria: true,
+      link: 'https://calendly.com/cristyanq20/maquina-de-clientes-fieles',
+      nota: 'Ideal para dueños que quieran resultados extraordinarios con acompañamiento experto.',
+      notaIcono: '🎯',
+      videoUrl: '', modulos: []
     }
   ];
 
@@ -117,6 +127,22 @@ window.Cursos = (function () {
     });
   }
 
+  // Migración: agrega el curso "Implementación" (consultoría) una sola vez si el
+  // catálogo ya tenía cursos (MARCA START/PROFIT) pero todavía no incluye ninguno
+  // de tipo consultoría, para que aparezca editable en el panel de administrador.
+  function ensureConsultoria(list) {
+    if (localStorage.getItem('estrategium_impl_seed_v1')) return;
+    localStorage.setItem('estrategium_impl_seed_v1', '1');
+    if (!list || !list.length) return; // catálogo vacío: seedIfEmpty ya lo incluye
+    var yaExiste = list.some(function (c) { return c.consultoria; });
+    if (yaExiste) return;
+    var base = DEFAULT_CURSOS.filter(function (c) { return c.consultoria; })[0];
+    if (!base) return;
+    var copia = JSON.parse(JSON.stringify(base));
+    copia.orden = (Math.max.apply(null, list.map(function (c) { return c.orden || 0; })) || 0) + 1;
+    add(copia);
+  }
+
   function start() {
     if (started) return; started = true;
 
@@ -148,14 +174,15 @@ window.Cursos = (function () {
             return; // el siguiente snapshot traerá ya los datos
           }
           emit(list);
+          ensureConsultoria(list);
         }, function (err) {
           console.warn('Firestore no disponible, usando almacenamiento local:', err && err.message);
-          useFS = false; emit(preCache); seedIfEmpty(preCache);
+          useFS = false; emit(preCache); seedIfEmpty(preCache); ensureConsultoria(preCache);
         });
-      } catch (e) { useFS = false; emit(preCache); seedIfEmpty(preCache); }
+      } catch (e) { useFS = false; emit(preCache); seedIfEmpty(preCache); ensureConsultoria(preCache); }
     } else {
       refreshDefaults(preCache);
-      emit(preCache); seedIfEmpty(preCache);
+      emit(preCache); seedIfEmpty(preCache); ensureConsultoria(preCache);
     }
   }
 

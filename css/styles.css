@@ -1244,8 +1244,13 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 .lp-cta { text-align: center; margin: 26px 0; }
 .lp-cta a { display: inline-block; background: #f0843e; color: #fff; font-weight: 700; padding: 12px 26px; border-radius: 8px; }
 .lp-cta a:hover { background: #e2762f; }
-.lp-bottom { display: flex; justify-content: flex-end; border-top: 1px solid var(--gray-200); padding-top: 22px; }
-.lp-next { background: #e53935; color: #fff; font-weight: 700; padding: 12px 22px; border-radius: 8px; cursor: pointer; }
+.lp-bottom { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; border-top: 1px solid var(--gray-200); padding-top: 22px; }
+.lp-next { background: #e53935; color: #fff; font-weight: 700; padding: 12px 22px; border-radius: 8px; cursor: pointer; margin-left: auto; }
+.lp-complete { background: #fff; color: #22a447; font-weight: 700; padding: 11px 22px; border-radius: 8px; cursor: pointer; border: 2px solid #22a447; font-size: .92rem; font-family: inherit; }
+.lp-complete:hover:not(:disabled) { background: #eafbf1; }
+.lp-complete.done { background: #22a447; color: #fff; cursor: default; }
+.lp-complete:disabled { opacity: .85; }
+.lp-lesson.done { color: #22a447; }
 @media (max-width: 820px) {
   .lp-grid { grid-template-columns: 1fr; }
   .lp-side { border-right: none; border-bottom: 1px solid var(--gray-200); }
@@ -1372,6 +1377,7 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
   transition: transform .15s;
 }
 .wa-float:hover { transform: scale(1.08); }
+.wa-float svg { width: 30px; height: 30px; flex-shrink: 0; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 920px) {
@@ -1431,6 +1437,9 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
   width: 100%; padding: 12px 13px; border: 1px solid #dfe4ec; border-radius: 9px; font-size: .95rem; box-sizing: border-box;
 }
 .ck-card .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ck-pass-wrap { position: relative; }
+.ck-pass-wrap input[type="password"], .ck-pass-wrap input[type="text"] { padding-right: 42px !important; }
+.ck-pass-toggle { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer; font-size: 1.05rem; line-height: 1; padding: 4px; }
 .ck-terms { display: flex; gap: 8px; align-items: center; font-weight: 400 !important; font-size: .88rem; margin-top: 16px !important; }
 .ck-terms input { width: auto !important; }
 .ck-msg { font-weight: 700; font-size: .88rem; margin-top: 10px; min-height: 0; }

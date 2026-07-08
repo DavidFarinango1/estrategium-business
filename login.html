@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login — Estrategium Business</title>
-  <link rel="stylesheet" href="css/styles.css?v=47" />
+  <link rel="stylesheet" href="css/styles.css?v=61" />
 </head>
 <body>
 
@@ -91,9 +91,15 @@
       })[0];
       if (!u) { e.preventDefault(); alert('Correo o contraseña incorrectos, o no estás registrado. Pide acceso al administrador.'); return; }
       if (u.estado !== 'Activo') { e.preventDefault(); alert('Tu cuenta está inactiva. Contacta al administrador.'); return; }
+      // Evita navegar antes de que termine de guardarse haIniciadoSesion en Firestore
+      // (si no, el formulario navega a mis-cursos.html y corta la escritura a medias).
+      e.preventDefault();
       try {
         localStorage.setItem('estrategium_est', JSON.stringify({ name: u.nombre, email: u.email, rol: 'estudiante', cursos: u.cursos || [] }));
       } catch (x) {}
+      var pTareas = [Promise.resolve(u.haIniciadoSesion ? null : Usuarios.update(u.id, { haIniciadoSesion: true })).catch(function () {})];
+      if (window.asegurarFirebaseAuthPlano) pTareas.push(window.asegurarFirebaseAuthPlano(u.email, pass));
+      Promise.all(pTareas).then(function () { window.location.href = 'mis-cursos.html'; });
     });
     // Recuperar contraseña
     document.getElementById('forgotLink').addEventListener('click', function (e) {
