@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Estrategium Business — Convierte clientes ocasionales en clientes frecuentes</title>
   <meta name="description" content="Instala la Máquina de Clientes Fieles™ con el Método MARCA™ y haz que tus clientes regresen una y otra vez." />
-  <link rel="stylesheet" href="css/styles.css?v=67" />
+  <link rel="stylesheet" href="css/styles.css?v=68" />
 </head>
 <body>
 
@@ -29,7 +29,7 @@
         <a href="#contacto" class="nav-pill">CONTACTO</a>
         <a href="sobre-mi.html" class="nav-pill">SOBRE MÍ</a>
         <a href="implementacion-marca.html" class="nav-pill">IMPLEMENTACIÓN ▾</a>
-        <a href="login-estudiantes.html" class="nav-login">LOGIN ESTUDIANTES</a>
+        <a href="login-estudiantes.html" class="nav-login">ACCESO</a>
       </nav>
     </div>
   </header>
@@ -37,18 +37,19 @@
   <!-- Hero -->
   <section class="hero-img">
     <a href="#etapas" style="display:block;">
-      <img src="images/imagen5.png" alt="¿Cada semana tienes que volver a empezar desde cero para llenar tus mesas? Convierte clientes ocasionales en clientes frecuentes con Estrategium." style="width:100%;display:block;" />
+      <img src="images/imginicio.png" alt="¿Cada semana tienes que volver a empezar desde cero para llenar tus mesas? Convierte clientes ocasionales en clientes frecuentes con Estrategium." style="width:100%;display:block;" />
     </a>
   </section>
 
   <!-- La Máquina de Clientes Fieles -->
   <section class="section" style="background:#fff;">
     <div class="container" style="max-width:920px;text-align:center;">
-      <p style="letter-spacing:1px;color:var(--gold);font-weight:700;margin-bottom:8px;">La Máquina de Clientes Fieles™</p>
+      <p style="letter-spacing:1px;color:var(--gold);font-weight:800;margin-bottom:12px;font-size:clamp(2rem,4.4vw,3.1rem);line-height:1.15;">La Máquina de Clientes Fieles™</p>
       <h2 class="section-title" style="margin-bottom:22px">El sistema que convierte clientes ocasionales en clientes frecuentes.</h2>
       <p style="font-size:1.1rem;margin-bottom:14px;color:var(--gray-600,#4a5568);">Los restaurantes más rentables no dependen de conseguir nuevos clientes todos los días.</p>
       <p style="font-size:1.1rem;margin-bottom:14px;color:var(--gray-600,#4a5568);">Construyen un sistema que hace que sus clientes regresen una y otra vez, gasten más en cada visita y recomienden el negocio.</p>
       <p style="font-size:1.1rem;color:var(--gray-600,#4a5568);">En Estrategium Business desarrollamos <b style="color:var(--navy-900)">La Máquina de Clientes Fieles™</b>, un sistema diseñado para aumentar la rentabilidad de restaurantes mediante estrategias de fidelización, experiencia del cliente y automatización.</p>
+      <img src="images/impacto real.png" alt="Impacto real" style="width:100%;max-width:820px;height:auto;margin:32px auto 0;display:block;border-radius:12px;" />
     </div>
   </section>
 
@@ -88,7 +89,7 @@
         <a href="workshop-marca-start.html">MARCA START</a>
         <a href="workshop-marca-profit.html">MARCA PROFIT</a>
         <a href="implementacion-marca.html">Implementación</a>
-        <a href="login.html">Login estudiantes</a>
+        <a href="login-estudiantes.html">Acceso</a>
         <a href="mailto:soporte@estrategium.com">Soporte</a>
       </nav>
       <div class="copy">© 2026 Estrategium Business — Negocios con estrategia. Todos los derechos reservados.</div>
@@ -104,7 +105,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="js/firebase-config.js"></script>
-  <script src="js/auth.js"></script>
+  <script src="js/auth.js?v=2"></script>
   <script src="js/cursos-data.js?v=7"></script>
   <script>
   (function () {
@@ -125,25 +126,21 @@
       var link = c.link || linkPorDefecto(c.titulo);
       var cuerpo;
       if (c.consultoria) {
-        cuerpo = '<a href="' + esc(link) + '" target="_blank" rel="noopener" class="consult-box">' +
-          '<div class="ico">👥</div>' +
-          '<h4>' + esc(c.precioLabel || 'CONSULTORÍA PERSONALIZADA') + '</h4>' +
-          '<div class="agenda">' + esc(c.precio || 'AGENDA TU LLAMADA') + '</div>' +
-        '</a>';
+        // La tarjeta de consultoría (IMPLEMENTACIÓN) usa la misma distribución que
+        // MARCA START: botón dorado "QUIERO HACER CRECER MI NEGOCIO DESDE HOY". El
+        // botón lleva a la página de IMPLEMENTACIÓN (no a Calendly), igual que el
+        // botón "IMPLEMENTACIÓN" del menú superior.
+        cuerpo = '<div class="price-box">' +
+          '<a href="implementacion-marca.html" class="btn btn-gold btn-block" style="line-height:1.25;padding:14px 12px;">QUIERO HACER CRECER MI NEGOCIO DESDE HOY</a>' +
+          '<div style="font-size:.82rem;color:#cdd8ec;margin-top:10px;">' + esc(c.precio || 'AGENDA TU LLAMADA') + '</div>' +
+        '</div>';
       } else {
-        var esFlagship = (c.titulo || '').toUpperCase().indexOf('START') >= 0;
-        if (esFlagship) {
-          cuerpo = '<div class="price-box">' +
-            '<a href="' + esc(link) + '" class="btn btn-gold btn-block" style="line-height:1.25;padding:14px 12px;">QUIERO INSTALAR LA MÁQUINA DE CLIENTES FIELES™</a>' +
-            '<div style="font-size:.82rem;color:#cdd8ec;margin-top:10px;">Acceso inmediato por solo <b>' + esc(c.moneda || 'USD') + ' ' + esc(c.precio || '') + '</b>.</div>' +
-          '</div>';
-        } else {
-          cuerpo = '<div class="price-box">' +
-            '<div class="price-label">' + esc(c.precioLabel || 'INVERSIÓN ÚNICA') + '</div>' +
-            '<div class="price">' + esc(c.moneda || 'USD') + ' <b>' + esc(c.precio || '') + '</b></div>' +
-            '<a href="' + esc(link) + '" class="btn btn-gold btn-block">QUIERO EMPEZAR AHORA</a>' +
-          '</div>';
-        }
+        // Todas las cajas usan la MISMA distribución y el MISMO botón: grande
+        // arriba ("QUIERO HACER CRECER MI NEGOCIO DESDE HOY") y el precio pequeño debajo.
+        cuerpo = '<div class="price-box">' +
+          '<a href="' + esc(link) + '" class="btn btn-gold btn-block" style="line-height:1.25;padding:14px 12px;">QUIERO HACER CRECER MI NEGOCIO DESDE HOY</a>' +
+          '<div style="font-size:.82rem;color:#cdd8ec;margin-top:10px;">Acceso inmediato por solo <b>' + esc(c.moneda || 'USD') + ' ' + esc(c.precio || '') + '</b>.</div>' +
+        '</div>';
       }
       var foot = c.nota ? ('<div class="stage-foot"' + (c.consultoria ? ' style="margin-top:18px"' : '') + '><span class="ico">' + esc(c.notaIcono || '★') + '</span><span>' + esc(c.nota) + '</span></div>') : '';
       return '<article class="stage-card dyn-stage-card">' +

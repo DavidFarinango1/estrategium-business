@@ -8,6 +8,7 @@ window.Usuarios = (function () {
   var KEY = 'estrategium_usuarios';
   var COL = 'usuarios';
   var db = null, useFS = false, started = false;
+  var listoNube = false; // true cuando ya llegó la lista real (nube o modo local)
   var subs = [];
   var DEFAULT_ADMIN = { nombre: 'Administrador', email: 'admin@estrategium.com', cursos: [], rol: 'Administrador', estado: 'Activo' };
 
@@ -40,6 +41,7 @@ window.Usuarios = (function () {
         if (!localStorage.getItem('estrategium_cloud_clean_usuarios')) { localStorage.setItem('estrategium_cloud_clean_usuarios', '1'); writeCache([]); }
         db.collection(COL).onSnapshot(function (snap) {
           var list = []; snap.forEach(function (d) { var o = d.data() || {}; o.id = d.id; list.push(o); });
+          listoNube = true; // ya tenemos la lista real de la nube
           // Primera vez con la nube vacía: sube lo local (o al menos el admin)
           if (list.length === 0 && !localStorage.getItem('estrategium_fs_init_usuarios')) {
             localStorage.setItem('estrategium_fs_init_usuarios', '1');
@@ -50,10 +52,11 @@ window.Usuarios = (function () {
           emit(list);
         }, function (err) {
           console.warn('Firestore usuarios no disponible, uso local:', err && err.message);
-          useFS = false; emit(seedAdmin(preCache));
+          useFS = false; listoNube = true; emit(seedAdmin(preCache));
         });
-      } catch (e) { useFS = false; emit(seedAdmin(preCache)); }
+      } catch (e) { useFS = false; listoNube = true; emit(seedAdmin(preCache)); }
     } else {
+      listoNube = true;
       emit(seedAdmin(preCache));
     }
   }
@@ -74,7 +77,11 @@ window.Usuarios = (function () {
   function getAll() { return normaliza(readCache()); }
   function onChange(fn) { subs.push(fn); try { fn(getAll()); } catch (e) {} }
 
-  return { getAll: getAll, add: add, update: update, remove: remove, onChange: onChange, start: start };
+  // listo(): true cuando la lista definitiva ya cargó. Sirve para NO auto-crear
+  // estudiantes mientras la caché local sigue vacía (eso duplicaba usuarios).
+  function listo() { return listoNube; }
+
+  return { getAll: getAll, add: add, update: update, remove: remove, onChange: onChange, start: start, listo: listo };
 })();
 
 // Arranca en cuanto se carga (auth.js ya definió firebaseListo)

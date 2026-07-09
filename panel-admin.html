@@ -85,12 +85,12 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="js/firebase-config.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/session.js?v=2"></script>
+  <script src="js/auth.js?v=2"></script>
+  <script src="js/session.js?v=3"></script>
 
   <!-- Datos reales del panel -->
   <script src="js/cursos-data.js?v=7"></script>
-  <script src="js/usuarios-data.js"></script>
+  <script src="js/usuarios-data.js?v=2"></script>
   <script src="js/inscripciones-data.js"></script>
   <script>
   (function () {
@@ -102,7 +102,23 @@
       var aprob = ins.filter(function (i) { return i.estado === 'aprobado'; });
       document.getElementById('stIngresos').textContent = money(aprob.reduce(function (s, i) { return s + (+i.monto || 0); }, 0));
       document.getElementById('stCursos').textContent = cursos.length;
-      document.getElementById('stEstudiantes').textContent = users.filter(function (u) { return u.rol === 'Estudiante'; }).length;
+
+      // Cuenta los estudiantes reales igual que el panel "Estudiantes":
+      // inscritos (por correo único) + estudiantes que ya iniciaron sesión al menos
+      // una vez. Así los registros "a medias" del Paso 1 del checkout (llenaron el
+      // formulario pero no pagaron ni volvieron a entrar) no inflan el total.
+      var emailsVistos = {};
+      var totalEstudiantes = 0;
+      ins.forEach(function (i) {
+        var e = (i.email || '').toLowerCase();
+        if (e && !emailsVistos[e]) { emailsVistos[e] = true; totalEstudiantes++; }
+      });
+      users.forEach(function (u) {
+        if (u.rol !== 'Estudiante' || !u.haIniciadoSesion) return;
+        var e = (u.email || '').toLowerCase();
+        if (e && !emailsVistos[e]) { emailsVistos[e] = true; totalEstudiantes++; }
+      });
+      document.getElementById('stEstudiantes').textContent = totalEstudiantes;
       document.getElementById('stPendientes').textContent = ins.filter(function (i) { return i.estado === 'pendiente'; }).length;
 
       var act = document.getElementById('actReciente');

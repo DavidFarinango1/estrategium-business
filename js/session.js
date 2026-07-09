@@ -16,7 +16,6 @@
   }
   function loginPara(g) { return g === 'admin' ? 'login-admin.html' : 'login-estudiantes.html'; }
   function usuarioLocal() { try { return JSON.parse(localStorage.getItem(sessionKey()) || 'null'); } catch (e) { return null; } }
-  function haySesionFirebase() { try { return !!(window.estrategiumAuth && window.estrategiumAuth.currentUser); } catch (e) { return false; } }
 
   // Enlazar logout (borra solo la sesión del rol de esta página)
   function wireLogout() {
@@ -46,11 +45,14 @@
   document.addEventListener('DOMContentLoaded', wireLogout);
   if (document.readyState !== 'loading') wireLogout();
 
-  // Expulsa al login si la página es privada y NO hay sesión válida para SU rol
+  // Expulsa al login si la página es privada y NO hay sesión válida para SU rol.
+  // OJO: NO basta con "hay alguien en Firebase Auth" para dejar pasar al admin —
+  // un ESTUDIANTE que entró con Google también tiene sesión de Firebase, y con
+  // ese atajo podía abrir el panel de administración. La única llave válida es
+  // la sesión local del rol correcto (que solo crea el login de ese rol).
   function protegerSiSinSesion() {
     if (!guard) return false;
     if (usuarioLocal()) return false;                       // sesión local del rol correcto
-    if (guard === 'admin' && haySesionFirebase()) return false; // admin validado por Firebase
     window.location.replace(loginPara(guard));
     return true;
   }
@@ -66,11 +68,10 @@
     return;
   }
 
-  // Con Firebase:
+  // Con Firebase: la sesión válida sigue siendo la local del rol (ver arriba).
   window.estrategiumAuth.onAuthStateChanged(function (user) {
     var cached = usuarioLocal();
     if (cached) { pintarUsuario(cached); return; }
-    if (guard === 'admin' && user) { pintarUsuario(user); return; } // admin puede validarse por Firebase
     if (guard) window.location.replace(loginPara(guard));
   });
 })();

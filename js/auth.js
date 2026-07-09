@@ -62,10 +62,14 @@
           var p = est.haIniciadoSesion ? Promise.resolve() : Promise.resolve(Usuarios.update(est.id, { haIniciadoSesion: true })).catch(function () {});
           return p.then(function () { return { nombre: est.nombre || nombre, cursos: est.cursos || [], rol: est.rol }; });
         }
-        // Nuevo: lo crea como estudiante para que el admin lo vea y le asigne cursos
-        return Promise.resolve(Usuarios.add({ nombre: nombre, email: email, clave: '', cursos: [], rol: 'Estudiante', estado: 'Activo', haIniciadoSesion: true }))
-          .catch(function () {})
-          .then(function () { return { nombre: nombre, cursos: [], rol: 'Estudiante' }; });
+        // Nuevo: lo crea como estudiante para que el admin lo vea y le asigne cursos.
+        // SOLO si la lista de la nube ya cargó — con la caché aún vacía "no lo
+        // encuentra" aunque exista, y crearlo aquí duplicaba al estudiante.
+        if (!Usuarios.listo || Usuarios.listo()) {
+          return Promise.resolve(Usuarios.add({ nombre: nombre, email: email, clave: '', cursos: [], rol: 'Estudiante', estado: 'Activo', haIniciadoSesion: true }))
+            .catch(function () {})
+            .then(function () { return { nombre: nombre, cursos: [], rol: 'Estudiante' }; });
+        }
       }
     } catch (e) {}
     return Promise.resolve({ nombre: nombre, cursos: [], rol: 'estudiante' });
@@ -154,22 +158,27 @@
     var destino = rol === 'admin' ? 'admin.html' : 'mis-cursos.html';
     return auth.signInWithEmailAndPassword(email, pass).then(function (res) {
       var u = res.user || {};
-      var nombre = u.displayName || (u.email || '').split('@')[0];
-      var cursos = [];
+      var infoPromesa;
       if (rol === 'admin') {
         var r = adminConGoogle(u); // reclama/valida al admin (mismo control que con Google)
         if (!r.ok) { auth.signOut(); var e = new Error('no-autorizado'); e.code = 'no-autorizado'; throw e; }
-        nombre = r.nombre;
+        infoPromesa = Promise.resolve({ nombre: r.nombre, cursos: [] });
       } else {
-        var info = asegurarEstudiante(u); nombre = info.nombre; cursos = info.cursos;
+        // asegurarEstudiante devuelve una Promise: hay que ESPERARLA (antes se leía
+        // info.nombre directo de la Promise y la sesión quedaba sin nombre/cursos).
+        infoPromesa = asegurarEstudiante(u);
       }
-      try {
-        var sk = rol === 'admin' ? 'estrategium_admin' : 'estrategium_est';
-        localStorage.setItem(sk, JSON.stringify({
-          uid: u.uid, name: nombre, email: u.email, rol: rol, cursos: cursos || []
-        }));
-      } catch (e) {}
-      window.location.href = destino;
+      return infoPromesa.then(function (info) {
+        try {
+          var sk = rol === 'admin' ? 'estrategium_admin' : 'estrategium_est';
+          localStorage.setItem(sk, JSON.stringify({
+            uid: u.uid,
+            name: info.nombre || u.displayName || (u.email || '').split('@')[0],
+            email: u.email, rol: rol, cursos: info.cursos || []
+          }));
+        } catch (e) {}
+        window.location.href = destino;
+      });
     });
   };
 
@@ -247,18 +256,19 @@
     }).catch(function () {});
   };
 
-  // Cierra sesión SOLO del rol indicado (por el destino). El estudiante NO cierra
-  // Firebase, para no afectar la sesión del admin en el mismo navegador.
+  // Cierra la sesión local del rol indicado Y la de Firebase Auth. En el navegador
+  // solo existe UNA sesión de Firebase a la vez (la de quien acaba de usar la
+  // cuenta), así que dejarla abierta al salir era un riesgo en computadoras
+  // compartidas. La sesión local del OTRO rol (localStorage) no se toca: el admin
+  // no pierde su acceso al panel si un estudiante cierra sesión, y viceversa.
   window.cerrarSesion = function (destino) {
     var esAdmin = /admin/i.test(destino || '');
     try {
       localStorage.removeItem(esAdmin ? 'estrategium_admin' : 'estrategium_est');
       localStorage.removeItem('estrategium_user'); // limpia sesión antigua si existiera
     } catch (e) {}
-    if (esAdmin) {
-      auth.signOut().finally(function () { window.location.href = destino || 'login-admin.html'; });
-    } else {
-      window.location.href = destino || 'login-estudiantes.html';
-    }
+    auth.signOut().finally(function () {
+      window.location.href = destino || (esAdmin ? 'login-admin.html' : 'login-estudiantes.html');
+    });
   };
 })();

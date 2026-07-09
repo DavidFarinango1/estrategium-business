@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mis cursos — Estrategium Business</title>
-  <link rel="stylesheet" href="css/styles.css?v=67" />
+  <link rel="stylesheet" href="css/styles.css?v=68" />
 </head>
 <body data-guard="estudiante">
 
   <!-- Header portal -->
   <header class="portal-header">
     <div class="container portal-nav">
-      <a href="mis-cursos.html" class="brand">
+      <a href="index.html" class="brand" title="Ir al inicio">
         <span class="brand-main">ESTRATEGIUM</span>
         <span class="brand-sub">BUSINESS</span>
       </a>
@@ -60,10 +60,10 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="js/firebase-config.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/session.js?v=2"></script>
+  <script src="js/auth.js?v=2"></script>
+  <script src="js/session.js?v=3"></script>
   <script src="js/cursos-data.js?v=7"></script>
-  <script src="js/usuarios-data.js"></script>
+  <script src="js/usuarios-data.js?v=2"></script>
   <script>
   (function () {
     var cont = document.getElementById('portalCursos');
@@ -71,6 +71,7 @@
     function nLecciones(c) { return (c.modulos || []).reduce(function (n, m) { return n + ((m.lecciones || []).length); }, 0); }
 
     // Cursos en los que está inscrito el estudiante (LEÍDOS EN VIVO desde el admin)
+    var autoRegistrado = false; // solo un intento de auto-registro por visita
     function inscritos() {
       try {
         var s = JSON.parse(localStorage.getItem('estrategium_est') || 'null');
@@ -85,9 +86,16 @@
             try { s.cursos = u.cursos || []; localStorage.setItem('estrategium_est', JSON.stringify(s)); } catch (e) {}
             return u.cursos || [];
           }
-          // Entró (ej. con Google) pero no está en la lista del admin → lo registra
-          if ((s.rol || '').toLowerCase() === 'estudiante') {
-            Usuarios.add({ nombre: s.name || s.email, email: s.email, clave: '', cursos: [], rol: 'Estudiante', estado: 'Activo' });
+          // ¿La lista real de la nube todavía no llega? Entonces "no lo encontré"
+          // no significa nada: usa los cursos de la sesión y NO lo registres aún
+          // (registrarlo aquí con la caché vacía creaba estudiantes duplicados).
+          if (Usuarios.listo && !Usuarios.listo()) {
+            return Array.isArray(s.cursos) ? s.cursos : [];
+          }
+          // Entró (ej. con Google) pero de verdad no está en la lista → lo registra UNA vez
+          if ((s.rol || '').toLowerCase() === 'estudiante' && !autoRegistrado) {
+            autoRegistrado = true;
+            Usuarios.add({ nombre: s.name || s.email, email: s.email, clave: '', cursos: [], rol: 'Estudiante', estado: 'Activo', haIniciadoSesion: true });
             return [];
           }
         }
@@ -161,15 +169,17 @@
 
       var html = '';
       if (owned.length) {
+        html += '<h2 style="text-align:center;color:var(--navy-900,#0a1f44);margin:0 0 22px;">Mis cursos</h2>';
         html += owned.map(cardOwned).join('');
       } else {
         html += '<p style="text-align:center;color:var(--gray-500);margin-bottom:8px;">Aún no tienes cursos. Elige un plan y adquiérelo para empezar 👇</p>';
       }
 
-      // Solo mostramos "Cursos disponibles para adquirir" si el estudiante AÚN NO tiene cursos
-      // (por ejemplo, quien entra con Google sin comprar). Si ya compró, ve solo su curso.
-      if (!owned.length && disponibles.length) {
-        html += '<h2 style="text-align:center;color:var(--navy-900,#0a1f44);margin:26px 0 22px;">Cursos disponibles para adquirir</h2>';
+      // Siempre mostramos los demás cursos que el estudiante todavía no tiene,
+      // para que pueda adquirirlos desde su propia zona.
+      if (disponibles.length) {
+        html += '<h2 style="text-align:center;color:var(--navy-900,#0a1f44);margin:36px 0 22px;">' +
+          (owned.length ? 'Adquiere más cursos' : 'Cursos disponibles para adquirir') + '</h2>';
         html += disponibles.map(cardComprar).join('');
       }
 

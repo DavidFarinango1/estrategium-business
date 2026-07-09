@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login Estudiantes — Estrategium Business</title>
-  <link rel="stylesheet" href="css/styles.css?v=67" />
+  <link rel="stylesheet" href="css/styles.css?v=68" />
 </head>
 <body>
 
@@ -19,13 +19,14 @@
         <a href="index.html#contacto" class="nav-pill">CONTACTO</a>
         <a href="sobre-mi.html" class="nav-pill">SOBRE MÍ</a>
         <a href="implementacion-marca.html" class="nav-pill">IMPLEMENTACIÓN</a>
-        <a href="login-estudiantes.html" class="nav-login">LOGIN ESTUDIANTES</a>
+        <a href="login-estudiantes.html" class="nav-login">ACCESO</a>
       </nav>
     </div>
   </header>
 
   <main class="login-wrap">
-    <form class="login-card" id="loginForm" action="mis-cursos.html">
+    <!-- Sin "action": la navegación a mis-cursos SOLO ocurre tras validar en JS -->
+    <form class="login-card" id="loginForm" action="#">
       <span class="login-badge estudiante">🎓 Área de estudiantes</span>
       <div class="brand-main">ESTRATEGIUM <span style="font-weight:400">BUSINESS</span></div>
       <h2>¡Bienvenido!</h2>
@@ -69,8 +70,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="js/firebase-config.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/usuarios-data.js"></script>
+  <script src="js/auth.js?v=2"></script>
+  <script src="js/usuarios-data.js?v=2"></script>
   <script>
     // Ver / ocultar contraseña
     (function () {
@@ -88,18 +89,26 @@
     });
     // Ingreso con email + contraseña: valida contra los estudiantes registrados por el admin
     document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault(); // la navegación siempre se hace manualmente tras validar
       var email = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
       var pass = (document.getElementById('loginPass').value || '').trim();
+
+      // Nunca aceptar contraseñas vacías: las cuentas creadas con Google guardan
+      // clave "" y con una contraseña en blanco se podía entrar a CUALQUIERA de ellas.
+      if (!email || !pass) { alert('Escribe tu correo y tu contraseña.'); return; }
+
       var u = (window.Usuarios ? Usuarios.getAll() : []).filter(function (x) {
-        return x.rol === 'Estudiante' && (x.email || '').toLowerCase() === email && (x.clave || '') === pass;
+        return x.rol === 'Estudiante' && (x.email || '').toLowerCase() === email;
       })[0];
 
-      if (!u) { e.preventDefault(); alert('Correo o contraseña incorrectos, o no estás registrado. Pide acceso al administrador.'); return; }
-      if (u.estado !== 'Activo') { e.preventDefault(); alert('Tu cuenta está inactiva. Contacta al administrador.'); return; }
+      if (!u) { alert('Correo o contraseña incorrectos, o no estás registrado. Pide acceso al administrador.'); return; }
+      if (!(u.clave || '')) { alert('Esta cuenta accede con Google. Usa el botón "Continuar con Google" para entrar.'); return; }
+      if ((u.clave || '') !== pass) { alert('Correo o contraseña incorrectos, o no estás registrado. Pide acceso al administrador.'); return; }
+      // Cuentas antiguas sin campo "estado" se consideran activas
+      if (u.estado && u.estado !== 'Activo') { alert('Tu cuenta está inactiva. Contacta al administrador.'); return; }
 
       // Evita navegar antes de que termine de guardarse haIniciadoSesion en Firestore
       // (si no, el formulario navega a mis-cursos.html y corta la escritura a medias).
-      e.preventDefault();
       try {
         localStorage.setItem('estrategium_est', JSON.stringify({
           name: u.nombre, email: u.email, rol: 'estudiante', cursos: u.cursos || []
