@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reserva tu acceso — Workshop MARCA START · USD 19</title>
   <meta name="description" content="Reserva tu acceso al Workshop MARCA START por una inversión única de USD 19. Acceso inmediato y de por vida." />
-  <link rel="stylesheet" href="css/styles.css?v=68" />
+  <link rel="stylesheet" href="css/styles.css?v=73" />
 </head>
 <body>
 
@@ -157,177 +157,143 @@
         </div>
       </div>
 
-      <!-- Columna derecha: flujo de 4 pasos -->
+      <!-- Columna derecha: checkout en una sola página -->
       <div class="checkout-right">
       <div class="ck-wrap">
 
-      <!-- Indicador de pasos -->
-      <div class="ck-steps">
-        <span class="ck-step active" id="ckDot1">1<small>Cuenta</small></span>
-        <span class="ck-step" id="ckDot2">2<small>Resumen</small></span>
-        <span class="ck-step" id="ckDot3">3<small>Pago</small></span>
-        <span class="ck-step" id="ckDot4">4<small>Acceso</small></span>
-      </div>
+      <form id="ckForm" class="co-form">
 
-      <!-- PASO 1: Crear cuenta -->
-      <div class="ck-panel" id="ckStep1">
-        <div class="ck-card" id="ckRegistroBox">
-          <h2 class="ck-card-title">Crea tu cuenta</h2>
-          <form id="ckFormRegistro">
-            <div class="form-row">
-              <div><label>Nombre *</label><input id="ckNombre" type="text" required /></div>
-              <div><label>Apellido *</label><input id="ckApellido" type="text" required /></div>
-            </div>
-            <label>Correo electrónico *</label>
-            <input id="ckEmail" type="email" required />
-            <label>WhatsApp *</label>
-            <div class="ck-phone-row">
-              <div class="ck-pais-select" id="ckPaisSelect">
-                <button type="button" class="ck-pais-btn" id="ckPaisBtn" aria-haspopup="listbox" aria-expanded="false">
-                  <img id="ckPaisFlag" class="ck-flag-img" src="https://flagcdn.com/24x18/ec.png" alt="" />
-                  <span id="ckPaisCode">+593</span><span class="ck-pais-arrow">▾</span>
-                </button>
-                <input type="hidden" id="ckTelPais" value="+593" />
-                <ul class="ck-pais-menu" id="ckPaisMenu" role="listbox" hidden>
-                  <li role="option" data-code="+593" data-cc="ec"><img class="ck-flag-img" src="https://flagcdn.com/24x18/ec.png" alt="" /> Ecuador <b>+593</b></li>
-                  <li role="option" data-code="+57" data-cc="co"><img class="ck-flag-img" src="https://flagcdn.com/24x18/co.png" alt="" /> Colombia <b>+57</b></li>
-                  <li role="option" data-code="+51" data-cc="pe"><img class="ck-flag-img" src="https://flagcdn.com/24x18/pe.png" alt="" /> Perú <b>+51</b></li>
-                  <li role="option" data-code="+52" data-cc="mx"><img class="ck-flag-img" src="https://flagcdn.com/24x18/mx.png" alt="" /> México <b>+52</b></li>
-                  <li role="option" data-code="+54" data-cc="ar"><img class="ck-flag-img" src="https://flagcdn.com/24x18/ar.png" alt="" /> Argentina <b>+54</b></li>
-                  <li role="option" data-code="+56" data-cc="cl"><img class="ck-flag-img" src="https://flagcdn.com/24x18/cl.png" alt="" /> Chile <b>+56</b></li>
-                  <li role="option" data-code="+591" data-cc="bo"><img class="ck-flag-img" src="https://flagcdn.com/24x18/bo.png" alt="" /> Bolivia <b>+591</b></li>
-                  <li role="option" data-code="+58" data-cc="ve"><img class="ck-flag-img" src="https://flagcdn.com/24x18/ve.png" alt="" /> Venezuela <b>+58</b></li>
-                  <li role="option" data-code="+595" data-cc="py"><img class="ck-flag-img" src="https://flagcdn.com/24x18/py.png" alt="" /> Paraguay <b>+595</b></li>
-                  <li role="option" data-code="+598" data-cc="uy"><img class="ck-flag-img" src="https://flagcdn.com/24x18/uy.png" alt="" /> Uruguay <b>+598</b></li>
-                  <li role="option" data-code="+507" data-cc="pa"><img class="ck-flag-img" src="https://flagcdn.com/24x18/pa.png" alt="" /> Panamá <b>+507</b></li>
-                  <li role="option" data-code="+506" data-cc="cr"><img class="ck-flag-img" src="https://flagcdn.com/24x18/cr.png" alt="" /> Costa Rica <b>+506</b></li>
-                  <li role="option" data-code="+502" data-cc="gt"><img class="ck-flag-img" src="https://flagcdn.com/24x18/gt.png" alt="" /> Guatemala <b>+502</b></li>
-                  <li role="option" data-code="+504" data-cc="hn"><img class="ck-flag-img" src="https://flagcdn.com/24x18/hn.png" alt="" /> Honduras <b>+504</b></li>
-                  <li role="option" data-code="+503" data-cc="sv"><img class="ck-flag-img" src="https://flagcdn.com/24x18/sv.png" alt="" /> El Salvador <b>+503</b></li>
-                  <li role="option" data-code="+505" data-cc="ni"><img class="ck-flag-img" src="https://flagcdn.com/24x18/ni.png" alt="" /> Nicaragua <b>+505</b></li>
-                  <li role="option" data-code="+1" data-cc="us"><img class="ck-flag-img" src="https://flagcdn.com/24x18/us.png" alt="" /> Estados Unidos <b>+1</b></li>
-                  <li role="option" data-code="+1" data-cc="do"><img class="ck-flag-img" src="https://flagcdn.com/24x18/do.png" alt="" /> Rep. Dominicana <b>+1</b></li>
-                  <li role="option" data-code="+34" data-cc="es"><img class="ck-flag-img" src="https://flagcdn.com/24x18/es.png" alt="" /> España <b>+34</b></li>
-                </ul>
-              </div>
-              <input id="ckTel" type="tel" placeholder="99 999 9999" required />
-            </div>
-            <label>Contraseña *</label>
-            <div class="ck-pass-wrap">
-              <input id="ckPass" type="password" minlength="6" required />
-              <button type="button" class="ck-pass-toggle" data-target="ckPass" title="Ver / ocultar contraseña" aria-label="Ver u ocultar contraseña">👁️</button>
-            </div>
-            <label>Confirmar contraseña *</label>
-            <div class="ck-pass-wrap">
-              <input id="ckPass2" type="password" minlength="6" required />
-              <button type="button" class="ck-pass-toggle" data-target="ckPass2" title="Ver / ocultar contraseña" aria-label="Ver u ocultar contraseña">👁️</button>
-            </div>
-            <label class="ck-terms"><input id="ckTerms" type="checkbox" required /> Acepto los términos</label>
-            <div id="ckRegMsg" class="ck-msg"></div>
-            <button type="submit" class="btn btn-gold" style="width:100%;margin-top:16px;">CONTINUAR</button>
-          </form>
-          <div id="ckExisteBox" hidden style="margin-top:14px;padding-top:14px;border-top:1px solid #eef1f6;">
-            <p style="margin:0 0 8px;color:var(--gray-500);font-size:.88rem;">¿Esta cuenta ya es tuya? Ingresa tu contraseña para continuar:</p>
-            <input id="ckExistePass" type="password" placeholder="Contraseña" style="width:100%;padding:10px 12px;border:1px solid #dfe4ec;border-radius:8px;font-size:.9rem;box-sizing:border-box;margin-bottom:8px;" />
-            <button type="button" class="btn btn-gold" id="ckExisteIngresar" style="width:100%;">INICIAR SESIÓN</button>
-            <p class="ck-switch" style="margin-top:8px;"><a id="ckExisteOlvide">¿Olvidaste tu contraseña?</a></p>
+        <!-- INFORMACIÓN DE CONTACTO -->
+        <h2 class="co-sec-title">INFORMACIÓN DE CONTACTO</h2>
+        <div class="co-row2">
+          <div><label>Nombre <span class="req">*</span></label><input id="coNombre" type="text" required /></div>
+          <div><label>Apellidos <span class="req">*</span></label><input id="coApellido" type="text" required /></div>
+        </div>
+        <label>Dirección de Correo Electrónico <span class="req">*</span></label>
+        <input id="coEmail" type="email" required />
+        <label>Confirmación de Correo Electrónico <span class="req">*</span></label>
+        <input id="coEmail2" type="email" required />
+        <label>Número de Teléfono <span class="req">*</span></label>
+        <div class="ck-phone-row">
+          <div class="ck-pais-select" id="ckPaisSelect">
+            <button type="button" class="ck-pais-btn" id="ckPaisBtn" aria-haspopup="listbox" aria-expanded="false">
+              <img id="ckPaisFlag" class="ck-flag-img" src="https://flagcdn.com/24x18/ec.png" alt="" />
+              <span id="ckPaisCode">+593</span><span class="ck-pais-arrow">▾</span>
+            </button>
+            <input type="hidden" id="coTelPais" value="+593" />
+            <ul class="ck-pais-menu" id="ckPaisMenu" role="listbox" hidden>
+              <li role="option" data-code="+593" data-cc="ec"><img class="ck-flag-img" src="https://flagcdn.com/24x18/ec.png" alt="" /> Ecuador <b>+593</b></li>
+              <li role="option" data-code="+57" data-cc="co"><img class="ck-flag-img" src="https://flagcdn.com/24x18/co.png" alt="" /> Colombia <b>+57</b></li>
+              <li role="option" data-code="+51" data-cc="pe"><img class="ck-flag-img" src="https://flagcdn.com/24x18/pe.png" alt="" /> Perú <b>+51</b></li>
+              <li role="option" data-code="+52" data-cc="mx"><img class="ck-flag-img" src="https://flagcdn.com/24x18/mx.png" alt="" /> México <b>+52</b></li>
+              <li role="option" data-code="+54" data-cc="ar"><img class="ck-flag-img" src="https://flagcdn.com/24x18/ar.png" alt="" /> Argentina <b>+54</b></li>
+              <li role="option" data-code="+56" data-cc="cl"><img class="ck-flag-img" src="https://flagcdn.com/24x18/cl.png" alt="" /> Chile <b>+56</b></li>
+              <li role="option" data-code="+591" data-cc="bo"><img class="ck-flag-img" src="https://flagcdn.com/24x18/bo.png" alt="" /> Bolivia <b>+591</b></li>
+              <li role="option" data-code="+58" data-cc="ve"><img class="ck-flag-img" src="https://flagcdn.com/24x18/ve.png" alt="" /> Venezuela <b>+58</b></li>
+              <li role="option" data-code="+595" data-cc="py"><img class="ck-flag-img" src="https://flagcdn.com/24x18/py.png" alt="" /> Paraguay <b>+595</b></li>
+              <li role="option" data-code="+598" data-cc="uy"><img class="ck-flag-img" src="https://flagcdn.com/24x18/uy.png" alt="" /> Uruguay <b>+598</b></li>
+              <li role="option" data-code="+507" data-cc="pa"><img class="ck-flag-img" src="https://flagcdn.com/24x18/pa.png" alt="" /> Panamá <b>+507</b></li>
+              <li role="option" data-code="+506" data-cc="cr"><img class="ck-flag-img" src="https://flagcdn.com/24x18/cr.png" alt="" /> Costa Rica <b>+506</b></li>
+              <li role="option" data-code="+502" data-cc="gt"><img class="ck-flag-img" src="https://flagcdn.com/24x18/gt.png" alt="" /> Guatemala <b>+502</b></li>
+              <li role="option" data-code="+504" data-cc="hn"><img class="ck-flag-img" src="https://flagcdn.com/24x18/hn.png" alt="" /> Honduras <b>+504</b></li>
+              <li role="option" data-code="+503" data-cc="sv"><img class="ck-flag-img" src="https://flagcdn.com/24x18/sv.png" alt="" /> El Salvador <b>+503</b></li>
+              <li role="option" data-code="+505" data-cc="ni"><img class="ck-flag-img" src="https://flagcdn.com/24x18/ni.png" alt="" /> Nicaragua <b>+505</b></li>
+              <li role="option" data-code="+1" data-cc="us"><img class="ck-flag-img" src="https://flagcdn.com/24x18/us.png" alt="" /> Estados Unidos <b>+1</b></li>
+              <li role="option" data-code="+1" data-cc="do"><img class="ck-flag-img" src="https://flagcdn.com/24x18/do.png" alt="" /> Rep. Dominicana <b>+1</b></li>
+              <li role="option" data-code="+34" data-cc="es"><img class="ck-flag-img" src="https://flagcdn.com/24x18/es.png" alt="" /> España <b>+34</b></li>
+            </ul>
           </div>
-          <div class="login-divider">o</div>
-          <button type="button" class="btn-google" id="ckGoogleBtn">
-            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-            </svg>
-            Continuar con Google
-          </button>
+          <input id="coTel" type="tel" placeholder="99 999 9999" required />
         </div>
 
-        <!-- Verificación de correo (tras registrarse con email + contraseña) -->
-        <div class="ck-card" id="ckVerificaBox" hidden>
-          <h2 class="ck-card-title">Verifica tu correo</h2>
-          <p style="text-align:center;color:var(--gray-500);">Te enviamos un enlace de verificación a <b id="ckVerificaEmail"></b>. Ábrelo desde tu correo (revisa también spam) y luego vuelve aquí.</p>
-          <div id="ckVerificaMsg" class="ck-msg"></div>
-          <button type="button" class="btn btn-gold" id="ckYaVerifique" style="width:100%;margin-top:16px;">YA VERIFIQUÉ MI CORREO</button>
-          <p class="ck-switch"><a id="ckReenviarCorreo">Reenviar correo</a> · <a id="ckCorregirEmail">¿Correo mal escrito? Corregirlo</a></p>
+        <!-- INFORMACIÓN DE FACTURACIÓN -->
+        <h2 class="co-sec-title">INFORMACIÓN DE FACTURACIÓN</h2>
+        <label>Dirección <span class="req">*</span></label>
+        <input id="coDireccion" type="text" required />
+        <div class="co-row2">
+          <div><label>Ciudad <span class="req">*</span></label><input id="coCiudad" type="text" required /></div>
+          <div>
+            <label>Selecciona un País <span class="req">*</span></label>
+            <select id="coPais" required>
+              <option value="Ecuador" selected>Ecuador</option>
+              <option value="Colombia">Colombia</option>
+              <option value="Perú">Perú</option>
+              <option value="México">México</option>
+              <option value="Argentina">Argentina</option>
+              <option value="Chile">Chile</option>
+              <option value="Bolivia">Bolivia</option>
+              <option value="Venezuela">Venezuela</option>
+              <option value="Paraguay">Paraguay</option>
+              <option value="Uruguay">Uruguay</option>
+              <option value="Panamá">Panamá</option>
+              <option value="Costa Rica">Costa Rica</option>
+              <option value="Guatemala">Guatemala</option>
+              <option value="Honduras">Honduras</option>
+              <option value="El Salvador">El Salvador</option>
+              <option value="Nicaragua">Nicaragua</option>
+              <option value="Estados Unidos">Estados Unidos</option>
+              <option value="Rep. Dominicana">Rep. Dominicana</option>
+              <option value="España">España</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
         </div>
-      </div>
-
-      <!-- PASO 2: Resumen -->
-      <div class="ck-panel" id="ckStep2" hidden>
-        <div class="ck-card">
-          <a href="javascript:void(0)" class="ck-back" id="ckBack2">← Volver</a>
-          <h2 class="ck-card-title">Hola <span id="ckHola">👋</span></h2>
-          <p style="text-align:center;color:var(--gray-500);margin-top:-10px;">Estás a punto de obtener:</p>
-          <ul class="check-list" style="max-width:100%;margin:16px 0 0;">
-            <li>Workshop MARCA START</li>
-            <li>Acceso inmediato</li>
-            <li>Checklists</li>
-            <li>Plantillas</li>
-            <li>Mini diagnóstico</li>
-            <li>Calculadora</li>
-          </ul>
-          <div class="ck-totals">
-            <div><span>Subtotal</span><span>$19</span></div>
-            <div class="ck-total"><span>TOTAL</span><span>$19</span></div>
-          </div>
-          <button type="button" class="btn btn-gold" id="ckContinuarPago" style="width:100%;margin-top:18px;">Continuar al pago</button>
+        <div class="co-row2">
+          <div><label>Provincia <span class="req">*</span></label><input id="coProvincia" type="text" required /></div>
+          <div><label>Código Postal</label><input id="coCP" type="text" /></div>
         </div>
-      </div>
 
-      <!-- PASO 3: Pago -->
-      <div class="ck-panel" id="ckStep3" hidden>
-        <div class="ck-card">
-          <a href="javascript:void(0)" class="ck-back" id="ckBack3">← Volver</a>
-          <h2 class="ck-card-title">Selecciona tu forma de pago</h2>
-          <div class="ck-pay-methods">
-            <label class="ck-pay-opt"><input type="radio" name="ckMetodo" value="tarjeta" /> 💳 Tarjeta</label>
-            <label class="ck-pay-opt"><input type="radio" name="ckMetodo" value="payphone" /> 🐳 PayPhone</label>
-            <label class="ck-pay-opt"><input type="radio" name="ckMetodo" value="transfer" checked /> 🏦 Transferencia</label>
-          </div>
+        <!-- MÉTODOS DE PAGO -->
+        <h2 class="co-sec-title">MÉTODOS DE PAGO</h2>
+        <div class="co-pay-list">
+          <label class="co-pay-opt active"><input type="radio" name="coMetodo" value="transfer" checked /> <span>🏦 Transferencia bancaria</span></label>
+          <label class="co-pay-opt"><input type="radio" name="coMetodo" value="tarjeta" /> <span>💳 Tarjeta de crédito</span></label>
+          <label class="co-pay-opt"><input type="radio" name="coMetodo" value="payphone" /> <span>📱 PayPhone</span></label>
+        </div>
 
-          <div id="ckPayNotice" class="ck-notice" hidden>
-            Pagos con tarjeta y PayPhone estarán disponibles muy pronto. Mientras tanto, usa <b>Transferencia</b>: es rápido de confirmar y tu acceso se activa apenas se apruebe el pago.
-          </div>
+        <div id="coPayNotice" class="ck-notice" hidden>
+          Estamos activando los pagos con <b>tarjeta</b> y <b>PayPhone</b>. Por ahora usa <b>Transferencia bancaria</b>:
+          tu acceso se activa apenas confirmemos el pago.
+        </div>
 
-          <div id="ckPayTransfer" class="transfer-panel">
-            <h3 class="tp-heading">DATOS PARA EL PAGO</h3>
-            <p class="tp-amount">Valor de la inscripción: USD 19</p>
-            <div class="bank-grid">
-              <div class="bank-card">
-                <h4>Banco Pichincha</h4>
-                <p>Cuenta de Ahorros: <b>2211638477</b></p>
-                <p>Myriam Campos</p>
-                <p>C.I.: 1709049041</p>
-                <p>Contacto: 0978811786</p>
-              </div>
-              <div class="bank-card qr-card">
-                <h4>Paga con QR / DeUna!</h4>
-                <img src="images/qr-pago.png" alt="QR de pago" onerror="this.outerHTML='&lt;div class=\'qr-ph\'&gt;Sube tu QR&lt;/div&gt;'" />
-                <p style="font-size:.82rem;color:var(--gray-500)">Escanea, ingresa USD 19 y paga.</p>
-              </div>
+        <div id="coPayTransfer" class="transfer-panel">
+          <h3 class="tp-heading">DATOS PARA EL PAGO</h3>
+          <p class="tp-amount">Valor de la inscripción: USD 19</p>
+          <div class="bank-grid">
+            <div class="bank-card">
+              <h4>Banco Pichincha</h4>
+              <p>Cuenta de Ahorros: <b>2211638477</b></p>
+              <p>Myriam Campos</p>
+              <p>C.I.: 1709049041</p>
+              <p>Contacto: 0978811786</p>
             </div>
-            <label>Comprobante de pago (foto) <span class="tr-req">*</span></label>
-            <input id="trFile" type="file" accept="image/*" />
-            <p style="color:var(--gray-500);font-size:.82rem;margin:6px 0 14px">Sube la foto o captura del pago (JPG/PNG).</p>
-            <button id="trEnviar" type="button" class="btn btn-gold" style="width:100%">PAGAR AHORA</button>
-            <div id="trMsg" class="ck-msg"></div>
+            <div class="bank-card qr-card">
+              <h4>Paga con QR / DeUna!</h4>
+              <img src="images/qr-pago.png" alt="QR de pago" />
+              <p style="font-size:.82rem;color:var(--gray-500)">Escanea, ingresa USD 19 y paga.</p>
+            </div>
           </div>
-
-          <div class="ck-totals">
-            <div class="ck-total"><span>Total</span><span>USD 19</span></div>
-          </div>
+          <label>Comprobante de pago (foto) <span class="req">*</span></label>
+          <input id="coFile" type="file" accept="image/*" />
+          <p style="color:var(--gray-500);font-size:.82rem;margin:6px 0 0">Sube la foto o captura del pago (JPG/PNG).</p>
         </div>
-      </div>
 
-      <!-- PASO 4: Resultado -->
-      <div class="ck-panel" id="ckStep4" hidden>
-        <div class="ck-card ck-result pending" id="ckResultCard">
-          <div class="ico">⏳</div>
-          <h2>Pago pendiente</h2>
-          <p>Estamos confirmando tu pago. En cuanto se apruebe, verás tu acceso aquí mismo.</p>
+        <!-- RESUMEN -->
+        <div class="co-summary">
+          <div class="co-sum-line"><span>Workshop MARCA START</span><span>$19.00</span></div>
+          <div class="co-sum-total"><span>TOTAL:</span><span>$19.00</span></div>
         </div>
+
+        <div id="coMsg" class="ck-msg"></div>
+        <button type="submit" class="btn btn-blue btn-block" id="coSubmit">Completar mi Compra Ahora</button>
+        <p class="co-terms"><label><input id="coTerms" type="checkbox" required /> Acepto los términos y condiciones.</label></p>
+      </form>
+
+      <!-- Resultado (pendiente / aprobado / negado) -->
+      <div class="ck-card ck-result pending" id="coResultCard" hidden>
+        <div class="ico">⏳</div>
+        <h2>Pago pendiente</h2>
+        <p>Estamos confirmando tu pago.</p>
       </div>
 
       </div><!-- /ck-wrap -->
@@ -357,7 +323,7 @@
 
   <a href="https://wa.me/593978811786" target="_blank" rel="noopener" class="wa-float" id="whatsapp" title="Hablar por WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.2 1.6 6L4 29l8.2-1.6c1.8.9 3.7 1.4 5.8 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-4.9 1 1-4.7-.3-.4C5.5 18.4 5 16.7 5 15 5 9 9.9 4.2 16 4.2S27 9 27 15s-4.9 9.8-11 9.8zm6.1-7.3c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-2-1.8-2.3-.2-.3 0-.5.1-.7.1-.1.3-.4.5-.6.2-.2.2-.3.3-.5.1-.2 0-.4 0-.6 0-.2-.7-1.8-1-2.4-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.3 5.2 4.6.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.9-.8 2.1-1.5.3-.8.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg></a>
 
-  <script src="js/main.js"></script>
+  <script src="js/main.js?v=4"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -368,14 +334,14 @@
   <script>
   (function () {
     var CURSO = 'MARCA START', MONTO = 19;
-    var sesion = null; // {nombre, email, telefono}
-    var inscripcionActual = null; // id de la inscripción enviada en el paso 3
+    var inscripcionActual = null;
+    var datosCompra = null; // {nombre, email, telefono, clave}
 
     // ---- Selector de país (bandera + código) ----
     (function () {
       var btn = document.getElementById('ckPaisBtn');
       var menu = document.getElementById('ckPaisMenu');
-      var hidden = document.getElementById('ckTelPais');
+      var hidden = document.getElementById('coTelPais');
       var flagEl = document.getElementById('ckPaisFlag');
       var codeEl = document.getElementById('ckPaisCode');
       if (!btn || !menu) return;
@@ -400,259 +366,25 @@
       });
     })();
 
-    // ---- Ver / ocultar contraseña ----
-    document.querySelectorAll('.ck-pass-toggle').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var inp = document.getElementById(btn.getAttribute('data-target'));
-        if (!inp) return;
-        var show = inp.type === 'password';
-        inp.type = show ? 'text' : 'password';
-        btn.textContent = show ? '🙈' : '👁️';
-      });
-    });
-
-    // ---- Navegación entre pasos ----
-    function irAPaso(n) {
-      [1, 2, 3, 4].forEach(function (i) {
-        document.getElementById('ckStep' + i).hidden = (i !== n);
-        var dot = document.getElementById('ckDot' + i);
-        dot.classList.toggle('active', i === n);
-        dot.classList.toggle('done', i < n);
-      });
-      if (n === 1) {
-        // Si el envío anterior tuvo éxito, el botón quedó deshabilitado con "Creando cuenta...".
-        var regBtn = document.querySelector('#ckFormRegistro button[type="submit"]');
-        if (regBtn) { regBtn.disabled = false; regBtn.textContent = 'CONTINUAR'; }
-        detenerPolling();
-        document.getElementById('ckVerificaBox').hidden = true;
-        document.getElementById('ckRegistroBox').hidden = false;
-        document.getElementById('ckExisteBox').hidden = true;
-      }
-      window.scrollTo({ top: document.getElementById('comprar').offsetTop - 20, behavior: 'smooth' });
-    }
-
-    function primerNombre(nombre) { return (nombre || '').trim().split(' ')[0] || 'de nuevo'; }
-
-    function irAResumen() {
-      document.getElementById('ckHola').textContent = primerNombre(sesion.nombre) + ' 👋';
-      irAPaso(2);
-    }
-
-    // Si ya hay una sesión de estudiante en este navegador (ej. entró desde "Mis
-    // cursos" con Google, o ya se había registrado), no le vuelve a pedir crear
-    // cuenta: pasa directo al Resumen. Puede volver a "Cuenta" con "← Volver" si
-    // quiere usar otra cuenta.
-    (function detectarSesion() {
-      try {
-        var cached = JSON.parse(localStorage.getItem('estrategium_est') || 'null');
-        if (cached && cached.email) {
-          sesion = { uid: cached.uid, nombre: cached.name || cached.nombre, email: cached.email, telefono: cached.telefono, cursos: cached.cursos || [] };
-          irAResumen();
-        }
-      } catch (e) {}
-    })();
-
-    // ---- PASO 1: Crear cuenta ----
-    document.getElementById('ckFormRegistro').addEventListener('submit', function (e) {
-      e.preventDefault();
-      var msg = document.getElementById('ckRegMsg');
-      msg.className = 'ck-msg';
-      var nombre = document.getElementById('ckNombre').value.trim();
-      var apellido = document.getElementById('ckApellido').value.trim();
-      var email = document.getElementById('ckEmail').value.trim();
-      var telPais = document.getElementById('ckTelPais').value;
-      var telNum = document.getElementById('ckTel').value.trim();
-      var tel = telNum ? (telPais + ' ' + telNum) : '';
-      var pass = document.getElementById('ckPass').value;
-      var pass2 = document.getElementById('ckPass2').value;
-      var terms = document.getElementById('ckTerms').checked;
-
-      // Si ya se registró en esta misma visita con este mismo correo, no intenta
-      // crear la cuenta de nuevo (fallaría por correo duplicado). Solo lo deja
-      // pasar al Resumen si ese correo YA quedó verificado; si no, lo regresa a
-      // la pantalla de verificación (no se salta el paso por escribir lo mismo).
-      if (sesion && sesion.email && email && sesion.email.toLowerCase() === email.toLowerCase()) {
-        var uActual = window.estrategiumAuth && window.estrategiumAuth.currentUser;
-        if (uActual && uActual.emailVerified) { irAResumen(); return; }
-        if (uActual) { mostrarVerificacion(); return; }
-      }
-
-      if (!nombre || !apellido || !email || !tel || !pass || !pass2) { msg.classList.add('err'); msg.textContent = 'Completa todos los campos.'; return; }
-      if (pass.length < 6) { msg.classList.add('err'); msg.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
-      if (pass !== pass2) { msg.classList.add('err'); msg.textContent = 'Las contraseñas no coinciden.'; return; }
-      if (!terms) { msg.classList.add('err'); msg.textContent = 'Debes aceptar los términos.'; return; }
-      if (!window.registrarEstudiante) { msg.classList.add('err'); msg.textContent = 'Sistema no disponible. Intenta más tarde.'; return; }
-
-      var btn = e.target.querySelector('button[type="submit"]');
-      btn.disabled = true; btn.textContent = 'Creando cuenta...';
-
-      document.getElementById('ckExisteBox').hidden = true;
-
-      window.registrarEstudiante({ nombre: nombre, apellido: apellido, email: email, telefono: tel, pass: pass }).then(function (info) {
-        sesion = info;
-        mostrarVerificacion();
-      }).catch(function (err) {
-        btn.disabled = false; btn.textContent = 'CONTINUAR';
-        msg.classList.add('err');
-        if (err && err.code === 'auth/email-already-in-use') {
-          msg.textContent = 'Ya existe una cuenta con este correo.';
-          document.getElementById('ckExisteBox').hidden = false;
-          document.getElementById('ckExistePass').value = '';
-        } else if (err && err.code === 'auth/invalid-email') {
-          msg.textContent = 'El correo no es válido.';
-        } else {
-          msg.textContent = 'No se pudo crear la cuenta: ' + ((err && err.message) || 'intenta de nuevo') + '.';
-        }
-      });
-    });
-
-    // ---- Verificación de correo (enlace de Firebase, sin backend propio) ----
-    var pollTimer = null;
-    function detenerPolling() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
-
-    function enviarVerificacion() {
-      var u = window.estrategiumAuth && window.estrategiumAuth.currentUser;
-      if (u && !u.emailVerified) u.sendEmailVerification().catch(function () {});
-    }
-
-    function mostrarVerificacion() {
-      document.getElementById('ckRegistroBox').hidden = true;
-      document.getElementById('ckVerificaBox').hidden = false;
-      document.getElementById('ckVerificaEmail').textContent = sesion.email;
-      var msg = document.getElementById('ckVerificaMsg');
-      msg.className = 'ck-msg'; msg.textContent = '';
-      enviarVerificacion();
-      detenerPolling();
-      pollTimer = setInterval(function () {
-        var u = window.estrategiumAuth && window.estrategiumAuth.currentUser;
-        if (!u) return;
-        u.reload().then(function () {
-          if (u.emailVerified) { detenerPolling(); irAResumen(); }
-        }).catch(function () {});
-      }, 4000);
-    }
-
-    document.getElementById('ckYaVerifique').addEventListener('click', function () {
-      var msg = document.getElementById('ckVerificaMsg');
-      var btn = document.getElementById('ckYaVerifique');
-      var u = window.estrategiumAuth && window.estrategiumAuth.currentUser;
-      if (!u) { msg.className = 'ck-msg err'; msg.textContent = 'Sistema no disponible. Intenta más tarde.'; return; }
-      btn.disabled = true; btn.textContent = 'Verificando...';
-      u.reload().then(function () {
-        btn.disabled = false; btn.textContent = 'YA VERIFIQUÉ MI CORREO';
-        if (u.emailVerified) { detenerPolling(); irAResumen(); }
-        else { msg.className = 'ck-msg err'; msg.textContent = 'Aún no detectamos la verificación. Revisa tu correo (o spam) y haz clic en el enlace.'; }
-      }).catch(function () {
-        btn.disabled = false; btn.textContent = 'YA VERIFIQUÉ MI CORREO';
-        msg.className = 'ck-msg err'; msg.textContent = 'No se pudo verificar. Intenta de nuevo.';
-      });
-    });
-
-    document.getElementById('ckReenviarCorreo').addEventListener('click', function () {
-      var msg = document.getElementById('ckVerificaMsg');
-      enviarVerificacion();
-      msg.className = 'ck-msg ok'; msg.textContent = 'Correo reenviado. Revisa tu bandeja de entrada (o spam).';
-    });
-
-    // ---- Corregir un correo mal escrito (vuelve al formulario, ya con los datos puestos) ----
-    document.getElementById('ckCorregirEmail').addEventListener('click', function (e) {
-      e.preventDefault();
-      detenerPolling();
-      document.getElementById('ckVerificaBox').hidden = true;
-      document.getElementById('ckRegistroBox').hidden = false;
-      var regBtn = document.querySelector('#ckFormRegistro button[type="submit"]');
-      if (regBtn) { regBtn.disabled = false; regBtn.textContent = 'CONTINUAR'; }
-      var campoEmail = document.getElementById('ckEmail');
-      campoEmail.focus();
-      campoEmail.select();
-    });
-
-    // ---- Continuar con Google (correo ya verificado por Google) ----
-    document.getElementById('ckGoogleBtn').addEventListener('click', function () {
-      var msg = document.getElementById('ckRegMsg');
-      msg.className = 'ck-msg';
-      if (!window.loginConGoogleSinRedirigir) { msg.classList.add('err'); msg.textContent = 'Sistema no disponible. Intenta más tarde.'; return; }
-      var btn = document.getElementById('ckGoogleBtn');
-      btn.disabled = true;
-      window.loginConGoogleSinRedirigir().then(function (info) {
-        btn.disabled = false;
-        sesion = info;
-        irAResumen();
-      }).catch(function (err) {
-        btn.disabled = false;
-        if (err && err.code === 'auth/popup-closed-by-user') return;
-        msg.classList.add('err'); msg.textContent = 'No se pudo iniciar sesión con Google: ' + ((err && err.message) || 'intenta de nuevo') + '.';
-      });
-    });
-
-    // ---- Recuperar una cuenta que ya existe (correo ya registrado antes) ----
-    document.getElementById('ckExisteIngresar').addEventListener('click', function () {
-      var msg = document.getElementById('ckRegMsg');
-      var emailVal = document.getElementById('ckEmail').value.trim();
-      var pass = document.getElementById('ckExistePass').value;
-      if (!pass) { msg.className = 'ck-msg err'; msg.textContent = 'Escribe tu contraseña.'; return; }
-      if (!window.iniciarSesionEstudiante) { msg.className = 'ck-msg err'; msg.textContent = 'Sistema no disponible. Intenta más tarde.'; return; }
-      var btn = document.getElementById('ckExisteIngresar');
-      btn.disabled = true; btn.textContent = 'Ingresando...';
-      window.iniciarSesionEstudiante(emailVal, pass).then(function (info) {
-        btn.disabled = false; btn.textContent = 'INICIAR SESIÓN';
-        document.getElementById('ckExisteBox').hidden = true;
-        sesion = info;
-        irAResumen();
-      }).catch(function () {
-        // La contraseña de Firebase puede diferir de la clave del portal (ej. si
-        // el admin la restableció desde el panel). Acepta también esa clave.
-        var u = (window.Usuarios ? Usuarios.getAll() : []).filter(function (x) {
-          return x.rol === 'Estudiante' && (x.email || '').toLowerCase() === emailVal.toLowerCase();
-        })[0];
-        if (u && (u.clave || '') && u.clave === pass) {
-          try {
-            localStorage.setItem('estrategium_est', JSON.stringify({
-              name: u.nombre, email: u.email, rol: 'estudiante', cursos: u.cursos || []
-            }));
-          } catch (x) {}
-          btn.disabled = false; btn.textContent = 'INICIAR SESIÓN';
-          document.getElementById('ckExisteBox').hidden = true;
-          sesion = { nombre: u.nombre, email: u.email, cursos: u.cursos || [] };
-          irAResumen();
-          return;
-        }
-        btn.disabled = false; btn.textContent = 'INICIAR SESIÓN';
-        msg.className = 'ck-msg err'; msg.textContent = 'Contraseña incorrecta.';
-      });
-    });
-    document.getElementById('ckExisteOlvide').addEventListener('click', function (e) {
-      e.preventDefault();
-      var msg = document.getElementById('ckRegMsg');
-      var emailVal = document.getElementById('ckEmail').value.trim();
-      if (!window.recuperarPassword) { msg.className = 'ck-msg err'; msg.textContent = 'Sistema no disponible. Intenta más tarde.'; return; }
-      window.recuperarPassword(emailVal).then(function () {
-        msg.className = 'ck-msg ok'; msg.textContent = 'Te enviamos un correo a ' + emailVal + ' para restablecer tu contraseña.';
-      }).catch(function () {
-        msg.className = 'ck-msg err'; msg.textContent = 'No se pudo enviar el correo. Intenta de nuevo.';
-      });
-    });
-
-    // ---- PASO 2 → PASO 3 ----
-    document.getElementById('ckContinuarPago').addEventListener('click', function () { irAPaso(3); });
-    document.getElementById('ckBack2').addEventListener('click', function () { irAPaso(1); });
-    document.getElementById('ckBack3').addEventListener('click', function () { irAPaso(2); });
-
-    // ---- PASO 3: método de pago ----
-    document.querySelectorAll('input[name="ckMetodo"]').forEach(function (r) {
+    // ---- Métodos de pago: solo transferencia está activa por ahora ----
+    document.querySelectorAll('input[name="coMetodo"]').forEach(function (r) {
       r.addEventListener('change', function () {
-        var m = r.value;
-        document.getElementById('ckPayTransfer').hidden = (m !== 'transfer');
-        document.getElementById('ckPayNotice').hidden = (m === 'transfer');
-        document.querySelectorAll('.ck-pay-opt').forEach(function (lab) {
+        var esTransfer = r.value === 'transfer';
+        document.getElementById('coPayTransfer').hidden = !esTransfer;
+        document.getElementById('coPayNotice').hidden = esTransfer;
+        document.querySelectorAll('.co-pay-opt').forEach(function (lab) {
           lab.classList.toggle('active', lab.querySelector('input').checked);
         });
       });
     });
+    function metodoElegido() {
+      var m = document.querySelector('input[name="coMetodo"]:checked');
+      return m ? m.value : 'transfer';
+    }
 
-    // ---- Comprobante de transferencia ----
+    // ---- Comprobante: se comprime para no exceder el límite de Firestore ----
     var fileData = '';
-    var fileInput = document.getElementById('trFile');
+    var fileInput = document.getElementById('coFile');
     function comprimir(dataUrl, cb) {
       var img = new Image();
       img.onload = function () {
@@ -669,73 +401,204 @@
     }
     fileInput.addEventListener('change', function () {
       var f = fileInput.files[0]; if (!f) { fileData = ''; return; }
-      var r = new FileReader(); r.onload = function () { comprimir(r.result, function (d) { fileData = d; }); }; r.readAsDataURL(f);
+      var r = new FileReader();
+      r.onload = function () { comprimir(r.result, function (d) { fileData = d; }); };
+      r.readAsDataURL(f);
     });
 
-    document.getElementById('trEnviar').addEventListener('click', function () {
-      var msg = document.getElementById('trMsg');
-      msg.className = 'ck-msg';
-      if (!sesion) { msg.classList.add('err'); msg.textContent = 'Crea tu cuenta primero.'; return; }
-      if (!fileData) { msg.classList.add('err'); msg.textContent = 'Sube la foto del comprobante.'; return; }
+    // Clave de acceso generada por el sistema (el estudiante no la elige).
+    // El administrador la ve al aprobar el pago y se la comparte.
+    function generarClave() {
+      var abc = 'abcdefghjkmnpqrstuvwxyz23456789';
+      var s = '';
+      for (var i = 0; i < 8; i++) s += abc.charAt(Math.floor(Math.random() * abc.length));
+      return s;
+    }
 
-      var btn = this; btn.disabled = true; btn.textContent = 'Enviando...';
-      Promise.resolve(Inscripciones.add({
-        nombre: sesion.nombre, email: sesion.email, telefono: sesion.telefono || '', cedula: '', clave: '',
-        curso: CURSO, monto: MONTO, comprobante: fileData, estado: 'pendiente',
+    // ---- Envío del formulario ----
+    document.getElementById('ckForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var msg = document.getElementById('coMsg');
+      msg.className = 'ck-msg';
+
+      var nombre = document.getElementById('coNombre').value.trim();
+      var apellido = document.getElementById('coApellido').value.trim();
+      var email = document.getElementById('coEmail').value.trim();
+      var email2 = document.getElementById('coEmail2').value.trim();
+      var telNum = document.getElementById('coTel').value.trim();
+      var tel = telNum ? (document.getElementById('coTelPais').value + ' ' + telNum) : '';
+      var direccion = document.getElementById('coDireccion').value.trim();
+      var ciudad = document.getElementById('coCiudad').value.trim();
+      var pais = document.getElementById('coPais').value;
+      var provincia = document.getElementById('coProvincia').value.trim();
+      var cp = document.getElementById('coCP').value.trim();
+      var metodo = metodoElegido();
+
+      if (!nombre || !apellido || !email || !email2 || !telNum || !direccion || !ciudad || !provincia) {
+        msg.classList.add('err'); msg.textContent = 'Completa todos los campos obligatorios (*).'; return;
+      }
+      if (email.toLowerCase() !== email2.toLowerCase()) {
+        msg.classList.add('err'); msg.textContent = 'Los correos no coinciden.'; return;
+      }
+      if (!document.getElementById('coTerms').checked) {
+        msg.classList.add('err'); msg.textContent = 'Debes aceptar los términos.'; return;
+      }
+      // El comprobante solo aplica a la transferencia: tarjeta y PayPhone cobran en línea.
+      if (metodo === 'transfer' && !fileData) {
+        msg.classList.add('err'); msg.textContent = 'Sube la foto del comprobante de pago.'; return;
+      }
+
+      var btn = document.getElementById('coSubmit');
+      btn.disabled = true; btn.textContent = 'Procesando...';
+
+      var nombreCompleto = nombre + ' ' + apellido;
+      var clave = generarClave();
+
+      // Crea la cuenta del estudiante con una clave generada. Si el correo ya
+      // tiene cuenta, no la vuelve a crear: reutiliza la existente.
+      var crearCuenta;
+      if (window.registrarEstudiante) {
+        crearCuenta = window.registrarEstudiante({
+          nombre: nombre, apellido: apellido, email: email, telefono: tel, pass: clave
+        }).then(function (info) {
+          return { clave: clave, nueva: true, nombre: info.nombre || nombreCompleto };
+        }).catch(function (err) {
+          if (err && err.code === 'auth/email-already-in-use') {
+            return { clave: '', nueva: false, nombre: nombreCompleto }; // ya tenía cuenta
+          }
+          throw err;
+        });
+      } else {
+        crearCuenta = Promise.resolve({ clave: clave, nueva: true, nombre: nombreCompleto });
+      }
+
+      var datosBase = {
+        nombre: nombreCompleto, email: email, telefono: tel, cedula: '',
+        direccion: direccion, ciudad: ciudad, pais: pais, provincia: provincia, codigoPostal: cp,
+        metodoPago: metodo, curso: CURSO, monto: MONTO,
         fecha: new Date().toLocaleString('es-EC')
-      })).then(function (id) {
-        inscripcionActual = id;
-        mostrarPendiente();
-        irAPaso(4);
-        escucharAprobacion();
-        escucharEstadoInscripcion();
-      }).catch(function (e) {
-        btn.disabled = false; btn.textContent = 'PAGAR AHORA';
+      };
+
+      crearCuenta.then(function (cuenta) {
+        datosCompra = { nombre: cuenta.nombre, email: email, telefono: tel, clave: cuenta.clave, nueva: cuenta.nueva };
+        datosBase.nombre = cuenta.nombre;
+        datosBase.clave = cuenta.clave; // clave generada por el sistema
+
+        // TRANSFERENCIA: el pago lo confirma una persona → queda PENDIENTE hasta
+        // que el administrador lo apruebe en el panel.
+        if (metodo === 'transfer') {
+          return Promise.resolve(Inscripciones.add(Object.assign({}, datosBase, {
+            comprobante: fileData, estado: 'pendiente'
+          }))).then(function (id) {
+            inscripcionActual = id;
+            document.getElementById('ckForm').hidden = true;
+            mostrarPendiente();
+            escucharAprobacion();
+            escucharEstadoInscripcion();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        }
+
+        // TARJETA / PAYPHONE: la pasarela confirma el pago al instante → el acceso
+        // se activa solo, SIN esperar al administrador, y se le entrega la clave.
+        return cobrarConPasarela(metodo).then(function (pago) {
+          return Promise.resolve(Inscripciones.add(Object.assign({}, datosBase, {
+            comprobante: '', estado: 'aprobado',
+            referenciaPago: (pago && pago.referencia) || ''
+          }))).then(function (id) {
+            inscripcionActual = id;
+            return activarAccesoAlInstante();
+          }).then(function () {
+            document.getElementById('ckForm').hidden = true;
+            mostrarAprobado();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        });
+      }).catch(function (err) {
+        btn.disabled = false; btn.textContent = 'Completar mi Compra Ahora';
         msg.classList.add('err');
-        msg.textContent = 'No se pudo enviar: ' + ((e && e.message) || 'intenta con una foto más pequeña') + '.';
+        msg.textContent = (err && err.message) || 'No se pudo completar la compra. Intenta de nuevo.';
       });
     });
 
-    // ---- PASO 4: estados ----
+    // Cobro en línea con tarjeta / PayPhone.
+    // PENDIENTE DE CONECTAR: aquí va la Cajita de Pagos de PayPhone con el token
+    // del comercio. Debe resolverse SOLO si la pasarela confirma el pago (y devolver
+    // su referencia); si el pago falla o se cancela, debe rechazar.
+    function cobrarConPasarela(metodo) {
+      return Promise.reject(new Error(
+        'Los pagos con ' + (metodo === 'payphone' ? 'PayPhone' : 'tarjeta') +
+        ' todavía no están activos. Usa Transferencia bancaria por ahora.'
+      ));
+    }
+
+    // Pago en línea ya confirmado: le asigna el curso al estudiante en el acto,
+    // sin pasar por la aprobación del administrador.
+    function activarAccesoAlInstante() {
+      if (!window.Usuarios || !datosCompra) return Promise.resolve();
+      var yo = Usuarios.getAll().filter(function (u) {
+        return (u.email || '').toLowerCase() === datosCompra.email.toLowerCase();
+      })[0];
+      if (yo) {
+        var cursos = yo.cursos || [];
+        if (cursos.indexOf(CURSO) < 0) cursos.push(CURSO);
+        return Promise.resolve(Usuarios.update(yo.id, { cursos: cursos, estado: 'Activo' })).catch(function () {});
+      }
+      return Promise.resolve(Usuarios.add({
+        nombre: datosCompra.nombre, email: datosCompra.email, clave: datosCompra.clave,
+        cursos: [CURSO], rol: 'Estudiante', estado: 'Activo'
+      })).catch(function () {});
+    }
+
+    // ---- Pantallas de resultado ----
+    var card = document.getElementById('coResultCard');
     function mostrarPendiente() {
-      var card = document.getElementById('ckResultCard');
+      card.hidden = false;
       card.className = 'ck-card ck-result pending';
       card.innerHTML = '<div class="ico">⏳</div><h2>Pago pendiente</h2>' +
-        '<p>Recibimos tu comprobante. En cuanto el administrador confirme tu pago, tu acceso se activará automáticamente aquí y podrás ingresar a tu panel.</p>';
-    }
-    function mostrarAprobado() {
-      var card = document.getElementById('ckResultCard');
-      card.className = 'ck-card ck-result ok';
-      card.innerHTML = '<div class="ico">✔</div><h2>FELICIDADES</h2>' +
-        '<p>Tu pago fue aprobado. Ya tienes acceso al Workshop.</p>' +
-        '<a href="mis-cursos.html" class="btn btn-gold" style="margin-top:14px;display:inline-block;">IR A MI PANEL</a>';
+        '<p>Recibimos tu comprobante. En cuanto confirmemos el pago, tu acceso se activará automáticamente aquí ' +
+        'y te enviaremos tu clave de acceso al correo <b>' + (datosCompra ? datosCompra.email : '') + '</b>.</p>';
     }
     var mostrandoAprobado = false;
+    function mostrarAprobado() {
+      mostrandoAprobado = true;
+      card.hidden = false;
+      card.className = 'ck-card ck-result ok';
+      var extra = (datosCompra && datosCompra.clave)
+        ? '<p style="margin-top:10px">Tu clave de acceso es: <b style="font-size:1.35rem;letter-spacing:2px;color:var(--navy-900)">' + datosCompra.clave + '</b><br>' +
+          '<span style="color:var(--gray-500);font-size:.88rem">Guárdala. Entra con tu correo <b>' + datosCompra.email + '</b> y esta clave.</span></p>'
+        : '<p style="margin-top:10px;color:var(--gray-500);font-size:.9rem">Entra con el correo y la contraseña que ya tenías.</p>';
+      card.innerHTML = '<div class="ico">✔</div><h2>FELICIDADES</h2>' +
+        '<p>Tu pago fue confirmado. Ya tienes acceso al Workshop.</p>' + extra +
+        '<a href="mis-cursos.html" class="btn btn-gold" style="margin-top:14px;display:inline-block;">IR A MI PANEL</a>';
+    }
     function mostrarNegado() {
-      if (mostrandoAprobado) return; // el pago ya fue aprobado, no lo pises con un estado viejo
-      var card = document.getElementById('ckResultCard');
+      if (mostrandoAprobado) return;
+      card.hidden = false;
       card.className = 'ck-card ck-result fail';
       card.innerHTML = '<div class="ico">✕</div><h2>No pudimos confirmar tu pago</h2>' +
         '<p>Revisa tu comprobante e inténtalo de nuevo. No necesitas volver a registrarte.</p>' +
-        '<button type="button" class="btn btn-gold" id="ckReintentar" style="margin-top:14px;">Pagar otra vez</button>';
-      document.getElementById('ckReintentar').addEventListener('click', function () {
-        document.getElementById('trMsg').className = 'ck-msg';
-        document.getElementById('trMsg').textContent = '';
-        document.getElementById('trFile').value = '';
+        '<button type="button" class="btn btn-gold" id="coReintentar" style="margin-top:14px;">Pagar otra vez</button>';
+      document.getElementById('coReintentar').addEventListener('click', function () {
+        card.hidden = true;
+        var f = document.getElementById('ckForm');
+        f.hidden = false;
+        document.getElementById('coMsg').className = 'ck-msg';
+        document.getElementById('coMsg').textContent = '';
+        document.getElementById('coFile').value = '';
         fileData = '';
-        document.getElementById('trEnviar').disabled = false;
-        document.getElementById('trEnviar').textContent = 'PAGAR AHORA';
-        irAPaso(3);
+        var b = document.getElementById('coSubmit');
+        b.disabled = false; b.textContent = 'Completar mi Compra Ahora';
       });
     }
 
-    // Escucha en vivo (Firestore) si el admin ya aprobó y asignó el curso
     function escucharAprobacion() {
-      if (!window.Usuarios || !sesion) return;
+      if (!window.Usuarios || !datosCompra) return;
       Usuarios.onChange(function (lista) {
-        var yo = lista.filter(function (u) { return (u.email || '').toLowerCase() === sesion.email.toLowerCase(); })[0];
+        var yo = lista.filter(function (u) {
+          return (u.email || '').toLowerCase() === datosCompra.email.toLowerCase();
+        })[0];
         if (yo && (yo.cursos || []).indexOf(CURSO) >= 0) {
-          mostrandoAprobado = true;
           mostrarAprobado();
           try {
             var cached = JSON.parse(localStorage.getItem('estrategium_est') || 'null');
@@ -744,7 +607,6 @@
         }
       });
     }
-    // Escucha en vivo si el admin negó esta inscripción puntual
     function escucharEstadoInscripcion() {
       if (!window.Inscripciones || !inscripcionActual) return;
       Inscripciones.onChange(function (lista) {

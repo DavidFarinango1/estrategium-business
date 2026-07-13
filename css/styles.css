@@ -1473,6 +1473,48 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 .ck-back { display: inline-block; font-weight: 700; font-size: .85rem; color: var(--gray-500); text-decoration: none; margin-bottom: 14px; cursor: pointer; }
 .ck-back:hover { color: var(--navy-900); }
 
+/* --- Checkout de una sola página (contacto → facturación → pago → resumen) --- */
+.co-form {
+  background: #fff; border: 1px solid #e5e9f0; border-radius: 16px;
+  padding: 30px 28px; box-shadow: var(--shadow);
+}
+.co-sec-title {
+  font-size: 1.05rem; font-weight: 700; color: var(--navy-900); letter-spacing: .5px;
+  margin: 30px 0 16px; padding-bottom: 10px; border-bottom: 1px solid #eef1f6;
+}
+.co-sec-title:first-child { margin-top: 0; }
+.co-form label { display: block; font-weight: 600; font-size: .85rem; color: var(--gray-500); margin: 14px 0 6px; }
+.co-form input[type="text"], .co-form input[type="email"], .co-form input[type="tel"], .co-form select {
+  width: 100%; padding: 11px 13px; border: 1px solid #dfe4ec; border-radius: 8px;
+  font-size: .95rem; box-sizing: border-box; background: #fff; color: var(--navy-900);
+}
+.co-form input[type="file"] { width: 100%; font-size: .88rem; }
+.co-form .req { color: #e53935; }
+.co-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.co-row2 label { margin-top: 14px; }
+
+.co-pay-list { display: flex; flex-direction: column; gap: 10px; }
+.co-pay-opt {
+  display: flex; align-items: center; gap: 10px; border: 1px solid #dfe4ec; border-radius: 10px;
+  padding: 13px 16px; font-weight: 600; cursor: pointer; color: var(--navy-900);
+  font-size: .95rem; margin: 0 !important;
+}
+.co-pay-opt:hover { border-color: #c9d2e0; }
+.co-pay-opt.active { border-color: var(--gold); background: #fffaf0; }
+.co-pay-opt input { width: auto !important; margin: 0; }
+
+.co-summary { background: #f6f8fb; border-radius: 12px; padding: 18px 20px; margin-top: 28px; }
+.co-sum-line { display: flex; justify-content: space-between; gap: 14px; color: var(--gray-500); font-size: .92rem; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0; }
+.co-sum-total { display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: 800; color: var(--navy-900); padding-top: 12px; }
+.co-terms { margin-top: 12px; font-size: .85rem; color: var(--gray-500); text-align: center; }
+.co-terms label { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-weight: 400; color: var(--gray-500); }
+.co-terms input { width: auto !important; }
+
+.btn-blue { background: #2f80b5; color: #fff; border: none; }
+.btn-blue:hover { background: #276b98; color: #fff; }
+.btn-block { width: 100%; display: block; text-align: center; }
+@media (max-width: 640px) { .co-row2 { grid-template-columns: 1fr; } .co-form { padding: 24px 18px; } }
+
 .ck-totals { border-top: 1px solid #e5e9f0; margin-top: 18px; padding-top: 14px; }
 .ck-totals > div { display: flex; justify-content: space-between; padding: 4px 0; color: var(--gray-500); }
 .ck-totals .ck-total { font-size: 1.25rem; font-weight: 800; color: var(--navy-900); border-top: 1px dashed #dfe4ec; margin-top: 8px; padding-top: 10px; }
@@ -1493,3 +1535,213 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 .ck-result.ok .ico { color: #1a8f4c; }
 .ck-result.pending .ico { color: var(--gold); }
 .ck-result.fail .ico { color: #e53935; }
+
+/* =====================================================================
+   MÓVIL Y TABLET
+   El <body> tiene overflow-x:hidden, así que todo lo más ancho que la
+   pantalla NO se ve: se RECORTA sin aviso (por eso el logo y los títulos
+   salían cortados). Aquí se achica lo que se salía.
+   ===================================================================== */
+@media (max-width: 900px) {
+  h1, h2, h3, .page-banner h1, .section-title { white-space: normal !important; overflow-wrap: break-word; }
+  table { display: block; overflow-x: auto; max-width: 100%; }
+}
+@media (max-width: 640px) {
+  .container { padding: 0 16px; }
+  .brand .brand-main { font-size: 1.2rem; letter-spacing: 1px; }
+  .brand .brand-sub { font-size: .55rem; letter-spacing: 3px; }
+  .nav-actions { gap: 8px; }
+  .nav-pill, .nav-login { padding: 9px 14px; font-size: .76rem; letter-spacing: .5px; }
+  .topbar { font-size: .78rem; }
+  .page-banner { padding: 20px 0; }
+  .page-banner h1 { font-size: clamp(1.15rem, 6vw, 1.9rem); letter-spacing: 1px; line-height: 1.25; }
+  .portal-banner h1 { font-size: clamp(1.15rem, 6vw, 1.9rem); letter-spacing: 1px; }
+  .section-title { font-size: clamp(1.3rem, 6vw, 1.9rem); }
+  .section { padding: 40px 0; }
+  img { max-width: 100%; height: auto; }
+  .portal-nav { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .portal-menu { width: 100%; flex-wrap: wrap; gap: 8px; }
+  .portal-hello { font-size: .8rem; word-break: break-all; }
+  .checkout-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 420px) {
+  .nav-pill, .nav-login { padding: 8px 12px; font-size: .72rem; }
+  .brand .brand-main { font-size: 1.05rem; }
+  .page-banner h1 { letter-spacing: .5px; }
+}
+
+/* =====================================================================
+   "Impacto real" — versión en TEXTO del infográfico (antes era una imagen).
+   Al ser texto real se lee perfecto en cualquier pantalla y se reordena solo
+   en el celular (4 columnas → 2 → 1), sin necesidad de ampliar nada.
+   ===================================================================== */
+.impacto-wrap { background: #fff; padding-top: 0; }
+.impacto {
+  max-width: 900px; margin: 0 auto; padding: 40px 30px;
+  background: linear-gradient(160deg, #0d2350 0%, #081228 60%, #050d1c 100%);
+  border: 1px solid rgba(201, 162, 75, .35);
+  border-radius: 16px; text-align: center; color: #fff;
+  box-shadow: 0 18px 44px rgba(8, 18, 40, .28);
+}
+.imp-eyebrow {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  color: var(--gold); font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  font-size: .8rem; margin-bottom: 14px;
+}
+.imp-eyebrow::before, .imp-eyebrow::after { content: ""; height: 1px; width: 46px; background: var(--gold); opacity: .7; }
+.imp-title { font-size: clamp(1.7rem, 5.6vw, 3rem); line-height: 1.1; font-weight: 800; color: #fff; margin: 0 0 14px; }
+.imp-title span { color: var(--gold); }
+.imp-sub { color: #cdd8ec; font-size: clamp(.95rem, 2.6vw, 1.06rem); line-height: 1.5; max-width: 640px; margin: 0 auto 30px; }
+.imp-sub b { color: var(--gold); font-weight: 700; }
+.imp-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.imp-stat { background: rgba(255,255,255,.05); border: 1px solid rgba(201,162,75,.35); border-radius: 12px; padding: 20px 12px; }
+.imp-ico { font-size: 1.9rem; line-height: 1; margin-bottom: 8px; }
+.imp-num { font-size: clamp(1.7rem, 5vw, 2.3rem); font-weight: 800; color: var(--gold); line-height: 1.1; margin-bottom: 8px; }
+.imp-lbl { font-size: .78rem; color: #cdd8ec; text-transform: uppercase; letter-spacing: .4px; line-height: 1.35; }
+.imp-feats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(201,162,75,.3); }
+.imp-feat { display: flex; align-items: flex-start; gap: 9px; text-align: left; }
+.imp-fico { font-size: 1.15rem; line-height: 1.2; flex-shrink: 0; }
+.imp-feat b { display: block; color: var(--gold); font-size: .8rem; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 2px; }
+.imp-feat span:not(.imp-fico) { display: block; color: #a9b8d4; font-size: .78rem; line-height: 1.35; }
+@media (max-width: 780px) { .imp-stats, .imp-feats { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) {
+  .impacto { padding: 32px 18px; }
+  .imp-stats, .imp-feats { grid-template-columns: 1fr; }
+  .imp-eyebrow { font-size: .72rem; letter-spacing: 1px; }
+  .imp-eyebrow::before, .imp-eyebrow::after { width: 22px; }
+  .imp-lbl { font-size: .85rem; }
+  .imp-feat b { font-size: .88rem; }
+  .imp-feat span:not(.imp-fico) { font-size: .85rem; }
+}
+
+/* =====================================================================
+   Visor de imágenes (zoom) — para los infográficos que TODAVÍA son imagen
+   con el texto dibujado dentro. El botón solo sale en pantallas chicas.
+   ===================================================================== */
+.img-zoom-btn {
+  display: none; margin: 10px auto 0; background: var(--navy-900); color: #fff;
+  border: none; border-radius: 999px; padding: 10px 18px; font-size: .82rem;
+  font-weight: 700; cursor: pointer;
+}
+@media (max-width: 900px) { .img-zoom-btn { display: block; } }
+.img-visor { position: fixed; inset: 0; background: rgba(6,12,26,.96); z-index: 2000; display: none; }
+.img-visor.open { display: block; }
+.img-visor-scroll {
+  position: absolute; inset: 0; overflow: auto; -webkit-overflow-scrolling: touch;
+  display: flex; align-items: flex-start; padding: 56px 0 24px;
+}
+.img-visor-scroll img { max-width: none; width: auto; min-width: 900px; height: auto; margin: auto; border-radius: 8px; }
+.img-visor-close {
+  position: absolute; top: 12px; right: 12px; z-index: 2001; width: 42px; height: 42px;
+  border: none; border-radius: 999px; background: #fff; color: var(--navy-900);
+  font-size: 1.2rem; font-weight: 700; cursor: pointer;
+}
+
+/* =====================================================================
+   INFOGRÁFICOS EN TEXTO (.ig-*)
+   Sistema reutilizable para reemplazar los infográficos que antes eran
+   imágenes con el texto dibujado dentro. Al ser texto real:
+     · se lee nítido en cualquier pantalla, sin ampliar
+     · las columnas se apilan solas en el celular
+     · Google puede indexarlo (de una imagen no lee nada)
+   ===================================================================== */
+.ig {
+  max-width: 1000px; margin: 0 auto; padding: 40px 30px; border-radius: 16px;
+  background: linear-gradient(160deg, #0d2350 0%, #081228 60%, #050d1c 100%);
+  border: 1px solid rgba(201,162,75,.35); color: #fff; text-align: center;
+  box-shadow: 0 18px 44px rgba(8,18,40,.28);
+}
+.ig-light {
+  background: #fff; color: var(--navy-900);
+  border: 1px solid #e5e9f0; box-shadow: var(--shadow);
+}
+.ig-badge {
+  display: inline-block; background: var(--gold); color: #14213d; font-weight: 800;
+  letter-spacing: 2px; text-transform: uppercase; font-size: .74rem;
+  padding: 7px 18px; border-radius: 6px; margin-bottom: 14px;
+}
+.ig-eyebrow {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  color: var(--gold); font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  font-size: .8rem; margin-bottom: 14px;
+}
+.ig-eyebrow::before, .ig-eyebrow::after { content: ""; height: 1px; width: 40px; background: var(--gold); opacity: .7; }
+.ig-title { font-size: clamp(1.5rem, 5vw, 2.6rem); line-height: 1.15; font-weight: 800; margin: 0 0 12px; }
+.ig-title .gold { color: var(--gold); }
+.ig-light .ig-title { color: var(--navy-900); }
+.ig-sub { font-size: clamp(.95rem, 2.5vw, 1.05rem); line-height: 1.55; max-width: 700px; margin: 0 auto 28px; color: #cdd8ec; }
+.ig-light .ig-sub { color: var(--gray-500); }
+.ig-sub b { color: var(--gold); font-weight: 700; }
+.ig-light .ig-sub b { color: var(--navy-900); }
+
+/* Rejillas que se apilan solas */
+.ig-grid { display: grid; gap: 14px; }
+.ig-g2 { grid-template-columns: repeat(2, 1fr); }
+.ig-g3 { grid-template-columns: repeat(3, 1fr); }
+.ig-g4 { grid-template-columns: repeat(4, 1fr); }
+.ig-g5 { grid-template-columns: repeat(5, 1fr); }
+
+.ig-card {
+  background: rgba(255,255,255,.05); border: 1px solid rgba(201,162,75,.35);
+  border-radius: 12px; padding: 20px 16px; text-align: left;
+}
+.ig-light .ig-card { background: #f7f9fc; border-color: #e5e9f0; }
+.ig-card h4 { font-size: .95rem; color: var(--gold); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+.ig-light .ig-card h4 { color: var(--navy-900); }
+.ig-card p { font-size: .9rem; line-height: 1.45; color: #cdd8ec; }
+.ig-light .ig-card p { color: var(--gray-500); }
+
+/* Listas con ✓ y ✗ */
+.ig-list { list-style: none; padding: 0; margin: 0; text-align: left; }
+.ig-list li { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; font-size: .95rem; line-height: 1.4; color: #e7eefb; }
+.ig-light .ig-list li { color: var(--navy-900); }
+.ig-list li::before { content: "✓"; color: var(--gold); font-weight: 800; flex-shrink: 0; }
+.ig-list.bad li::before { content: "✕"; color: #e5484d; }
+
+/* Cifra grande */
+.ig-num { font-size: clamp(1.6rem, 4.6vw, 2.2rem); font-weight: 800; color: var(--gold); line-height: 1.1; }
+.ig-lbl { font-size: .8rem; color: #cdd8ec; text-transform: uppercase; letter-spacing: .4px; line-height: 1.35; margin-top: 6px; }
+.ig-light .ig-lbl { color: var(--gray-500); }
+
+/* Pasos numerados */
+.ig-step { text-align: center; }
+.ig-step .n {
+  width: 42px; height: 42px; border-radius: 999px; background: var(--gold); color: #14213d;
+  font-weight: 800; font-size: 1.1rem; display: grid; place-items: center; margin: 0 auto 10px;
+}
+.ig-step h4 { color: #fff; font-size: 1rem; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+.ig-light .ig-step h4 { color: var(--navy-900); }
+.ig-step p { font-size: .9rem; color: #cdd8ec; line-height: 1.45; }
+.ig-light .ig-step p { color: var(--gray-500); }
+
+/* Franja inferior (mensaje de cierre) */
+.ig-foot {
+  margin-top: 26px; padding: 16px 20px; border-radius: 10px;
+  background: var(--gold); color: #14213d; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .5px; font-size: clamp(.78rem, 2.2vw, .92rem); line-height: 1.4;
+}
+.ig-cta { display: inline-block; margin-top: 22px; }
+
+/* Flujo con flechas (Restaurante tradicional vs con sistema) */
+.ig-flow { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: stretch; }
+.ig-flow span {
+  background: rgba(255,255,255,.06); border: 1px solid rgba(201,162,75,.3); border-radius: 8px;
+  padding: 9px 12px; font-size: .82rem; color: #e7eefb; display: flex; align-items: center;
+}
+.ig-light .ig-flow span { background: #f7f9fc; border-color: #e5e9f0; color: var(--navy-900); }
+.ig-flow i { display: flex; align-items: center; color: var(--gold); font-style: normal; font-weight: 800; }
+
+@media (max-width: 900px) {
+  .ig-g5 { grid-template-columns: repeat(2, 1fr); }
+  .ig-g4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+  .ig-g2, .ig-g3, .ig-g4, .ig-g5 { grid-template-columns: 1fr; }
+  .ig { padding: 32px 18px; }
+  .ig-eyebrow { font-size: .72rem; letter-spacing: 1px; }
+  .ig-eyebrow::before, .ig-eyebrow::after { width: 20px; }
+  .ig-card p, .ig-list li, .ig-step p { font-size: .95rem; }  /* más grande para leerse bien */
+  .ig-lbl { font-size: .88rem; }
+  .ig-flow { flex-direction: column; }
+  .ig-flow i { transform: rotate(90deg); justify-content: center; }
+}

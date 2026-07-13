@@ -160,3 +160,87 @@ document.addEventListener('click', function () {
     el.classList.remove('open');
   });
 });
+
+/* =====================================================================
+   Imágenes en el celular
+   Los infográficos traen el texto dibujado DENTRO de la imagen; al encogerlos
+   para que entren en un móvil, ese texto queda ilegible. Aquí hacemos dos cosas
+   con cada <img class="img-zoom">:
+     1) Si declara data-movil y ESE archivo existe, en pantallas chicas se carga
+        esa versión vertical (diseñada para leerse sin ampliar).
+     2) Si no existe, se deja la imagen ancha y se añade debajo un botón que la
+        abre a pantalla completa, a tamaño legible y desplazable con el dedo.
+   ===================================================================== */
+(function () {
+  var imagenes = document.querySelectorAll('img.img-zoom');
+  if (!imagenes.length) return;
+
+  var visor = document.createElement('div');
+  visor.className = 'img-visor';
+  visor.innerHTML =
+    '<button type="button" class="img-visor-close" aria-label="Cerrar">✕</button>' +
+    '<div class="img-visor-scroll"><img alt="" /></div>';
+  document.body.appendChild(visor);
+
+  var visorImg = visor.querySelector('img');
+  var scroll = visor.querySelector('.img-visor-scroll');
+
+  function abrir(src, alt) {
+    visorImg.src = src;
+    visorImg.alt = alt || '';
+    visor.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(function () {
+      scroll.scrollLeft = Math.max(0, (visorImg.scrollWidth - scroll.clientWidth) / 2);
+      scroll.scrollTop = 0;
+    });
+  }
+  function cerrar() {
+    visor.classList.remove('open');
+    document.body.style.overflow = '';
+    visorImg.removeAttribute('src');
+  }
+
+  var esPantallaChica = window.matchMedia('(max-width: 900px)');
+
+  imagenes.forEach(function (im) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'img-zoom-btn';
+    btn.textContent = '🔍 Toca para ampliar y leer';
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      abrir(im.currentSrc || im.src, im.alt);
+    });
+    // Si la imagen va dentro de un enlace, el botón se pone FUERA para no dispararlo.
+    var ancla = im.closest('a') || im;
+    if (ancla.parentNode) ancla.parentNode.insertBefore(btn, ancla.nextSibling);
+
+    var srcMovil = im.getAttribute('data-movil');
+    var srcOriginal = im.getAttribute('src');
+    if (!srcMovil) return;
+
+    function elegirVersion() {
+      if (!esPantallaChica.matches) {          // escritorio: siempre la ancha
+        if (im.src !== srcOriginal) im.src = srcOriginal;
+        btn.style.display = '';
+        return;
+      }
+      var prueba = new Image();
+      prueba.onload = function () {            // existe la vertical → úsala
+        im.src = srcMovil;
+        btn.style.display = 'none';           // ya se lee: no hace falta ampliar
+      };
+      prueba.onerror = function () {           // aún no existe → deja todo igual
+        im.src = srcOriginal;
+        btn.style.display = '';
+      };
+      prueba.src = srcMovil;
+    }
+
+    elegirVersion();
+    if (esPantallaChica.addEventListener) esPantallaChica.addEventListener('change', elegirVersion);
+    else if (esPantallaChica.addListener) esPantallaChica.addListener(elegirVersion);
+  });
+})();

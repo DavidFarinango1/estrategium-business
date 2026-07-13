@@ -255,7 +255,17 @@
         Usuarios.add({ nombre: i.nombre, email: i.email, clave: claveActual, cursos: [i.curso], rol: 'Estudiante', estado: 'Activo' });
       }
       Inscripciones.update(i.id, { estado: 'aprobado' });
-      alert('✅ Aprobado.\n\n' + i.nombre + ' (' + i.email + ') ya puede acceder con la contraseña que usó al registrarse (o con "Continuar con Google") y verá el curso ' + i.curso + '.');
+      // La clave que llega en la inscripción la GENERA el sistema en el checkout
+      // (el estudiante no la elige). Por eso aquí sí se muestra: es la única forma
+      // de hacérsela llegar. Si no hay clave, la cuenta ya existía o entró con Google.
+      if (i.clave) {
+        alert('✅ Aprobado.\n\nComparte estas credenciales con ' + i.nombre + ':\n\n' +
+              'Correo: ' + i.email + '\nClave de acceso: ' + i.clave + '\n\n' +
+              'Ya verá el curso ' + i.curso + ' en "Mis cursos".');
+      } else {
+        alert('✅ Aprobado.\n\n' + i.nombre + ' (' + i.email + ') ya puede acceder con la contraseña que ya tenía ' +
+              '(o con "Continuar con Google") y verá el curso ' + i.curso + '.');
+      }
     }
 
     function negar(key) {
