@@ -15,3 +15,14 @@ desktop.ini
 # Editores
 .vscode/
 .idea/
+
+# Servidor de pagos (Cloudflare Worker)
+worker/node_modules/
+worker/.wrangler/
+
+# NUNCA subir secretos: claves de Firebase y de PayPhone
+*serviceAccount*.json
+*service-account*.json
+*firebase-adminsdk*.json
+.dev.vars
+.env

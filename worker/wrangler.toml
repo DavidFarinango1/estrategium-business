@@ -1,0 +1,20 @@
+name = "estrategium-pagos"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+[vars]
+# A dónde devolvemos al cliente después de pagar.
+# Para PROBAR EN LOCAL, cambia esto por: "http://localhost:5050"
+SITE_URL = "https://estrategium-business.web.app"
+
+FIREBASE_PROJECT_ID = "estrategium-business"
+
+# Desde qué web se puede llamar al servidor. Durante las pruebas puedes
+# dejarlo en "*"; en producción conviene fijarlo a tu dominio.
+CORS_ORIGIN = "*"
+
+# Los SECRETOS no van aquí (este archivo se sube a GitHub).
+# Se cargan una sola vez con estos comandos:
+#   npx wrangler secret put PAYPHONE_TOKEN
+#   npx wrangler secret put PAYPHONE_STORE_ID
+#   npx wrangler secret put FIREBASE_SERVICE_ACCOUNT

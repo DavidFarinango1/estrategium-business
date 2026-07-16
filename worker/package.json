@@ -1,0 +1,15 @@
+{
+  "name": "estrategium-pagos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Servidor de pagos PayPhone para Estrategium (Cloudflare Worker)",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "logs": "wrangler tail",
+    "secretos": "echo Carga los secretos con: npx wrangler secret put PAYPHONE_TOKEN / PAYPHONE_STORE_ID / FIREBASE_SERVICE_ACCOUNT"
+  },
+  "devDependencies": {
+    "wrangler": "^4.110.0"
+  }
+}
