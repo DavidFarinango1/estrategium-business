@@ -3,9 +3,9 @@ main = "src/index.js"
 compatibility_date = "2024-11-01"
 
 [vars]
-# A dónde devolvemos al cliente después de pagar.
+# A dónde devolvemos al cliente después de pagar (página de resultado).
 # Para PROBAR EN LOCAL, cambia esto por: "http://localhost:5050"
-SITE_URL = "https://estrategium-business.web.app"
+SITE_URL = "https://www.estrategiumbusiness.com"
 
 FIREBASE_PROJECT_ID = "estrategium-business"
 

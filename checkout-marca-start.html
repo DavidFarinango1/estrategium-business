@@ -207,54 +207,11 @@
           <input id="coTel" type="tel" placeholder="99 999 9999" required />
         </div>
 
-        <!-- INFORMACIÓN DE FACTURACIÓN -->
-        <h2 class="co-sec-title">INFORMACIÓN DE FACTURACIÓN</h2>
-        <label>Dirección <span class="req">*</span></label>
-        <input id="coDireccion" type="text" required />
-        <div class="co-row2">
-          <div><label>Ciudad <span class="req">*</span></label><input id="coCiudad" type="text" required /></div>
-          <div>
-            <label>Selecciona un País <span class="req">*</span></label>
-            <select id="coPais" required>
-              <option value="Ecuador" selected>Ecuador</option>
-              <option value="Colombia">Colombia</option>
-              <option value="Perú">Perú</option>
-              <option value="México">México</option>
-              <option value="Argentina">Argentina</option>
-              <option value="Chile">Chile</option>
-              <option value="Bolivia">Bolivia</option>
-              <option value="Venezuela">Venezuela</option>
-              <option value="Paraguay">Paraguay</option>
-              <option value="Uruguay">Uruguay</option>
-              <option value="Panamá">Panamá</option>
-              <option value="Costa Rica">Costa Rica</option>
-              <option value="Guatemala">Guatemala</option>
-              <option value="Honduras">Honduras</option>
-              <option value="El Salvador">El Salvador</option>
-              <option value="Nicaragua">Nicaragua</option>
-              <option value="Estados Unidos">Estados Unidos</option>
-              <option value="Rep. Dominicana">Rep. Dominicana</option>
-              <option value="España">España</option>
-              <option value="Otro">Otro</option>
-            </select>
-          </div>
-        </div>
-        <div class="co-row2">
-          <div><label>Provincia <span class="req">*</span></label><input id="coProvincia" type="text" required /></div>
-          <div><label>Código Postal</label><input id="coCP" type="text" /></div>
-        </div>
-
         <!-- MÉTODOS DE PAGO -->
         <h2 class="co-sec-title">MÉTODOS DE PAGO</h2>
         <div class="co-pay-list">
           <label class="co-pay-opt active"><input type="radio" name="coMetodo" value="transfer" checked /> <span>🏦 Transferencia bancaria</span></label>
-          <label class="co-pay-opt"><input type="radio" name="coMetodo" value="tarjeta" /> <span>💳 Tarjeta de crédito</span></label>
-          <label class="co-pay-opt"><input type="radio" name="coMetodo" value="payphone" /> <span>📱 PayPhone</span></label>
-        </div>
-
-        <div id="coPayNotice" class="ck-notice" hidden>
-          Estamos activando los pagos con <b>tarjeta</b> y <b>PayPhone</b>. Por ahora usa <b>Transferencia bancaria</b>:
-          tu acceso se activa apenas confirmemos el pago.
+          <label class="co-pay-opt"><input type="radio" name="coMetodo" value="payphone" /> <span>📱 PayPhone (paga con tarjeta o la app)</span></label>
         </div>
 
         <div id="coPayTransfer" class="transfer-panel">
@@ -334,7 +291,9 @@
   <script src="js/inscripciones-data.js"></script>
   <script>
   (function () {
-    var CURSO = 'MARCA START', MONTO = 19;
+    var CURSO = 'MARCA START', MONTO = 1; // PRUEBA TEMPORAL: cobro de $1. Volver a 19 tras probar.
+    // Servidor de pagos (Cloudflare Worker) que habla con PayPhone de forma segura.
+    var PAGOS_URL = 'https://estrategium-pagos.administradortra2026.workers.dev';
     var inscripcionActual = null;
     var datosCompra = null; // {nombre, email, telefono, clave}
 
@@ -372,7 +331,6 @@
       r.addEventListener('change', function () {
         var esTransfer = r.value === 'transfer';
         document.getElementById('coPayTransfer').hidden = !esTransfer;
-        document.getElementById('coPayNotice').hidden = esTransfer;
         document.querySelectorAll('.co-pay-opt').forEach(function (lab) {
           lab.classList.toggle('active', lab.querySelector('input').checked);
         });
@@ -428,14 +386,11 @@
       var email2 = document.getElementById('coEmail2').value.trim();
       var telNum = document.getElementById('coTel').value.trim();
       var tel = telNum ? (document.getElementById('coTelPais').value + ' ' + telNum) : '';
-      var direccion = document.getElementById('coDireccion').value.trim();
-      var ciudad = document.getElementById('coCiudad').value.trim();
-      var pais = document.getElementById('coPais').value;
-      var provincia = document.getElementById('coProvincia').value.trim();
-      var cp = document.getElementById('coCP').value.trim();
+      // La facturación se eliminó del formulario; se dejan vacíos por compatibilidad.
+      var direccion = '', ciudad = '', pais = '', provincia = '', cp = '';
       var metodo = metodoElegido();
 
-      if (!nombre || !apellido || !email || !email2 || !telNum || !direccion || !ciudad || !provincia) {
+      if (!nombre || !apellido || !email || !email2 || !telNum) {
         msg.classList.add('err'); msg.textContent = 'Completa todos los campos obligatorios (*).'; return;
       }
       if (email.toLowerCase() !== email2.toLowerCase()) {
@@ -450,6 +405,35 @@
       }
 
       var btn = document.getElementById('coSubmit');
+
+      // ---- TARJETA / PAYPHONE: pago en línea vía el servidor de pagos ----
+      // Aquí NO creamos la cuenta ni la inscripción: de eso se encarga el servidor
+      // cuando PayPhone CONFIRME el pago (así nadie obtiene acceso sin pagar).
+      if (metodo === 'payphone' || metodo === 'tarjeta') {
+        btn.disabled = true; btn.textContent = 'Redirigiendo a PayPhone…';
+        fetch(PAGOS_URL + '/payphone/prepare', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nombre: nombre + ' ' + apellido, email: email, telefono: tel,
+            direccion: direccion, ciudad: ciudad, pais: pais, provincia: provincia, codigoPostal: cp,
+            curso: CURSO, monto: MONTO
+          })
+        }).then(function (r) { return r.json(); }).then(function (data) {
+          if (!data || data.error || (!data.payWithCard && !data.payWithPayPhone)) {
+            throw new Error((data && data.error) || 'No se pudo iniciar el pago.');
+          }
+          // Redirige a la página SEGURA de PayPhone (su dominio, con candado).
+          var destino = (metodo === 'payphone') ? data.payWithPayPhone : data.payWithCard;
+          window.location.href = destino;
+        }).catch(function (err) {
+          btn.disabled = false; btn.textContent = 'Completar mi Compra Ahora';
+          msg.classList.add('err');
+          msg.textContent = (err && err.message) || 'No se pudo iniciar el pago con PayPhone. Intenta de nuevo.';
+        });
+        return; // el flujo sigue en PayPhone y termina en la página de resultado
+      }
+
+      // ---- TRANSFERENCIA (el pago lo confirma el administrador) ----
       btn.disabled = true; btn.textContent = 'Procesando...';
 
       var nombreCompleto = nombre + ' ' + apellido;
@@ -485,35 +469,17 @@
         datosBase.nombre = cuenta.nombre;
         datosBase.clave = cuenta.clave; // clave generada por el sistema
 
-        // TRANSFERENCIA: el pago lo confirma una persona → queda PENDIENTE hasta
-        // que el administrador lo apruebe en el panel.
-        if (metodo === 'transfer') {
-          return Promise.resolve(Inscripciones.add(Object.assign({}, datosBase, {
-            comprobante: fileData, estado: 'pendiente'
-          }))).then(function (id) {
-            inscripcionActual = id;
-            document.getElementById('ckForm').hidden = true;
-            mostrarPendiente();
-            escucharAprobacion();
-            escucharEstadoInscripcion();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          });
-        }
-
-        // TARJETA / PAYPHONE: la pasarela confirma el pago al instante → el acceso
-        // se activa solo, SIN esperar al administrador, y se le entrega la clave.
-        return cobrarConPasarela(metodo).then(function (pago) {
-          return Promise.resolve(Inscripciones.add(Object.assign({}, datosBase, {
-            comprobante: '', estado: 'aprobado',
-            referenciaPago: (pago && pago.referencia) || ''
-          }))).then(function (id) {
-            inscripcionActual = id;
-            return activarAccesoAlInstante();
-          }).then(function () {
-            document.getElementById('ckForm').hidden = true;
-            mostrarAprobado();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          });
+        // El pago por transferencia lo confirma una persona → queda PENDIENTE
+        // hasta que el administrador lo apruebe en el panel.
+        return Promise.resolve(Inscripciones.add(Object.assign({}, datosBase, {
+          comprobante: fileData, estado: 'pendiente'
+        }))).then(function (id) {
+          inscripcionActual = id;
+          document.getElementById('ckForm').hidden = true;
+          mostrarPendiente();
+          escucharAprobacion();
+          escucharEstadoInscripcion();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         });
       }).catch(function (err) {
         btn.disabled = false; btn.textContent = 'Completar mi Compra Ahora';
@@ -521,17 +487,6 @@
         msg.textContent = (err && err.message) || 'No se pudo completar la compra. Intenta de nuevo.';
       });
     });
-
-    // Cobro en línea con tarjeta / PayPhone.
-    // PENDIENTE DE CONECTAR: aquí va la Cajita de Pagos de PayPhone con el token
-    // del comercio. Debe resolverse SOLO si la pasarela confirma el pago (y devolver
-    // su referencia); si el pago falla o se cancela, debe rechazar.
-    function cobrarConPasarela(metodo) {
-      return Promise.reject(new Error(
-        'Los pagos con ' + (metodo === 'payphone' ? 'PayPhone' : 'tarjeta') +
-        ' todavía no están activos. Usa Transferencia bancaria por ahora.'
-      ));
-    }
 
     // Pago en línea ya confirmado: le asigna el curso al estudiante en el acto,
     // sin pasar por la aprobación del administrador.

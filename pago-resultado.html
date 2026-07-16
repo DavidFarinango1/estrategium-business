@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resultado del pago — Estrategium Business</title>
+  <meta name="robots" content="noindex" />
+  <link rel="stylesheet" href="css/styles.css?v=73" />
+</head>
+<body>
+
+  <!-- Header público -->
+  <header class="site-header">
+    <div class="container nav">
+      <a href="index.html" class="brand">
+        <span class="brand-main">ESTRATEGIUM</span>
+        <span class="brand-sub">BUSINESS</span>
+      </a>
+      <nav class="nav-actions">
+        <a href="index.html#contacto" class="nav-pill">CONTACTO</a>
+        <a href="sobre-mi.html" class="nav-pill">SOBRE MÍ</a>
+        <a href="implementacion-marca.html" class="nav-pill">IMPLEMENTACIÓN</a>
+        <a href="login-estudiantes.html" class="nav-login">ACCESO</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="section section-light">
+    <div class="container" style="max-width:560px;">
+      <div class="ck-card ck-result" id="resCard">
+        <div class="ico">⏳</div>
+        <h2>Verificando tu pago…</h2>
+        <p>Un momento, por favor.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="brand-main">ESTRATEGIUM</div>
+      <div class="brand-sub">BUSINESS</div>
+      <div class="copy">© 2026 Estrategium Business — Negocios con estrategia.</div>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    // El servidor de pagos nos trae aquí con parámetros en la URL:
+    //   ?pago=ok&curso=..&email=..&clave=..     (pago aprobado)
+    //   ?pago=fallo&msg=..                        (pago no aprobado)
+    var p = new URLSearchParams(location.search);
+    var estado = p.get('pago');
+    var card = document.getElementById('resCard');
+
+    function esc(s) {
+      return String(s || '').replace(/[&<>"]/g, function (c) {
+        return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c];
+      });
+    }
+
+    if (estado === 'ok') {
+      var curso = p.get('curso') || '';
+      var email = p.get('email') || '';
+      var clave = p.get('clave') || '';
+
+      // Deja lista la sesión del estudiante para que "IR A MI PANEL" entre directo.
+      try {
+        if (email) {
+          localStorage.setItem('estrategium_est', JSON.stringify({
+            name: email.split('@')[0], email: email, rol: 'estudiante', cursos: curso ? [curso] : []
+          }));
+        }
+      } catch (e) {}
+
+      var claveHtml = clave
+        ? '<p style="margin-top:12px">Tu clave de acceso es:<br>' +
+          '<b style="font-size:1.5rem;letter-spacing:2px;color:var(--navy-900)">' + esc(clave) + '</b></p>' +
+          '<p style="color:var(--gray-500);font-size:.88rem;margin-top:6px">Guárdala. Entra con tu correo <b>' + esc(email) + '</b> y esta clave.</p>'
+        : '<p style="margin-top:10px;color:var(--gray-500);font-size:.9rem">Entra con el correo y la contraseña que ya tenías.</p>';
+
+      card.className = 'ck-card ck-result ok';
+      card.innerHTML = '<div class="ico">✔</div>' +
+        '<h2>¡FELICIDADES!</h2>' +
+        '<p>Tu pago fue confirmado. Ya tienes acceso' + (curso ? ' a <b>' + esc(curso) + '</b>' : '') + '.</p>' +
+        claveHtml +
+        '<a href="mis-cursos.html" class="btn btn-gold" style="margin-top:16px;display:inline-block;">IR A MI PANEL</a>';
+
+    } else if (estado === 'fallo') {
+      var motivo = p.get('msg') || 'El pago no se pudo confirmar.';
+      card.className = 'ck-card ck-result fail';
+      card.innerHTML = '<div class="ico">✕</div>' +
+        '<h2>No pudimos confirmar tu pago</h2>' +
+        '<p>' + esc(motivo) + '</p>' +
+        '<p style="color:var(--gray-500);font-size:.9rem;margin-top:8px">No se te cobró, o el cobro será reversado automáticamente. Puedes intentarlo de nuevo.</p>' +
+        '<a href="index.html" class="btn btn-gold" style="margin-top:14px;display:inline-block;">Volver al inicio</a>';
+
+    } else {
+      // Llegó sin parámetros válidos (ej. entró directo a la página).
+      card.className = 'ck-card ck-result';
+      card.innerHTML = '<div class="ico">🔍</div>' +
+        '<h2>Sin información de pago</h2>' +
+        '<p>Esta página muestra el resultado de un pago con tarjeta o PayPhone.</p>' +
+        '<a href="index.html" class="btn btn-gold" style="margin-top:14px;display:inline-block;">Ir al inicio</a>';
+    }
+  })();
+  </script>
+</body>
+</html>
