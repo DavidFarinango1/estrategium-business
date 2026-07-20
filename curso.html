@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Curso — Estrategium Business</title>
-  <link rel="stylesheet" href="css/styles.css?v=73" />
+  <link rel="stylesheet" href="css/styles.css?v=75" />
 </head>
 <body data-guard="estudiante">
 
@@ -97,7 +97,26 @@
       document.querySelectorAll('.portal-dropdown.open').forEach(function (el) { el.classList.remove('open'); });
     });
 
+    // Progreso POR ESTUDIANTE: se guarda en el usuario (campo "progreso"), NO en el
+    // curso compartido. Así cada estudiante ve SU avance; uno nuevo empieza en cero.
+    function miUsuario() {
+      try {
+        var s = JSON.parse(localStorage.getItem('estrategium_est') || 'null');
+        if (!s || !s.email || !window.Usuarios) return null;
+        return Usuarios.getAll().filter(function (x) {
+          return x.rol === 'Estudiante' && (x.email || '').toLowerCase() === (s.email || '').toLowerCase();
+        })[0] || null;
+      } catch (e) { return null; }
+    }
+    function progresoDe(cursoId) {
+      var u = miUsuario();
+      if (!u || !u.progreso || !u.progreso[cursoId]) return {};
+      return u.progreso[cursoId];
+    }
+    var ultimosCursos = null;
+
     function render(cursos) {
+      ultimosCursos = cursos;
       var c = (cursos || []).filter(function (x) { return x.id === id; })[0];
       if (!c) {
         elTitulo.textContent = 'Curso no encontrado';
@@ -114,21 +133,31 @@
       elTitulo.textContent = c.titulo || 'Curso';
       var modulos = c.modulos && c.modulos.length ? c.modulos
         : [{ nombre: c.titulo || 'Contenido', lecciones: [{ titulo: 'Introducción', videoUrl: c.videoUrl || '' }] }];
+      var prog = progresoDe(c.id); // progreso de ESTE estudiante en este curso
       var totalLecc = modulos.reduce(function (n, m) { return n + (m.lecciones || []).length; }, 0);
-      elMeta.innerHTML = '<span>' + totalLecc + ' Videos</span><span>0 Quizzes</span><span>0 Worksheets</span><span>0 Files</span>';
+      var totalMods = modulos.length;
+      var completadas = modulos.reduce(function (n, m, mi) {
+        return n + (m.lecciones || []).filter(function (l, li) { return prog[mi + '-' + li]; }).length;
+      }, 0);
+      // Información real del curso: lecciones, módulos y progreso (sin las etiquetas
+      // fijas "Quizzes/Worksheets/Files" que no aplican a estos cursos).
+      elMeta.innerHTML =
+        '<span>' + totalLecc + (totalLecc === 1 ? ' Lección' : ' Lecciones') + '</span>' +
+        '<span>' + totalMods + (totalMods === 1 ? ' Módulo' : ' Módulos') + '</span>' +
+        '<span>' + completadas + ' de ' + totalLecc + ' completadas</span>';
 
       // Para el botón CONTINUAR: primera lección sin completar (o la primera)
       var continuar = null;
 
       var html = modulos.map(function (m, mi) {
         var lecciones = m.lecciones || [];
-        var hechas = lecciones.filter(function (l) { return l.completado; }).length;
+        var hechas = lecciones.filter(function (l, li) { return prog[mi + '-' + li]; }).length;
         var pct = lecciones.length ? Math.round((hechas / lecciones.length) * 100) : 0;
 
         var rows = lecciones.map(function (l, li) {
           var link = 'leccion.html?id=' + encodeURIComponent(c.id) + '&m=' + mi + '&l=' + li;
-          if (continuar === null && !l.completado) continuar = link;
-          var done = !!l.completado;
+          if (continuar === null && !prog[mi + '-' + li]) continuar = link;
+          var done = !!prog[mi + '-' + li];
           var badge = done
             ? '<span class="badge-done">Completado</span>'
             : '<span class="badge-go">Ir a la Lección</span>';
@@ -153,6 +182,8 @@
     }
 
     if (window.Cursos) Cursos.onChange(render);
+    // El progreso vive en el usuario: si cambia (o carga después), se vuelve a pintar.
+    if (window.Usuarios) Usuarios.onChange(function () { if (ultimosCursos) render(ultimosCursos); });
   })();
   </script>
 </body>

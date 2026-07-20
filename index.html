@@ -6,7 +6,7 @@
   <title>Estrategium Business — Convierte clientes ocasionales en clientes frecuentes</title>
   <link rel="canonical" href="https://www.estrategiumbusiness.com/" />
   <meta name="description" content="Instala la Máquina de Clientes Fieles™ con el Método MARCA™ y haz que tus clientes regresen una y otra vez." />
-  <link rel="stylesheet" href="css/styles.css?v=73" />
+  <link rel="stylesheet" href="css/styles.css?v=75" />
 </head>
 <body>
 
@@ -186,7 +186,15 @@
           '<div style="font-size:.82rem;color:#cdd8ec;margin-top:10px;">Acceso inmediato por solo <b>' + esc(c.moneda || 'USD') + ' ' + esc(c.precio || '') + '</b>.</div>' +
         '</div>';
       }
-      var foot = c.nota ? ('<div class="stage-foot"' + (c.consultoria ? ' style="margin-top:18px"' : '') + '><span class="ico">' + esc(c.notaIcono || '★') + '</span><span>' + esc(c.nota) + '</span></div>') : '';
+      // Nota al pie. Si el admin no la definió, se usa una según el curso, para que
+      // las TRES tarjetas se vean iguales (todas con su nota alineada abajo).
+      var notaTexto = c.nota;
+      if (!notaTexto) {
+        var tU = (c.titulo || '').toUpperCase();
+        if (tU.indexOf('PROFIT') >= 0) notaTexto = 'Ideal para dueños que ya conocen el método y quieren acelerar sus resultados.';
+        else if (tU.indexOf('START') >= 0) notaTexto = 'Ideal para dueños que quieren empezar a ordenar y hacer crecer su restaurante.';
+      }
+      var foot = notaTexto ? ('<div class="stage-foot" style="margin-top:18px"><span class="ico">' + esc(c.notaIcono || '★') + '</span><span>' + esc(notaTexto) + '</span></div>') : '';
       return '<article class="stage-card dyn-stage-card">' +
         '<div class="stage-icon">' + esc(c.icon || '🎓') + '</div>' +
         '<span class="stage-badge">' + esc(badge) + '</span>' +

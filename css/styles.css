@@ -277,7 +277,7 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
   border-radius: 6px;
 }
 .stage-card h3 { text-align: center; font-size: 1.45rem; color: var(--navy-900); }
-.stage-card .stage-sub { text-align: center; font-weight: 700; color: var(--text-dark); margin-bottom: 18px; font-size: .98rem; }
+.stage-card .stage-sub { text-align: center; font-weight: 700; color: var(--text-dark); margin-bottom: 18px; font-size: .98rem; min-height: 76px; display: flex; align-items: center; justify-content: center; }
 .stage-list { list-style: none; margin-bottom: 22px; }
 .stage-list li {
   display: flex; gap: 10px; align-items: flex-start;
@@ -313,13 +313,15 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 .price-box .price b { font-size: 1.85rem; color: var(--gold); }
 .price-box .btn-block { padding: 10px 12px; font-size: .8rem; }
 .stage-foot {
-  display: flex; gap: 12px; align-items: flex-start;
+  display: flex; gap: 12px; align-items: center;
   font-size: .84rem;
   color: #c7d2e8;
   background: #0a1c42;
   margin: 8px -24px -24px;
   padding: 15px 22px 16px;
   border-radius: 0 0 16px 16px;
+  min-height: 96px;      /* misma altura en las 3 notas → botones alineados */
+  box-sizing: border-box;
 }
 .stage-foot b { color: var(--gold); }
 .stage-foot .ico { color: var(--gold); font-size: 1.3rem; }

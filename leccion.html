@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lección — Estrategium Business</title>
-  <link rel="stylesheet" href="css/styles.css?v=73" />
+  <link rel="stylesheet" href="css/styles.css?v=75" />
 </head>
 <body data-guard="estudiante">
 
@@ -111,6 +111,23 @@
     var lpMarcar = document.getElementById('lpMarcarCompletado');
     var cursoActual = null;
 
+    // Progreso POR ESTUDIANTE: se guarda en el usuario (campo "progreso"), NO en el
+    // curso compartido. Cada estudiante ve SU avance; uno nuevo empieza en cero.
+    function miUsuario() {
+      try {
+        var s = JSON.parse(localStorage.getItem('estrategium_est') || 'null');
+        if (!s || !s.email || !window.Usuarios) return null;
+        return Usuarios.getAll().filter(function (x) {
+          return x.rol === 'Estudiante' && (x.email || '').toLowerCase() === (s.email || '').toLowerCase();
+        })[0] || null;
+      } catch (e) { return null; }
+    }
+    function progresoCurso() {
+      var u = miUsuario();
+      if (!u || !u.progreso || !u.progreso[id]) return {};
+      return u.progreso[id];
+    }
+
     // Menú CUENTA
     document.querySelectorAll('.portal-dropdown > .portal-pill').forEach(function (p) {
       p.addEventListener('click', function (e) { e.stopPropagation(); p.parentElement.classList.toggle('open'); });
@@ -139,9 +156,9 @@
       var dEl = document.getElementById('lpDesc');
       if (dEl) dEl.textContent = les.descripcion || '';
 
-      // botón "Marcar como completado"
+      // botón "Marcar como completado" (según el progreso del ESTUDIANTE)
       if (lpMarcar) {
-        var yaCompletada = !!les.completado;
+        var yaCompletada = !!progresoCurso()[mi + '-' + li];
         lpMarcar.classList.toggle('done', yaCompletada);
         lpMarcar.disabled = yaCompletada;
         lpMarcar.textContent = yaCompletada ? '✓ COMPLETADO' : '✔ MARCAR COMO COMPLETADO';
@@ -188,12 +205,14 @@
       flat = [];
       modulos.forEach(function (m, mi) { (m.lecciones || []).forEach(function (l, li) { flat.push({ mi: mi, li: li, titulo: l.titulo, videoUrl: l.videoUrl }); }); });
 
-      // construye barra lateral
+      // construye barra lateral (marcas según el progreso del ESTUDIANTE)
+      var prog = progresoCurso();
       lpMods.innerHTML = modulos.map(function (m, mi) {
         var lessons = (m.lecciones || []).map(function (l, li) {
           var t = esc(l.titulo || 'Lección');
-          var ck = l.completado ? '<span class="check">✔</span> ' : '';
-          return '<div class="lp-lesson' + (l.completado ? ' done' : '') + '" data-mi="' + mi + '" data-li="' + li + '">' + ck + t + '</div>';
+          var hecha = !!prog[mi + '-' + li];
+          var ck = hecha ? '<span class="check">✔</span> ' : '';
+          return '<div class="lp-lesson' + (hecha ? ' done' : '') + '" data-mi="' + mi + '" data-li="' + li + '">' + ck + t + '</div>';
         }).join('');
         return '<div class="lp-mod' + (mi === curM ? ' open' : '') + '">' +
                  '<div class="lp-mod-head"><span class="ic">' + (mi === curM ? '－' : '＋') + '</span> ' + esc(m.nombre || 'Módulo') + '</div>' +
@@ -214,24 +233,31 @@
       activar(curM, curL);
     }
 
-    // Marca la lección actual como completada y lo guarda en Firestore/local.
+    // Marca la lección actual como completada SOLO para este estudiante (guarda en
+    // su usuario, no en el curso compartido).
     if (lpMarcar) {
       lpMarcar.addEventListener('click', function () {
         if (!cursoActual || lpMarcar.disabled) return;
-        var modulosClon = JSON.parse(JSON.stringify(cursoActual.modulos || modulos));
-        if (!modulosClon[curM] || !modulosClon[curM].lecciones[curL]) return;
-        modulosClon[curM].lecciones[curL].completado = true;
+        var u = miUsuario();
+        if (!u) { alert('No se pudo identificar tu cuenta. Vuelve a iniciar sesión.'); return; }
+        var progreso = u.progreso ? JSON.parse(JSON.stringify(u.progreso)) : {};
+        if (!progreso[id]) progreso[id] = {};
+        progreso[id][curM + '-' + curL] = true;
         lpMarcar.disabled = true;
         lpMarcar.textContent = 'Guardando...';
-        Promise.resolve(Cursos.update(cursoActual.id, { modulos: modulosClon })).catch(function () {
+        Promise.resolve(Usuarios.update(u.id, { progreso: progreso })).catch(function () {
           lpMarcar.disabled = false;
           lpMarcar.textContent = '✔ MARCAR COMO COMPLETADO';
           alert('No se pudo guardar. Intenta de nuevo.');
         });
+        // Usuarios.onChange re-pinta la barra lateral y el botón con el estado nuevo.
       });
     }
 
-    if (window.Cursos) Cursos.onChange(build);
+    var ultimosCursos = null;
+    if (window.Cursos) Cursos.onChange(function (cursos) { ultimosCursos = cursos; build(cursos); });
+    // El progreso vive en el usuario: al marcar una lección (o al cargar), se re-pinta.
+    if (window.Usuarios) Usuarios.onChange(function () { if (ultimosCursos) build(ultimosCursos); });
   })();
   </script>
 </body>
