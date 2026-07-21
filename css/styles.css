@@ -312,6 +312,76 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 .price-box .price { font-size: .9rem; margin: 2px 0 9px; }
 .price-box .price b { font-size: 1.85rem; color: var(--gold); }
 .price-box .btn-block { padding: 10px 12px; font-size: .8rem; }
+/* Las 3 cajas de precio con la MISMA altura → botones y cajas alineados,
+   aunque una diga un precio y otra "AGENDA TU LLAMADA". */
+.price-box { display: flex; flex-direction: column; min-height: 162px; }
+.price-body {
+  flex: 1;                 /* rellena el alto restante para igualar las 3 cajas */
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  margin-top: 10px; text-align: center;
+}
+/* Precio destacado: número grande dorado con brillo sutil, para llamar la atención */
+.sp-label {
+  display: block;
+  font-size: .62rem; letter-spacing: 2.5px; text-transform: uppercase;
+  color: #cdd8ec; font-weight: 600; margin-bottom: 5px;
+}
+.sp-amount {
+  display: inline-flex; align-items: baseline; gap: 5px;
+  color: var(--gold); font-weight: 800; line-height: 1;
+  text-shadow: 0 2px 12px rgba(201,162,75,.45);
+}
+.sp-cur { font-size: 1.05rem; font-weight: 700; opacity: .92; letter-spacing: 1px; }
+.sp-num { font-size: 2.5rem; letter-spacing: -1px; }
+.sp-agenda { color: var(--gold); font-weight: 800; font-size: 1.15rem; letter-spacing: 1px; }
+/* Lista con viñetas doradas (página NEXO). display:inline-block + text-align:left
+   permite que, dentro de un contenedor centrado, la lista se centre como bloque
+   pero cada ítem se lea alineado a la izquierda junto a su ✔. */
+.nexo-list { list-style: none; padding: 0; margin: 10px auto 0; display: inline-block; text-align: left; }
+.nexo-list li {
+  position: relative; padding-left: 30px; margin-bottom: 12px;
+  font-size: 1.08rem; color: var(--navy-900); font-weight: 600; line-height: 1.4;
+}
+.nexo-list li::before {
+  content: "✔"; position: absolute; left: 0; top: 0; color: var(--gold); font-weight: 800;
+}
+/* NEXO — "Todo lo que incluye" en grilla de 2 columnas */
+.nexo-grid {
+  list-style: none; padding: 0; margin: 14px auto 0; max-width: 660px;
+  display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 11px 30px; text-align: left;
+}
+.nexo-grid li { position: relative; padding-left: 28px; font-size: 1.02rem; color: var(--navy-900); font-weight: 600; }
+.nexo-grid li::before { content: "✔"; position: absolute; left: 0; top: 0; color: var(--gold); font-weight: 800; }
+/* NEXO — comparación tradicional vs NEXO */
+.nexo-compare { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; max-width: 760px; margin: 8px auto 0; text-align: left; }
+.nexo-compare .col { border-radius: 14px; padding: 22px; }
+.nexo-compare .col.trad { background: #f2f4f8; border: 1px solid #e2e6ee; }
+.nexo-compare .col.nexo { background: #001f4d; }
+.nexo-compare h4 { text-align: center; margin: 0 0 12px; font-size: 1.05rem; }
+.nexo-compare .col.trad h4 { color: var(--navy-900); }
+.nexo-compare .col.nexo h4 { color: var(--gold); }
+.nexo-compare ul { list-style: none; padding: 0; margin: 0; }
+.nexo-compare li { padding: 9px 0 9px 26px; position: relative; }
+.nexo-compare .col.trad li { color: #5a6478; border-top: 1px solid #e2e6ee; }
+.nexo-compare .col.nexo li { color: #eaf0fb; border-top: 1px solid rgba(255,255,255,.1); }
+.nexo-compare li:first-child { border-top: none; }
+.nexo-compare .col.trad li::before { content: "✕"; position: absolute; left: 0; color: #c0392b; font-weight: 800; }
+.nexo-compare .col.nexo li::before { content: "✔"; position: absolute; left: 0; color: var(--gold); font-weight: 800; }
+/* NEXO — testimonio */
+.nexo-testi { max-width: 620px; margin: 8px auto 0; background: #fff; border: 1px solid #e6ebf3; border-radius: 14px; padding: 24px; text-align: left; box-shadow: var(--shadow); }
+.nexo-testi ul { list-style: none; padding: 0; margin: 12px 0 0; }
+.nexo-testi li { padding: 8px 0 8px 32px; position: relative; font-weight: 600; color: var(--navy-900); }
+.nexo-testi li .em { position: absolute; left: 0; top: 8px; }
+/* NEXO — preguntas frecuentes */
+.nexo-faq { max-width: 720px; margin: 10px auto 0; text-align: left; list-style: none; padding: 0; }
+.nexo-faq li { padding: 15px 18px; margin-bottom: 10px; background: #fff; border: 1px solid #e6ebf3; border-left: 4px solid var(--gold); border-radius: 10px; font-weight: 600; color: var(--navy-900); }
+/* Página NEXO: secciones más juntas (menos espacio vertical) */
+.nexo-page .section { padding: 26px 0; }
+.nexo-page .page-banner { padding: 26px 0; }
+@media (max-width: 640px) {
+  .nexo-grid, .nexo-compare { grid-template-columns: 1fr; }
+  .nexo-page .section { padding: 20px 0; }
+}
 .stage-foot {
   display: flex; gap: 12px; align-items: center;
   font-size: .84rem;

@@ -26,3 +26,6 @@ worker/.wrangler/
 *firebase-adminsdk*.json
 .dev.vars
 .env
+
+# Carpeta con secretos locales (llave de servicio, tokens) — nunca al repo ni al sitio
+privado/

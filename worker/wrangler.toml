@@ -13,8 +13,13 @@ FIREBASE_PROJECT_ID = "estrategium-business"
 # dejarlo en "*"; en producción conviene fijarlo a tu dominio.
 CORS_ORIGIN = "*"
 
+# Correo remitente de los avisos al estudiante (debe ser del dominio verificado
+# en MailerSend). Se puede cambiar sin tocar el código.
+CORREO_REMITENTE = "soporte@estrategiumbusiness.com"
+
 # Los SECRETOS no van aquí (este archivo se sube a GitHub).
 # Se cargan una sola vez con estos comandos:
 #   npx wrangler secret put PAYPHONE_TOKEN
 #   npx wrangler secret put PAYPHONE_STORE_ID
 #   npx wrangler secret put FIREBASE_SERVICE_ACCOUNT
+#   npx wrangler secret put MAILERSEND_TOKEN   <- token de la API de MailerSend
