@@ -380,6 +380,23 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 /* Página NEXO: secciones más juntas (menos espacio vertical) */
 .nexo-page .section { padding: 26px 0; }
 .nexo-page .page-banner { padding: 26px 0; }
+/* Hero NEXO en TEXTO (reemplaza la imagen nex03 para que se lea bien en móvil) */
+.nexo-hero { background: radial-gradient(circle at 72% 18%, #0a2a5e, #001635 70%); color: #eaf0fb; padding: 44px 0; text-align: center; }
+.nexo-hero .nh-brand { letter-spacing: 2px; font-size: .8rem; color: #cdd8ec; margin-bottom: 18px; font-weight: 700; }
+.nexo-hero .nh-brand span { color: var(--gold); letter-spacing: 4px; }
+.nexo-hero .nh-brand b { color: #fff; letter-spacing: 3px; }
+.nexo-hero .nh-title { font-size: clamp(1.5rem, 5vw, 2.5rem); font-weight: 800; line-height: 1.22; margin: 0 auto 16px; max-width: 760px; color: #fff; }
+.nexo-hero .nh-title .blue { color: #3b9dff; }
+.nexo-hero .nh-title .gold { color: var(--gold); }
+.nexo-hero .nh-lead { font-weight: 800; color: var(--gold); font-size: 1.12rem; margin: 0 0 10px; }
+.nexo-hero .nh-body { max-width: 620px; margin: 0 auto 26px; font-size: 1.05rem; color: #cdd8ec; line-height: 1.6; }
+.nexo-hero .nh-feats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 840px; margin: 0 auto; }
+.nexo-hero .nh-feats > div { background: rgba(255,255,255,.06); border: 1px solid rgba(201,162,75,.32); border-radius: 10px; padding: 15px 10px; font-size: .84rem; font-weight: 600; color: #eaf0fb; }
+.nexo-hero .nh-feats .ico { display: block; font-size: 1.5rem; margin-bottom: 7px; }
+@media (max-width: 640px) {
+  .nexo-hero { padding: 30px 0; }
+  .nexo-hero .nh-feats { grid-template-columns: 1fr 1fr; gap: 10px; }
+}
 @media (max-width: 640px) {
   .nexo-grid, .nexo-compare { grid-template-columns: 1fr; }
   .nexo-page .section { padding: 20px 0; }
