@@ -124,6 +124,8 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 .brand .brand-main { font-size: 1.5rem; font-weight: 800; letter-spacing: 2px; color: var(--navy-900); }
 .brand .brand-sub { font-size: .62rem; letter-spacing: 6px; color: var(--gold); font-weight: 600; }
 .nav-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+/* Botón ☰ (solo se muestra en móvil, ver media query). En escritorio, oculto. */
+.nav-toggle, .nav-toggle-cb { display: none; }
 .nav-pill {
   background: var(--navy-800);
   color: #fff;
@@ -1477,8 +1479,24 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
   .check-2col { grid-template-columns: 1fr; max-width: 320px; }
 }
 @media (max-width: 640px) {
-  .nav { flex-direction: column; align-items: flex-start; }
-  .nav-actions { width: 100%; }
+  /* Menú móvil con botón ☰: marca a la izquierda, botón ☰ a la derecha, y el menú
+     se despliega en grilla de 2 columnas (ACCESO ocupa toda la fila) al tocarlo. */
+  .nav { flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .nav-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 1.7rem; line-height: 1; color: var(--navy-900);
+    background: none; border: none; cursor: pointer; padding: 2px 8px;
+  }
+  .nav-actions {
+    display: none; width: 100%; order: 3; margin-top: 2px;
+    grid-template-columns: 1fr 1fr; gap: 8px;
+  }
+  .nav-toggle-cb:checked ~ .nav-actions { display: grid; }
+  .nav-pill, .nav-login {
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; min-height: 44px;
+  }
+  .nav-login { grid-column: 1 / -1; }
   .topbar { text-align: center; }
   .btn-whatsapp { width: 100%; }
 }
