@@ -180,11 +180,12 @@
       <p class="ch-mail">Escríbenos hoy: <a href="mailto:info@estrategiumbusiness.com">info@estrategiumbusiness.com</a></p>
       <span class="ch-rule"></span>
 
-      <form class="data-form data-form-dark" onsubmit="return false">
+      <form class="data-form data-form-dark" id="ct-form" onsubmit="return false">
+        <input type="text" id="ct-web" name="web" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;" />
         <div class="form-grid2">
           <div class="ff">
             <label>País <span class="req">*</span></label>
-            <select>
+            <select id="ct-pais">
               <option>Ecuador</option>
               <option>Colombia</option>
               <option>Perú</option>
@@ -195,7 +196,7 @@
           </div>
           <div class="ff">
             <label>¿Cómo podemos ayudarte? <span class="req">*</span></label>
-            <select>
+            <select id="ct-tipo">
               <option>Solicitar servicio</option>
               <option>Agendar una llamada</option>
               <option>Consulta general</option>
@@ -206,22 +207,22 @@
         <div class="form-grid2">
           <div class="ff">
             <label>Nombre completo <span class="req">*</span></label>
-            <input type="text" placeholder="Tu nombre completo" />
+            <input type="text" id="ct-nombre" placeholder="Tu nombre completo" />
           </div>
           <div class="ff">
             <label>Empresa <span class="req">*</span></label>
-            <input type="text" placeholder="Nombre de tu empresa" />
+            <input type="text" id="ct-empresa" placeholder="Nombre de tu empresa" />
           </div>
         </div>
 
         <div class="form-grid2">
           <div class="ff">
             <label>Correo electrónico <span class="req">*</span></label>
-            <input type="email" placeholder="tucorreo@empresa.com" />
+            <input type="email" id="ct-email" placeholder="tucorreo@empresa.com" />
           </div>
           <div class="ff">
             <label>Teléfono <span class="req">*</span></label>
-            <input type="tel" placeholder="+593 98 765 4321" />
+            <input type="tel" id="ct-telefono" placeholder="+593 98 765 4321" />
           </div>
         </div>
 
@@ -231,8 +232,8 @@
           <div class="char-count"><span id="cc-count">0</span> / 500 caracteres</div>
         </div>
 
-        <button class="btn btn-gold btn-block" style="margin-top:6px">▶ ENVIAR</button>
-        <p class="ch-note">🔒 Tu información está protegida · Te responderemos en menos de 24 horas hábiles.</p>
+        <button type="submit" id="ct-enviar" class="btn btn-gold btn-block" style="margin-top:6px">▶ ENVIAR</button>
+        <p class="ch-note" id="ct-estado">🔒 Tu información está protegida · Te responderemos en menos de 24 horas hábiles.</p>
       </form>
     </div>
   </section>
@@ -255,6 +256,55 @@
   <a href="https://wa.me/593978811786" target="_blank" rel="noopener" class="wa-float" id="whatsapp" title="Hablar por WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.2 1.6 6L4 29l8.2-1.6c1.8.9 3.7 1.4 5.8 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-4.9 1 1-4.7-.3-.4C5.5 18.4 5 16.7 5 15 5 9 9.9 4.2 16 4.2S27 9 27 15s-4.9 9.8-11 9.8zm6.1-7.3c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-2-1.8-2.3-.2-.3 0-.5.1-.7.1-.1.3-.4.5-.6.2-.2.2-.3.3-.5.1-.2 0-.4 0-.6 0-.2-.7-1.8-1-2.4-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.3 5.2 4.6.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.9-.8 2.1-1.5.3-.8.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg></a>
 
   <script src="js/main.js?v=4"></script>
+  <script>
+  (function () {
+    var PAGOS_URL = 'https://estrategium-pagos.administradortra2026.workers.dev';
+    var form = document.getElementById('ct-form');
+    var estado = document.getElementById('ct-estado');
+    var btn = document.getElementById('ct-enviar');
+    if (!form) return;
+    function val(id) { var e = document.getElementById(id); return e ? (e.value || '').trim() : ''; }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var nombre = val('ct-nombre'), email = val('ct-email'), mensaje = val('comentarios');
+      if (!nombre || !email || !mensaje) {
+        estado.style.color = '#ff8a8a';
+        estado.textContent = 'Por favor completa tu nombre, correo y un mensaje.';
+        return;
+      }
+      btn.disabled = true; var textoBtn = btn.textContent; btn.textContent = 'Enviando...';
+      estado.style.color = ''; estado.textContent = 'Enviando tu mensaje...';
+
+      fetch(PAGOS_URL + '/contacto', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          web: val('ct-web'),
+          nombre: nombre, email: email, telefono: val('ct-telefono'),
+          empresa: val('ct-empresa'), pais: val('ct-pais'), tipo: val('ct-tipo'),
+          mensaje: mensaje
+        })
+      }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (res) {
+          if (res.ok && res.d && res.d.ok) {
+            form.reset();
+            var cc = document.getElementById('cc-count'); if (cc) cc.textContent = '0';
+            estado.style.color = '#7ee2a8';
+            estado.textContent = '✅ ¡Mensaje enviado! Te responderemos lo antes posible.';
+          } else {
+            estado.style.color = '#ff8a8a';
+            estado.textContent = '⚠️ ' + ((res.d && res.d.error) || 'No se pudo enviar. Escríbenos por WhatsApp o al correo.');
+          }
+        })
+        .catch(function () {
+          estado.style.color = '#ff8a8a';
+          estado.textContent = '⚠️ No se pudo enviar. Revisa tu conexión, o escríbenos por WhatsApp.';
+        })
+        .then(function () { btn.disabled = false; btn.textContent = textoBtn; });
+    });
+  })();
+  </script>
 </body>
 </html>
 
