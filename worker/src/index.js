@@ -45,6 +45,9 @@ export default {
       if (url.pathname === '/email/credenciales' && request.method === 'POST') {
         return cors(await enviarCredencialesAdmin(request, env), env);
       }
+      if (url.pathname === '/contacto' && request.method === 'POST') {
+        return cors(await recibirContacto(request, env), env);
+      }
       if (url.pathname === '/salud') {
         return cors(json({ ok: true, servicio: 'pagos-estrategium' }), env);
       }
@@ -215,6 +218,76 @@ async function confirmar(url, env) {
   } catch (e) { /* el correo es un extra; el pago y el acceso ya quedaron */ }
 
   return redirigir(env, 'ok', '', { curso: curso, email: email, clave: claveFinal });
+}
+
+/* ---------------------------------------------------------------------
+   Formulario de CONTACTO (público)
+   Lo llama la página contacto.html. Guarda el mensaje en Firestore
+   (colección "mensajes", que el admin ve en su bandeja) y además envía
+   un correo de aviso a CORREO_CONTACTO. Así el mensaje nunca se pierde:
+   aunque el correo fallara, queda guardado en el panel.
+   Anti-spam: campo trampa "web" (honeypot); si viene lleno, es un bot.
+   --------------------------------------------------------------------- */
+async function recibirContacto(request, env) {
+  const d = await request.json().catch(() => ({}));
+
+  if (d.web) return json({ ok: true }); // honeypot: bot → fingimos éxito y no hacemos nada
+
+  const nombre = String(d.nombre || '').trim();
+  const email = String(d.email || '').trim();
+  const mensaje = String(d.mensaje || '').trim();
+  if (!nombre || !email || !mensaje) return json({ error: 'Faltan datos (nombre, correo y mensaje).' }, 400);
+  if (nombre.length > 120 || email.length > 150 || mensaje.length > 2000) return json({ error: 'Datos demasiado largos.' }, 400);
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ error: 'Correo inválido.' }, 400);
+
+  const telefono = String(d.telefono || '').trim().slice(0, 40);
+  const empresa = String(d.empresa || '').trim().slice(0, 120);
+  const pais = String(d.pais || '').trim().slice(0, 60);
+  const tipo = String(d.tipo || '').trim().slice(0, 60);
+
+  // 1) Guardar en Firestore (siempre). El admin lo ve en su bandeja de mensajes.
+  const token = await tokenFirestore(env);
+  await crearDoc(env, token, 'mensajes', {
+    tipo: 'contacto',
+    asunto: tipo,
+    nombre: nombre,
+    email: email,
+    telefono: telefono,
+    empresa: empresa,
+    pais: pais,
+    mensaje: mensaje,
+    fecha: new Date().toISOString(),
+  }).catch(() => {});
+
+  // 2) Enviar aviso por correo (puede fallar durante el trial de MailerSend; no rompe nada).
+  const destino = env.CORREO_CONTACTO || 'cristyanq20@gmail.com';
+  const filas =
+    '<tr><td style="padding:4px 8px;color:#555;">Nombre</td><td style="padding:4px 8px;font-weight:700;">' + escHtml(nombre) + '</td></tr>' +
+    '<tr><td style="padding:4px 8px;color:#555;">Correo</td><td style="padding:4px 8px;font-weight:700;">' + escHtml(email) + '</td></tr>' +
+    (telefono ? '<tr><td style="padding:4px 8px;color:#555;">Teléfono</td><td style="padding:4px 8px;">' + escHtml(telefono) + '</td></tr>' : '') +
+    (empresa ? '<tr><td style="padding:4px 8px;color:#555;">Empresa</td><td style="padding:4px 8px;">' + escHtml(empresa) + '</td></tr>' : '') +
+    (pais ? '<tr><td style="padding:4px 8px;color:#555;">País</td><td style="padding:4px 8px;">' + escHtml(pais) + '</td></tr>' : '') +
+    (tipo ? '<tr><td style="padding:4px 8px;color:#555;">Motivo</td><td style="padding:4px 8px;">' + escHtml(tipo) + '</td></tr>' : '');
+  const html =
+    '<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;">' +
+      '<h2 style="color:#001f4d;">Nuevo mensaje de contacto</h2>' +
+      '<table style="width:100%;border-collapse:collapse;background:#f7f9fc;border-radius:8px;">' + filas + '</table>' +
+      '<p style="margin:16px 0 4px;color:#555;">Mensaje:</p>' +
+      '<div style="background:#fff;border:1px solid #e6e8ec;border-radius:8px;padding:14px;white-space:pre-wrap;">' + escHtml(mensaje) + '</div>' +
+      '<p style="color:#888;font-size:12px;margin-top:16px;">Responde este correo para contestarle directamente a ' + escHtml(email) + '.</p>' +
+    '</div>';
+  const text = 'Nuevo mensaje de contacto\n\nNombre: ' + nombre + '\nCorreo: ' + email +
+    (telefono ? '\nTeléfono: ' + telefono : '') + (empresa ? '\nEmpresa: ' + empresa : '') +
+    (pais ? '\nPaís: ' + pais : '') + (tipo ? '\nMotivo: ' + tipo : '') + '\n\nMensaje:\n' + mensaje;
+
+  try {
+    await enviarCorreo(env, {
+      to: destino, nombre: 'Estrategium', subject: 'Nuevo contacto — ' + nombre,
+      html: html, text: text, replyTo: email,
+    });
+  } catch (e) { /* el mensaje ya quedó guardado en Firestore */ }
+
+  return json({ ok: true });
 }
 
 /* --------------------------- Utilidades ---------------------------- */
@@ -439,6 +512,15 @@ async function buscarAdmin(env, token) {
 async function enviarCorreo(env, m) {
   if (!env.MAILERSEND_TOKEN) throw new Error('Falta el secreto MAILERSEND_TOKEN');
   const remitente = env.CORREO_REMITENTE || 'soporte@estrategiumbusiness.com';
+  const payload = {
+    from: { email: remitente, name: 'Estrategium Business' },
+    to: [{ email: m.to, name: m.nombre || m.to }],
+    subject: m.subject,
+    html: m.html,
+    text: m.text,
+  };
+  // "Responder a": al contestar el correo, la respuesta va al visitante que escribió.
+  if (m.replyTo) payload.reply_to = { email: m.replyTo };
   const r = await fetch('https://api.mailersend.com/v1/email', {
     method: 'POST',
     headers: {
@@ -446,13 +528,7 @@ async function enviarCorreo(env, m) {
       'Content-Type': 'application/json',
       'X-Requested-With': 'XMLHttpRequest',
     },
-    body: JSON.stringify({
-      from: { email: remitente, name: 'Estrategium Business' },
-      to: [{ email: m.to, name: m.nombre || m.to }],
-      subject: m.subject,
-      html: m.html,
-      text: m.text,
-    }),
+    body: JSON.stringify(payload),
   });
   // MailerSend responde 202 (Accepted) cuando encola el correo correctamente.
   if (!r.ok) throw new Error('MailerSend rechazó el envío (' + r.status + '): ' + (await r.text()));

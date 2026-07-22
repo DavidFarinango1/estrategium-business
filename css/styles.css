@@ -377,9 +377,48 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 /* NEXO — preguntas frecuentes */
 .nexo-faq { max-width: 720px; margin: 10px auto 0; text-align: left; list-style: none; padding: 0; }
 .nexo-faq li { padding: 15px 18px; margin-bottom: 10px; background: #fff; border: 1px solid #e6ebf3; border-left: 4px solid var(--gold); border-radius: 10px; font-weight: 600; color: var(--navy-900); }
+/* Página de CONTACTO — dos columnas: datos (izq) + formulario (der).
+   Panel azul (#001f4d) centrado con espacio en blanco a los lados. */
+.contacto-page { background: #fff; }
+.contacto-sec { background: #001f4d; color: #eaf0fb; padding: 46px 0; max-width: 1180px; margin: 28px auto; border-radius: 18px; }
+@media (max-width: 1228px) { .contacto-sec { margin: 24px; } }
+@media (max-width: 640px) { .contacto-sec { margin: 14px; border-radius: 14px; padding: 30px 0; } }
+.contacto-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 42px; align-items: start; }
+.contacto-info h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); color: #fff; margin: 0 0 12px; font-weight: 800; line-height: 1.15; }
+.contacto-info h2 .gold { color: var(--gold); }
+.contacto-info .sub { color: #b9c4d6; font-size: 1.05rem; line-height: 1.6; margin: 0 0 26px; max-width: 460px; }
+.info-list { display: flex; flex-direction: column; }
+.info-row { display: flex; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+.info-row .ic { width: 46px; height: 46px; flex: none; display: flex; align-items: center; justify-content: center; background: rgba(201,162,75,.14); border: 1px solid rgba(201,162,75,.35); border-radius: 12px; font-size: 1.25rem; }
+.info-row b { display: block; color: #fff; font-size: 1rem; margin-bottom: 2px; }
+.info-row p { margin: 0; color: #b9c4d6; font-size: .95rem; }
+.info-row p a { color: #b9c4d6; text-decoration: none; }
+.info-row p a:hover { color: var(--gold); }
+.quick-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.form-card { background: #111c2b; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 30px; }
+.form-card h3 { color: #fff; font-size: 1.4rem; margin: 0 0 6px; }
+.form-card > p { color: #b9c4d6; margin: 0 0 20px; font-size: .95rem; }
+@media (max-width: 860px) {
+  .contacto-2col { grid-template-columns: 1fr; gap: 30px; }
+  .contacto-sec { padding: 36px 0; }
+  .form-card { padding: 22px 18px; }
+}
+
+/* NEXO: imagen en computadora, texto en móvil (o al revés) */
+.solo-movil { display: none; }
+@media (max-width: 760px) {
+  .solo-desktop { display: none !important; }
+  .solo-movil { display: block !important; }
+}
+
 /* Página NEXO: secciones más juntas (menos espacio vertical) */
+.nexo-page { background: #fff; }
 .nexo-page .section { padding: 26px 0; }
 .nexo-page .page-banner { padding: 26px 0; }
+/* Bloques azules como paneles centrados, con espacio en blanco a los lados */
+.nexo-page .nexo-hero { max-width: 1180px; margin: 0 auto; border-radius: 18px; }
+@media (max-width: 1228px) { .nexo-page .nexo-hero { margin: 0 24px; } }
+@media (max-width: 640px) { .nexo-page .nexo-hero { margin: 0 12px; border-radius: 14px; } }
 /* Hero NEXO en TEXTO (reemplaza la imagen nex03 para que se lea bien en móvil) */
 .nexo-hero { background: radial-gradient(circle at 72% 18%, #0a2a5e, #001635 70%); color: #eaf0fb; padding: 44px 0; text-align: center; }
 .nexo-hero .nh-brand { letter-spacing: 2px; font-size: .8rem; color: #cdd8ec; margin-bottom: 18px; font-weight: 700; }
@@ -393,9 +432,25 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 .nexo-hero .nh-feats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 840px; margin: 0 auto; }
 .nexo-hero .nh-feats > div { background: rgba(255,255,255,.06); border: 1px solid rgba(201,162,75,.32); border-radius: 10px; padding: 15px 10px; font-size: .84rem; font-weight: 600; color: #eaf0fb; }
 .nexo-hero .nh-feats .ico { display: block; font-size: 1.5rem; margin-bottom: 7px; }
+/* NEXO hero — métricas de ejemplo del panel (sección "motor de crecimiento") */
+.nexo-hero .nh-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 700px; margin: 4px auto 22px; }
+.nexo-hero .nh-stats > div { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 10px; padding: 14px 8px; }
+.nexo-hero .nh-stats .v { font-size: 1.35rem; font-weight: 800; color: var(--gold); line-height: 1.1; }
+.nexo-hero .nh-stats .l { font-size: .68rem; color: #cdd8ec; margin-top: 3px; text-transform: uppercase; letter-spacing: .5px; }
+/* NEXO hero — pasos "Así funciona" */
+.nexo-hero .nexo-flow { display: flex; flex-wrap: wrap; align-items: stretch; justify-content: center; gap: 10px; max-width: 900px; margin: 6px auto 24px; }
+.nexo-hero .nexo-flow .step { flex: 1 1 140px; max-width: 168px; background: rgba(255,255,255,.06); border: 1px solid rgba(201,162,75,.3); border-radius: 12px; padding: 16px 12px; }
+.nexo-hero .nexo-flow .step .n { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--gold); color: #001635; font-weight: 800; font-size: .85rem; margin-bottom: 8px; }
+.nexo-hero .nexo-flow .step .ico { display: block; font-size: 1.6rem; margin-bottom: 6px; }
+.nexo-hero .nexo-flow .step p { margin: 0; font-size: .85rem; color: #eaf0fb; font-weight: 600; line-height: 1.35; }
+.nexo-hero .nexo-flow .arrow { display: flex; align-items: center; color: var(--gold); font-size: 1.4rem; font-weight: 800; }
 @media (max-width: 640px) {
   .nexo-hero { padding: 30px 0; }
   .nexo-hero .nh-feats { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .nexo-hero .nh-stats { grid-template-columns: 1fr 1fr; }
+  .nexo-hero .nexo-flow { flex-direction: column; align-items: center; }
+  .nexo-hero .nexo-flow .step { max-width: 320px; width: 100%; }
+  .nexo-hero .nexo-flow .arrow { transform: rotate(90deg); }
 }
 @media (max-width: 640px) {
   .nexo-grid, .nexo-compare { grid-template-columns: 1fr; }

@@ -6,7 +6,7 @@
   <title>NEXO — Sistema de Fidelización · Estrategium Business</title>
   <link rel="canonical" href="https://www.estrategiumbusiness.com/nexo.html" />
   <meta name="description" content="NEXO, el sistema de fidelización de Estrategium Business que convierte clientes ocasionales en clientes fieles para tu restaurante." />
-  <link rel="stylesheet" href="css/styles.css?v=84" />
+  <link rel="stylesheet" href="css/styles.css?v=89" />
 </head>
 <body class="nexo-page">
 
@@ -20,7 +20,7 @@
       <input type="checkbox" id="navtoggle" class="nav-toggle-cb" hidden /><label for="navtoggle" class="nav-toggle" aria-label="Abrir menu">☰</label>
         <nav class="nav-actions">
         <a href="nexo.html" class="nav-pill">NEXO</a>
-        <a href="index.html#contacto" class="nav-pill">CONTACTO</a>
+        <a href="contacto.html" class="nav-pill">CONTACTO</a>
         <a href="sobre-mi.html" class="nav-pill">SOBRE MÍ</a>
         <a href="implementacion-marca.html" class="nav-pill">IMPLEMENTACIÓN</a>
         <a href="login-estudiantes.html" class="nav-login">ACCESO</a>
@@ -33,9 +33,21 @@
     <div class="container"><h1>Sistema de Fidelización</h1></div>
   </section>
 
-  <!-- Hero NEXO — antes era la imagen images/nex03.jpg. Ahora es TEXTO real para que
-       se lea nítido en el celular (sin ampliar) y Google pueda indexarlo. -->
-  <section class="nexo-hero">
+  <!-- Espacio en blanco separador entre la barra azul y el hero -->
+  <div style="height:36px;background:#fff;"></div>
+
+  <!-- COMPUTADORA: imagen. En móvil se oculta y se muestra la versión en texto (abajo). -->
+  <section class="section solo-desktop">
+    <div class="container" style="max-width:900px;">
+      <img loading="lazy" decoding="async" class="img-zoom" src="images/nex03.jpg" alt="NEXO — El sistema que convierte clientes ocasionales en clientes fieles." style="width:100%;display:block;margin:0 auto;border-radius:14px;box-shadow:var(--shadow);" />
+      <div style="text-align:center;margin-top:24px">
+        <a href="https://wa.me/593978811786" target="_blank" rel="noopener" class="btn btn-gold">Quiero una demostración</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MÓVIL: versión en TEXTO (en computadora se oculta). -->
+  <section class="nexo-hero solo-movil">
     <div class="container">
       <p class="nh-brand">ESTRATEGIUM <span>BUSINESS</span> &nbsp;·&nbsp; <b>NEXO</b></p>
       <h2 class="nh-title">El sistema que convierte clientes <span class="blue">ocasionales</span> en <span class="gold">clientes fieles</span>.</h2>
@@ -69,8 +81,36 @@
         <li>Cuándo volver a contactarlo.</li>
       </ul>
       <p style="font-weight:800;color:var(--navy-900);font-size:1.25rem;margin-top:20px;">NEXO cambia eso.</p>
+    </div>
+  </section>
 
-      <img loading="lazy" decoding="async" class="img-zoom" src="images/nexo4.jpg" alt="NEXO — Más que una app, es un motor de crecimiento para restaurantes que quieren dejar de depender del azar." style="width:100%;display:block;margin:26px auto 0;border-radius:14px;box-shadow:var(--shadow);" />
+  <!-- COMPUTADORA: imagen. En móvil se oculta y se muestra la versión en texto. -->
+  <section class="section section-light solo-desktop">
+    <div class="container" style="max-width:900px;">
+      <img loading="lazy" decoding="async" class="img-zoom" src="images/nexo4.jpg" alt="NEXO — Más que una app, es un motor de crecimiento para restaurantes que quieren dejar de depender del azar." style="width:100%;display:block;margin:0 auto;border-radius:14px;box-shadow:var(--shadow);" />
+    </div>
+  </section>
+
+  <!-- MÓVIL: versión en TEXTO. -->
+  <section class="nexo-hero solo-movil">
+    <div class="container">
+      <p class="nh-brand">ESTRATEGIUM <span>BUSINESS</span> &nbsp;·&nbsp; <b>NEXO</b></p>
+      <h2 class="nh-title">Más que una app, es un <span class="blue">motor</span> <span class="gold">de crecimiento</span>.</h2>
+      <p class="nh-lead">Para restaurantes que quieren dejar de depender del azar.</p>
+
+      <div class="nh-stats">
+        <div><div class="v">$125,430</div><div class="l">Ventas totales</div></div>
+        <div><div class="v">$24.80</div><div class="l">Ticket promedio</div></div>
+        <div><div class="v">1,248</div><div class="l">Clientes nuevos</div></div>
+        <div><div class="v">42%</div><div class="l">Recompra</div></div>
+      </div>
+
+      <div class="nh-feats">
+        <div><span class="ico">📊</span> Decisiones inteligentes</div>
+        <div><span class="ico">🎯</span> Control total</div>
+        <div><span class="ico">📈</span> Crecimiento sostenible</div>
+        <div><span class="ico">🏆</span> Resultados que escalan</div>
+      </div>
     </div>
   </section>
 
@@ -89,10 +129,38 @@
     </div>
   </section>
 
-  <!-- Sección 3 — imagen "Así funciona" (nexo2) -->
-  <section class="section section-light">
+  <!-- COMPUTADORA: imagen "Así funciona". En móvil se oculta y se muestra el texto. -->
+  <section class="section section-light solo-desktop">
     <div class="container" style="max-width:1000px;">
-      <img loading="lazy" decoding="async" class="img-zoom" src="images/nexo2.jpg" alt="NEXO — Así funciona: el flujo de regreso del cliente. Registramos a tus clientes, empiezan a acumular recompensas, reciben notificaciones automáticas, regresan más veces y tu rentabilidad aumenta." style="width:100%;display:block;margin:0 auto;border-radius:14px;box-shadow:var(--shadow);" />
+      <img loading="lazy" decoding="async" class="img-zoom" src="images/nexo2.jpg" alt="NEXO — Así funciona: el flujo de regreso del cliente." style="width:100%;display:block;margin:0 auto;border-radius:14px;box-shadow:var(--shadow);" />
+    </div>
+  </section>
+
+  <!-- MÓVIL: versión en TEXTO. -->
+  <section class="nexo-hero solo-movil">
+    <div class="container">
+      <p class="nh-brand">ESTRATEGIUM <span>BUSINESS</span> &nbsp;·&nbsp; <b>NEXO</b></p>
+      <h2 class="nh-title">Así funciona</h2>
+      <p class="nh-lead">El flujo de <span style="color:#3b9dff">regreso del cliente</span></p>
+
+      <div class="nexo-flow">
+        <div class="step"><span class="n">1</span><span class="ico">🧑‍🤝‍🧑</span><p>Registramos a tus clientes.</p></div>
+        <div class="arrow">→</div>
+        <div class="step"><span class="n">2</span><span class="ico">🎁</span><p>Empiezan a acumular recompensas.</p></div>
+        <div class="arrow">→</div>
+        <div class="step"><span class="n">3</span><span class="ico">🔔</span><p>Reciben notificaciones automáticas.</p></div>
+        <div class="arrow">→</div>
+        <div class="step"><span class="n">4</span><span class="ico">🏪</span><p>Regresan más veces.</p></div>
+        <div class="arrow">→</div>
+        <div class="step"><span class="n">5</span><span class="ico">📈</span><p>Tu rentabilidad aumenta.</p></div>
+      </div>
+
+      <div class="nh-feats">
+        <div><span class="ico">👥</span> Más clientes fidelizados</div>
+        <div><span class="ico">🔁</span> Mayor frecuencia de compra</div>
+        <div><span class="ico">💰</span> Más ventas, mayor rentabilidad</div>
+        <div><span class="ico">📊</span> Crecimiento sostenible</div>
+      </div>
     </div>
   </section>
 
