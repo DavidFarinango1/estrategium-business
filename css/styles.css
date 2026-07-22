@@ -180,9 +180,20 @@ h1, h2, h3 { line-height: 1.15; font-weight: 800; }
 
 /* ---------- 3 etapas (bloque navy redondeado, tarjetas oscuras) ---------- */
 /* Hero con imagen (banner) — de borde a borde */
-.hero-img { background: #001f4d; padding: 0; }
+.hero-img { background: #001f4d; padding: 0; position: relative; }
 .hero-img > a { display: block; max-width: none; margin: 0; }
 .hero-img img { width: 100%; display: block; border-radius: 0; }
+/* Zonas clickeables invisibles sobre los botones dibujados en la imagen de portada.
+   Posición en % de la imagen (PC = principal1, MÓVIL = principalmovil, cambio a 900px). */
+.hero-hot { position: absolute; display: block; z-index: 3; }
+.hs-demo-pc  { left: 0.5%; top: 73.5%; width: 26.5%; height: 11%; }
+.hs-video-pc { left: 27%;  top: 73.5%; width: 16.5%; height: 11%; }
+.hs-demo-mo, .hs-video-mo { display: none; }
+@media (max-width: 900px) {
+  .hs-demo-pc, .hs-video-pc { display: none; }
+  .hs-demo-mo  { display: block; left: 17%; top: 46%;   width: 66%; height: 5.5%; }
+  .hs-video-mo { display: block; left: 17%; top: 51.5%; width: 66%; height: 5.5%; }
+}
 
 .stages {
   background: #fff;

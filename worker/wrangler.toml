@@ -15,10 +15,10 @@ CORS_ORIGIN = "*"
 
 # Correo remitente de los avisos al estudiante (debe ser del dominio verificado
 # en MailerSend). Se puede cambiar sin tocar el código.
-CORREO_REMITENTE = "soporte@estrategiumbusiness.com"
+CORREO_REMITENTE = "info@estrategiumbusiness.com"
 
 # A dónde llegan los mensajes del formulario de contacto (contacto.html).
-CORREO_CONTACTO = "cristyanq20@gmail.com"
+CORREO_CONTACTO = "info@estrategiumbusiness.com"
 
 # Los SECRETOS no van aquí (este archivo se sube a GitHub).
 # Se cargan una sola vez con estos comandos:
